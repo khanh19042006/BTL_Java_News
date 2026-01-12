@@ -21,14 +21,15 @@ public class DBServiceImpl implements DBService {
     private final Gson gson = new Gson();
     private static final int BATCH_SIZE = 1000;
 
-    @Override
     //Chuyển dữ liệu t file .json vòa db
+    @Override
     public void importDataFromJsonFileToDatabase(String url, Connection connection) {
         int count = 0;
-        //url là đường dẫn đến file .json trong máy
+
         File file = new File(url);
-        String fileName = file.getName();   // Lấy tên file .json
-        try{
+        String fileName = file.getName();
+
+        try {
             if (isCheckTable(connection, fileName)) return;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -38,75 +39,78 @@ public class DBServiceImpl implements DBService {
 
         String sql = SQLQuery.INSERT_NEWS.getQuery();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file));
-             PreparedStatement stmt = connection.prepareStatement(sql)) {
+        boolean oldAutoCommit = true;
 
-            connection.setAutoCommit(false); // tắt auto-commit
+        try {
+            // ✅ DI CHUYỂN DÒNG NÀY LÊN TRƯỚC (KHÔNG ĐỔI LOGIC)
+            oldAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
 
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) continue;
-                try {
-                    // Chuyển JSON sang object
-                    News news = gson.fromJson(line, News.class);
+            try (BufferedReader br = new BufferedReader(new FileReader(file));
+                 PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-                    //Tránh insert trùng
-                    String selectSql = "SELECT link FROM news WHERE link = ?";
-                    try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
-                        selectStmt.setString(1, news.getLink());
-                        try (ResultSet rs = selectStmt.executeQuery()) {
-                            if (rs.next()){
-                                System.out.println("Record này đã được thêm rồi");
-                                continue;
+                String line;
+                while ((line = br.readLine()) != null) {
+                    line = line.trim();
+                    if (line.isEmpty()) continue;
+                    try {
+                        News news = gson.fromJson(line, News.class);
+
+                        String selectSql = "SELECT link FROM news WHERE link = ?";
+                        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+                            selectStmt.setString(1, news.getLink());
+                            try (ResultSet rs = selectStmt.executeQuery()) {
+                                if (rs.next()) {
+                                    System.out.println("Record này đã được thêm rồi");
+                                    continue;
+                                }
                             }
                         }
+
+                        stmt.setString(1, news.getId());
+                        stmt.setString(2, news.getLink());
+                        stmt.setString(3, news.getHeadline());
+                        stmt.setString(4, news.getCategory());
+                        stmt.setString(5, news.getShort_description());
+                        stmt.setString(6, news.getAuthors());
+                        stmt.setString(7, news.getDate());
+                        stmt.addBatch();
+
+                        count++;
+
+                        if (count % BATCH_SIZE == 0) {
+                            stmt.executeBatch();
+                        }
+
+                    } catch (Exception e) {
+                        System.err.println("Parse error: " + line);
+                        e.printStackTrace();
                     }
-
-                    // Add dữ liệu vào batch
-                    stmt.setString(1, news.getId());
-                    stmt.setString(2, news.getLink());
-                    stmt.setString(3, news.getHeadline());
-                    stmt.setString(4, news.getCategory());
-                    stmt.setString(5, news.getShort_description());
-                    stmt.setString(6, news.getAuthors());
-                    stmt.setString(7, news.getDate());
-                    stmt.addBatch();
-
-                    count++;
-
-                    // Execute batch sau mỗi BATCH_SIZE bản ghi
-                    if (count % BATCH_SIZE == 0) {
-                        stmt.executeBatch();
-                    }
-
-                } catch (Exception e) {
-                    System.err.println("Parse error: " + line);
-                    e.printStackTrace();
                 }
+
+                stmt.executeBatch();
+                connection.commit();
+
+                System.out.println("Import xong " + count + " bản ghi từ file: " + fileName);
             }
-
-            // Thực thi batch còn lại
-            stmt.executeBatch();
-            connection.commit();
-
-            System.out.println("Import xong " + count + " bản ghi từ file: " + fileName);
 
         } catch (Exception e) {
             try {
-                connection.rollback();
+                connection.rollback(); // ✅ lúc này rollback LUÔN HỢP LỆ
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
             e.printStackTrace();
+
         } finally {
             try {
-                connection.setAutoCommit(true);
+                connection.setAutoCommit(oldAutoCommit); // ✅ khôi phục trạng thái cũ
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
     }
+
 
     //Kiểm tra Bảng này đã được insert vào db chưa để tránh insert nhiều lần
     @Override
