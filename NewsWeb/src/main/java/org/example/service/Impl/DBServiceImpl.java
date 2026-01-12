@@ -19,7 +19,7 @@ public class DBServiceImpl implements DBService {
 
     private static final Dotenv dotenv = Dotenv.load();
     private final Gson gson = new Gson();
-    private static final int BATCH_SIZE = 1000;
+    private static final int BATCH_SIZE = 2000;
 
     //Chuyển dữ liệu t file .json vòa db
     @Override
@@ -42,7 +42,6 @@ public class DBServiceImpl implements DBService {
         boolean oldAutoCommit = true;
 
         try {
-            // ✅ DI CHUYỂN DÒNG NÀY LÊN TRƯỚC (KHÔNG ĐỔI LOGIC)
             oldAutoCommit = connection.getAutoCommit();
             connection.setAutoCommit(false);
 
@@ -56,16 +55,16 @@ public class DBServiceImpl implements DBService {
                     try {
                         News news = gson.fromJson(line, News.class);
 
-                        String selectSql = "SELECT link FROM news WHERE link = ?";
-                        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
-                            selectStmt.setString(1, news.getLink());
-                            try (ResultSet rs = selectStmt.executeQuery()) {
-                                if (rs.next()) {
-                                    System.out.println("Record này đã được thêm rồi");
-                                    continue;
-                                }
-                            }
-                        }
+//                        String selectSql = "SELECT link FROM news WHERE link = ?";
+//                        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+//                            selectStmt.setString(1, news.getLink());
+//                            try (ResultSet rs = selectStmt.executeQuery()) {
+//                                if (rs.next()) {
+//                                    System.out.println("Record này đã được thêm rồi");
+//                                    continue;
+//                                }
+//                            }
+//                        }
 
                         stmt.setString(1, news.getId());
                         stmt.setString(2, news.getLink());
@@ -96,7 +95,7 @@ public class DBServiceImpl implements DBService {
 
         } catch (Exception e) {
             try {
-                connection.rollback(); // ✅ lúc này rollback LUÔN HỢP LỆ
+                connection.rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -104,7 +103,7 @@ public class DBServiceImpl implements DBService {
 
         } finally {
             try {
-                connection.setAutoCommit(oldAutoCommit); // ✅ khôi phục trạng thái cũ
+                connection.setAutoCommit(oldAutoCommit);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
