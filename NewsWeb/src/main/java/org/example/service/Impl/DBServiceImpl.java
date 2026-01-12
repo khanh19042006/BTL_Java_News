@@ -55,17 +55,6 @@ public class DBServiceImpl implements DBService {
                     try {
                         News news = gson.fromJson(line, News.class);
 
-//                        String selectSql = "SELECT link FROM news WHERE link = ?";
-//                        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
-//                            selectStmt.setString(1, news.getLink());
-//                            try (ResultSet rs = selectStmt.executeQuery()) {
-//                                if (rs.next()) {
-//                                    System.out.println("Record này đã được thêm rồi");
-//                                    continue;
-//                                }
-//                            }
-//                        }
-
                         stmt.setString(1, news.getId());
                         stmt.setString(2, news.getLink());
                         stmt.setString(3, news.getHeadline());

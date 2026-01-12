@@ -13,3 +13,6 @@ CREATE TABLE news (
     authors TEXT,
     date VARCHAR(50)
 );
+
+ALTER TABLE news
+ADD UNIQUE KEY uk_news_link (link);
