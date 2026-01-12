@@ -1,0 +1,140 @@
+package org.example.service.Impl;
+
+import com.google.gson.Gson;
+import io.github.cdimascio.dotenv.Dotenv;
+import org.example.entity.CheckTable;
+import org.example.entity.News;
+import org.example.service.DBService;
+import org.example.service.enumCRUD.SQLQuery;
+
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class DBServiceImpl implements DBService {
+
+    private static final Dotenv dotenv = Dotenv.load();
+    private final Gson gson = new Gson();
+    private static final int BATCH_SIZE = 1000;
+
+    @Override
+    //Chuyển dữ liệu t file .json vòa db
+    public void importDataFromJsonFileToDatabase(String url, Connection connection) {
+        int count = 0;
+        //url là đường dẫn đến file .json trong máy
+        File file = new File(url);
+        String fileName = file.getName();   // Lấy tên file .json
+        try{
+            if (isCheckTable(connection, fileName)) return;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println("Đang import file: " + fileName);
+
+        String sql = SQLQuery.INSERT_NEWS.getQuery();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file));
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            connection.setAutoCommit(false); // tắt auto-commit
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty()) continue;
+                try {
+                    // Chuyển JSON sang object
+                    News news = gson.fromJson(line, News.class);
+
+                    //Tránh insert trùng
+                    String selectSql = "SELECT link FROM news WHERE link = ?";
+                    try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+                        selectStmt.setString(1, news.getLink());
+                        try (ResultSet rs = selectStmt.executeQuery()) {
+                            if (rs.next()){
+                                System.out.println("Record này đã được thêm rồi");
+                                continue;
+                            }
+                        }
+                    }
+
+                    // Add dữ liệu vào batch
+                    stmt.setString(1, news.getId());
+                    stmt.setString(2, news.getLink());
+                    stmt.setString(3, news.getHeadline());
+                    stmt.setString(4, news.getCategory());
+                    stmt.setString(5, news.getShort_description());
+                    stmt.setString(6, news.getAuthors());
+                    stmt.setString(7, news.getDate());
+                    stmt.addBatch();
+
+                    count++;
+
+                    // Execute batch sau mỗi BATCH_SIZE bản ghi
+                    if (count % BATCH_SIZE == 0) {
+                        stmt.executeBatch();
+                    }
+
+                } catch (Exception e) {
+                    System.err.println("Parse error: " + line);
+                    e.printStackTrace();
+                }
+            }
+
+            // Thực thi batch còn lại
+            stmt.executeBatch();
+            connection.commit();
+
+            System.out.println("Import xong " + count + " bản ghi từ file: " + fileName);
+
+        } catch (Exception e) {
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //Kiểm tra Bảng này đã được insert vào db chưa để tránh insert nhiều lần
+    @Override
+    public boolean isCheckTable(Connection connection, String name) throws SQLException {
+        // 1. Kiểm tra xem đã tồn tại chưa
+        String selectSql = "SELECT name FROM checkTable WHERE name = ?";
+        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
+            selectStmt.setString(1, name);
+            try (ResultSet rs = selectStmt.executeQuery()) {
+                if (rs.next()) {
+                    // đã tồn tại
+                    System.out.println("Tồn tại rồi " + name);
+                    return true;
+                }
+            }
+        }
+
+        //Nếu chưa tồn tại, thêm record mới
+        CheckTable newRecord = new CheckTable(name, true);
+        String insertSql = "INSERT INTO checkTable(id, name, check_flag) VALUES (?, ?, ?)";
+        try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
+            insertStmt.setString(1, newRecord.getId());
+            insertStmt.setString(2, newRecord.getName());
+            insertStmt.setBoolean(3, newRecord.isCheck_flag()); // status = true
+            insertStmt.executeUpdate();
+        }
+
+        // Chưa tồn tại
+        return false;
+    }
+}

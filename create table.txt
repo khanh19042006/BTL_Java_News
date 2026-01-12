@@ -1,0 +1,15 @@
+CREATE TABLE checkTable (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    check_flag BOOLEAN NOT NULL
+);
+
+CREATE TABLE news (
+    id VARCHAR(255) PRIMARY KEY,
+    link TEXT,
+    headline TEXT,
+    category VARCHAR(255),
+    short_description TEXT,
+    authors TEXT,
+    date VARCHAR(50)
+);
