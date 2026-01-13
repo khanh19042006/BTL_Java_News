@@ -1,0 +1,58 @@
+.root {
+    -fx-background-color: #FDFBD4;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+VBox {
+    -fx-background-color: #f0eded;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #1E2530;
+}
+
+HBox:first-child {
+    -fx-padding: 12 16;
+    -fx-spacing: 16;
+    -fx-alignment: center-left;
+}
+
+Label {
+    -fx-text-fill: #FF6600;
+    -fx-font-weight: bold;
+    -fx-font-size: 22;
+}
+
+TextField {
+    -fx-background-color: #FDFBD4;
+    -fx-text-fill: #E8EAEE;
+    -fx-prompt-text-fill: #7A8599;
+    -fx-background-radius: 24;
+    -fx-border-radius: 24;
+    -fx-border-color: #2A3344;
+    -fx-border-width: 1;
+    -fx-padding: 10 16;
+}
+
+Button:not(.tab-button) {
+    -fx-background-color: #FF6600;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 24;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-font-size: 14;
+}
+
+Button:not(.tab-button):hover {
+    -fx-background-color: #FF8533;
+}
+
+Button:not(.tab-button):pressed {
+    -fx-background-color: #CC5200;
+}
+
+HBox[fx:id="main"] {
+    -fx-background-color: #75ecf0;
+    -fx-padding: 0;
+}
+
+Button.tab
