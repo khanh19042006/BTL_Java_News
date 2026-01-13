@@ -1,11 +1,9 @@
-/* Nền toàn màn hình */
 .root {
     -fx-background-color: #f2f2f2;
     -fx-font-family: Arial;
 }
 
-/* Khung login */
-.vbox {
+.login-box {
     -fx-background-color: white;
     -fx-padding: 20;
     -fx-background-radius: 10;
@@ -13,26 +11,22 @@
     -fx-border-color: #dddddd;
 }
 
-/* Tiêu đề */
 #web {
     -fx-font-size: 20px;
     -fx-font-weight: bold;
     -fx-text-fill: #333333;
 }
 
-/* Text xin chào */
 #hello {
     -fx-font-size: 13px;
     -fx-text-fill: #666666;
 }
 
-/* Label */
 .label {
     -fx-font-size: 13px;
     -fx-text-fill: #333333;
 }
 
-/* Ô nhập */
 .text-field,
 .password-field {
     -fx-padding: 8;
@@ -41,18 +35,15 @@
     -fx-background-radius: 6;
 }
 
-/* Khi focus */
 .text-field:focused,
 .password-field:focused {
-    -fx-border-color: #999999;
+    -fx-border-color: #4a69bd;
 }
 
-/* Checkbox */
 .check-box {
     -fx-font-size: 12px;
 }
 
-/* Nút đăng nhập */
 #button_dnhap {
     -fx-background-color: #4a69bd;
     -fx-text-fill: white;
@@ -60,13 +51,12 @@
     -fx-background-radius: 6;
 }
 
-/* Link */
 .hyperlink {
     -fx-font-size: 12px;
     -fx-text-fill: #4a69bd;
 }
 
-/* Error */
 #error {
     -fx-font-size: 12px;
+    -fx-text-fill: red;
 }
