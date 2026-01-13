@@ -6,10 +6,13 @@ CREATE TABLE checkTable (
 
 CREATE TABLE news (
     id VARCHAR(255) PRIMARY KEY,
-    link TEXT,
+    link VARCHAR(512) NOT NULL,
     headline TEXT,
     category VARCHAR(255),
     short_description TEXT,
     authors TEXT,
     date VARCHAR(50)
 );
+
+ALTER TABLE news
+ADD UNIQUE KEY uk_news_link (link);
