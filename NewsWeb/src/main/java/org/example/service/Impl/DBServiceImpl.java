@@ -29,11 +29,11 @@ public class DBServiceImpl implements DBService {
         File file = new File(url);
         String fileName = file.getName();
 
-        try {
-            if (isCheckTable(connection, fileName)) return;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+//        try {
+//            if (isCheckTable(connection, fileName)) return;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
 
         System.out.println("Đang import file: " + fileName);
 
