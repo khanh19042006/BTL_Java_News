@@ -10,8 +10,22 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="420.0" stylesheets="@css/homePage.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">  
+
+<BorderPane
+        maxHeight="-Infinity"
+        maxWidth="-Infinity"
+        minHeight="-Infinity"
+        minWidth="-Infinity"
+        prefHeight="720.0"
+        prefWidth="420.0"
+        stylesheets="@css/homePage.css"
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="org.example.controller.HomeController"
+>
 
    <top>
       <VBox prefHeight="120.0" prefWidth="100.0" BorderPane.alignment="CENTER">
@@ -56,12 +70,13 @@
 
    <center>
       <!-- Phần nội dung chính (sau này bạn thêm WebView, ListView,...) -->
-      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <GridPane alignment="TOP_CENTER" visible="false" StackPane.alignment="TOP_CENTER">
-               <!-- giữ nguyên nếu bạn dùng sau -->
-            </GridPane>
-         </children>
-      </StackPane>
+<!--      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">-->
+<!--         <children>-->
+<!--            <GridPane alignment="TOP_CENTER" visible="false" StackPane.alignment="TOP_CENTER">-->
+<!--               &lt;!&ndash; giữ nguyên nếu bạn dùng sau &ndash;&gt;-->
+<!--            </GridPane>-->
+<!--         </children>-->
+<!--      </StackPane>-->
+      <ListView fx:id="newsList" BorderPane.alignment="CENTER"/>
    </center>
 </BorderPane>
