@@ -16,3 +16,12 @@ CREATE TABLE news (
 
 ALTER TABLE news
 ADD UNIQUE KEY uk_news_link (link);
+
+ALTER TABLE news
+ADD COLUMN views INT UNSIGNED NOT NULL DEFAULT 0;
+
+CREATE INDEX idx_date_views
+ON news(date DESC, views DESC);
+
+ALTER TABLE users
+ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'USER';
