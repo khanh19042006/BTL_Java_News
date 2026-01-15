@@ -1,0 +1,62 @@
+.root {
+    -fx-background-color: #f2f2f2;
+    -fx-font-family: Arial;
+}
+
+.login-box {
+    -fx-background-color: white;
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #dddddd;
+}
+
+#web {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+#hello {
+    -fx-font-size: 13px;
+    -fx-text-fill: #666666;
+}
+
+.label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #333333;
+}
+
+.text-field,
+.password-field {
+    -fx-padding: 8;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.text-field:focused,
+.password-field:focused {
+    -fx-border-color: #4a69bd;
+}
+
+.check-box {
+    -fx-font-size: 12px;
+}
+
+#button_dnhap {
+    -fx-background-color: #4a69bd;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+}
+
+.hyperlink {
+    -fx-font-size: 12px;
+    -fx-text-fill: #4a69bd;
+}
+
+#error {
+    -fx-font-size: 12px;
+    -fx-text-fill: red;
+}
