@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+
+
+<BorderPane
+        maxHeight="-Infinity"
+        maxWidth="-Infinity"
+        minHeight="-Infinity"
+        minWidth="-Infinity"
+        prefHeight="720.0"
+        prefWidth="420.0"
+        stylesheets="@css/homePage.css"
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="org.example.controller.HomeController"
+>
+
+   <top>
+      <VBox prefHeight="120.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="600.0" spacing="12.0">
+               <padding>
+                  <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
+               </padding>
+               <children>
+                  <Label prefHeight="28.0" prefWidth="134.0" text="BÁO MỚI">
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </Label>
+                  <Region HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="search_infor" prefHeight="43.0" prefWidth="173.0" promptText="Nhập nội dung tìm kiếm">
+                     <font>
+                        <Font size="10.0" />
+                     </font></TextField>
+                  <Button fx:id="search_button" mnemonicParsing="false" prefHeight="22.0" prefWidth="46.0" text="🔍">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Button>
+                  <Button fx:id="infor" mnemonicParsing="false" prefHeight="22.0" prefWidth="45.0" text="👤">
+                     <font>
+                        <Font size="10.0" />
+                     </font></Button>
+               </children>
+            </HBox>
+
+            <HBox fx:id="main" alignment="CENTER" prefHeight="60.0" prefWidth="600.0" spacing="0.0">
+               <children>
+                  <Button mnemonicParsing="false" prefWidth="105.0" text="NÓNG" />
+                  <Button mnemonicParsing="false" prefWidth="105.0" text="MỚI" />
+                  <Button mnemonicParsing="false" prefWidth="105.0" text="VIDEO" />
+                  <Button fx:id="menu" mnemonicParsing="false" prefWidth="105.0" text="CHỦ ĐỀ" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+
+   <center>
+      <!-- Phần nội dung chính (sau này bạn thêm WebView, ListView,...) -->
+<!--      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">-->
+<!--         <children>-->
+<!--            <GridPane alignment="TOP_CENTER" visible="false" StackPane.alignment="TOP_CENTER">-->
+<!--               &lt;!&ndash; giữ nguyên nếu bạn dùng sau &ndash;&gt;-->
+<!--            </GridPane>-->
+<!--         </children>-->
+<!--      </StackPane>-->
+      <ListView fx:id="newsList" BorderPane.alignment="CENTER"/>
+   </center>
+</BorderPane>

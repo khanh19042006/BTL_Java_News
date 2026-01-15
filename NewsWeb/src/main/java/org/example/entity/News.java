@@ -10,6 +10,7 @@ public class News {
     private String short_description;
     private String authors;
     private String date;
+    private int view;
 
     public News() {
         this.id = UUID.randomUUID().toString();
@@ -23,6 +24,7 @@ public class News {
         this.short_description = short_description;
         this.authors = authors;
         this.date = date;
+        this.view = 0;
     }
 
     public String getId() {
@@ -36,6 +38,10 @@ public class News {
     public void setLink(String link) {
         this.link = link;
     }
+
+    public int getView() {return view;}
+
+    public void setView(int view) {this.view = view;}
 
     public String getHeadline() {
         return headline;

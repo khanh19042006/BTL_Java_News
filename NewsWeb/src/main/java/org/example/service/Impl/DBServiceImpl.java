@@ -2,7 +2,6 @@ package org.example.service.Impl;
 
 import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.example.entity.CheckTable;
 import org.example.entity.News;
 import org.example.service.DBService;
 import org.example.service.enumCRUD.SQLQuery;
@@ -29,11 +28,11 @@ public class DBServiceImpl implements DBService {
         File file = new File(url);
         String fileName = file.getName();
 
-//        try {
-//            if (isCheckTable(connection, fileName)) return;
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
+        try {
+            if (isCheckTable(connection, "news")) return;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         System.out.println("Đang import file: " + fileName);
 
@@ -62,6 +61,7 @@ public class DBServiceImpl implements DBService {
                         stmt.setString(5, news.getShort_description());
                         stmt.setString(6, news.getAuthors());
                         stmt.setString(7, news.getDate());
+                        stmt.setInt(8, news.getView());
                         stmt.addBatch();
 
                         count++;
@@ -102,31 +102,21 @@ public class DBServiceImpl implements DBService {
 
     //Kiểm tra Bảng này đã được insert vào db chưa để tránh insert nhiều lần
     @Override
-    public boolean isCheckTable(Connection connection, String name) throws SQLException {
-        // 1. Kiểm tra xem đã tồn tại chưa
-        String selectSql = "SELECT name FROM checkTable WHERE name = ?";
-        try (PreparedStatement selectStmt = connection.prepareStatement(selectSql)) {
-            selectStmt.setString(1, name);
-            try (ResultSet rs = selectStmt.executeQuery()) {
-                if (rs.next()) {
-                    // đã tồn tại
-                    System.out.println("Tồn tại rồi " + name);
-                    return true;
-                }
-            }
+    public boolean isCheckTable(Connection connection, String tableName) throws SQLException {
+
+        // 1. Validate tên table
+        if (!tableName.matches("[a-zA-Z0-9_]+")) {
+            throw new SQLException("Invalid table name: " + tableName);
         }
 
-        //Nếu chưa tồn tại, thêm record mới
-        CheckTable newRecord = new CheckTable(name, true);
-        String insertSql = "INSERT INTO checkTable(id, name, check_flag) VALUES (?, ?, ?)";
-        try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
-            insertStmt.setString(1, newRecord.getId());
-            insertStmt.setString(2, newRecord.getName());
-            insertStmt.setBoolean(3, newRecord.isCheck_flag()); // status = true
-            insertStmt.executeUpdate();
-        }
+        // 2. Query kiểm tra table có record không
+        String sql = "SELECT 1 FROM " + tableName + " LIMIT 1";
 
-        // Chưa tồn tại
-        return false;
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            // Nếu có ít nhất 1 dòng → table có record
+            return rs.next();
+        }
     }
 }
