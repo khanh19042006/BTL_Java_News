@@ -15,7 +15,7 @@ public class HomeController {
     @FXML
     public void initialize() {
         NewsDAO dao = new NewsDAO();
-        List<News> news = dao.getAllNewsSummary();
+        List<News> news = dao.getAllNewsSummary(3);
 
         newsList.getItems().addAll(news);
 
