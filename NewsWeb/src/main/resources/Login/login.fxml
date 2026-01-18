@@ -9,7 +9,10 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="408.0" prefWidth="595.0" stylesheets="@css/login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Login">
+<AnchorPane prefHeight="408.0" prefWidth="595.0" stylesheets="@css/login.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.LoginController">
 
     <!-- Khung chính cho app mobile -->
     <VBox layoutX="150.0" prefWidth="300" spacing="16">
@@ -21,11 +24,11 @@
         <Label fx:id="hello" text="Xin chào," />
 
         <!-- Username -->
-        <Label fx:id="name" text="Tên tài khoản:" />
+        <Label fx:id="usernameField" text="Tên tài khoản:" />
         <TextField fx:id="name_input" promptText="Nhập tên tài khoản" />
 
         <!-- Password -->
-        <Label fx:id="pass" text="Mật khẩu:" />
+        <Label fx:id="passwordField" text="Mật khẩu:" />
         <PasswordField fx:id="pass_input" promptText="Nhập mật khẩu" />
 
         <!-- Remember -->
@@ -35,7 +38,7 @@
         <Label fx:id="error" style="-fx-text-fill: red;" text="Sai tên tài khoản hoặc mật khẩu." />
 
         <!-- Login button -->
-        <Button fx:id="button_dnhap" maxWidth="Infinity" prefHeight="45" text="Đăng Nhập" />
+        <Button fx:id="login" maxWidth="Infinity" prefHeight="45" text="Đăng Nhập" onAction="#handleLogin" />
 
         <!-- Links -->
         <Hyperlink fx:id="link_quen" text="Quên mật khẩu ?" />
