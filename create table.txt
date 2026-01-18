@@ -23,5 +23,17 @@ ADD COLUMN views INT UNSIGNED NOT NULL DEFAULT 0;
 CREATE INDEX idx_date_views
 ON news(date DESC, views DESC);
 
+CREATE TABLE users (
+    id VARCHAR(50) NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at VARCHAR(50),
+    role VARCHAR(50) NOT NULL DEFAULT 'USER',
+
+    PRIMARY KEY (id),
+    UNIQUE (username)
+);
+
 ALTER TABLE users
 ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'USER';
