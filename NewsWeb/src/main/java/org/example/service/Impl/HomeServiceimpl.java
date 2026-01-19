@@ -21,4 +21,14 @@ public class HomeServiceimpl implements HomeService {
     public List<News> getHotNews(){
         return dao.getHotNews(limit);
     }
+
+    @Override
+    public List<News> getNewsByFind(String headline){
+
+    }
+
+    @Override
+    public List<News> getNewsByCategory(String category){
+
+    }
 }

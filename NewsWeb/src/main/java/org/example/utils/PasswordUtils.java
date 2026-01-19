@@ -15,5 +15,13 @@ public class PasswordUtils {
     public static boolean check(String rawPassword, String hashedPassword) {
         return BCrypt.checkpw(rawPassword, hashedPassword);
     }
+
+    public static boolean isValidPassword(String password) {
+        String regex =
+                "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+
+        return password != null && password.matches(regex);
+    }
+
 }
 

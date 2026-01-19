@@ -28,6 +28,9 @@ public class RegisterServiceImpl implements RegisterService {
         //Kiểm tra email có định dạng phù hợp không
         if (!checkEmail(user.getEmail())) return false;
 
+        //Kiểm tra độ mạnh của mật khẩu
+        if (!PasswordUtils.isValidPassword(user.getPassword()))  return false;
+
         //Khởi tạo user trong DB
         user.setPassword(PasswordUtils.hash(user.getPassword()));
         userDAO.createUser(user);
