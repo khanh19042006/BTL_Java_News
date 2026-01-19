@@ -37,3 +37,16 @@ CREATE TABLE users (
 
 ALTER TABLE users
 ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'USER';
+
+--Thêm trường content, thumbnail vào news
+ALTER TABLE news
+ADD COLUMN content TEXT,
+ADD COLUMN thumbnail VARCHAR(255);
+
+--Thêm FULLTEXT cho headline, short_description,  content (chạy khá lâu, khoảng 5-10p)
+--Nếu có báo lỗi thì báo lại
+ALTER TABLE news
+ADD FULLTEXT(headline, short_description, content);
+
+--Thêm table category
+--Thêm table role (admin, user, journalist)
