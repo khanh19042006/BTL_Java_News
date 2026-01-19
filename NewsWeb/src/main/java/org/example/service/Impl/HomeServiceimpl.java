@@ -24,11 +24,11 @@ public class HomeServiceimpl implements HomeService {
 
     @Override
     public List<News> getNewsByFind(String headline){
-
+return null;
     }
 
     @Override
     public List<News> getNewsByCategory(String category){
-
+return null;
     }
 }
