@@ -8,46 +8,34 @@ import java.sql.ResultSet;
 
 public class UserDAO {
 
-    public boolean checkUser(String username, String password) {
+    public String getPasswordByUsername(String username) {
 
         String sql = """
-            SELECT 1
-            FROM users
-            WHERE username = ?
-              AND password = ?
-            LIMIT 1
-        """;
+        SELECT password
+        FROM users
+        WHERE username = ?
+        LIMIT 1
+    """;
 
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            conn = DBConnection.getConnection();
-            ps = conn.prepareStatement(sql);
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
             ps.setString(1, username);
-            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
 
-            rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("password"); // trả về String
+            }
 
-            // Nếu có ít nhất 1 record → login thành công
-            return rs.next();
+            return null; // không tìm thấy user
 
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
-
-        } finally {
-            // Đóng tài nguyên theo thứ tự ngược lại
-            try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            return null;
         }
     }
+
 
     public boolean checkUsername(String username){
         String sql = """
