@@ -47,7 +47,7 @@ public class NewsDAO {
         String sql = """
         SELECT headline
         FROM news
-        ORDER BY view DESC
+        ORDER BY view DESC, date DESC
         LIMIT ?
     """;
 
