@@ -58,14 +58,15 @@ CREATE TABLE category (
 
 --Thêm table role (admin, user, journalist)
 CREATE TABLE role (
-    id INT PRIMARY KEY,
+    id VARCHAR(36) PRIMARY KEY,
     code VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(100) NOT NULL
 );
-INSERT INTO role (id, code, name) VALUES
-(1, 'admin', 'Administrator'),
-(2, 'user', 'User'),
-(3, 'journalist', 'Journalist');
+
+INSERT IGNORE INTO role (id, code, name) VALUES
+(UUID(), 'admin', 'Administrator'),
+(UUID(), 'user', 'User'),
+(UUID(), 'journalist', 'Journalist');
 
 --Format lại các thuộc tính của news cho phù hợp
 SET SQL_SAFE_UPDATES = 0;
