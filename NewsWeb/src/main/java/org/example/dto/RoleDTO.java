@@ -1,24 +1,15 @@
-package org.example.entity;
+package org.example.dto;
 
-import java.util.UUID;
-
-public class Role {
-    private String id;
+public class RoleDTO {
     private String code;
     private String name;
 
-    public Role(String code, String name) {
-        this.id = UUID.randomUUID().toString();
+    public RoleDTO(String code, String name) {
         this.code = code;
         this.name = name;
     }
 
-    public Role() {
-        this.id = UUID.randomUUID().toString();
-    }
-
-    public String getId() {
-        return id;
+    public RoleDTO() {
     }
 
     public String getCode() {
