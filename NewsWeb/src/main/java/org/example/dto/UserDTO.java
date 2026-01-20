@@ -1,30 +1,21 @@
-package org.example.entity;
+package org.example.dto;
 
-import java.util.UUID;
-
-public class User {
-    private String id;
+public class UserDTO {
     private String username;
     private String email;
     private String password;
     private String created_at;
     private String role;    //role_code
 
-    public User() {
-        this.id = UUID.randomUUID().toString();
+    public UserDTO() {
     }
 
-    public User(String username, String email, String password, String created_at, String role) {
-        this.id = UUID.randomUUID().toString();
+    public UserDTO(String username, String email, String password, String created_at, String role) {
         this.username = username;
         this.email = email;
         this.password = password;
         this.created_at = created_at;
         this.role = role;
-    }
-
-    public String getId() {
-        return id;
     }
 
     public String getUsername() {

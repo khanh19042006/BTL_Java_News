@@ -1,9 +1,8 @@
-package org.example.service.Impl;
+package org.example.DB;
 
 import com.google.gson.Gson;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.example.entity.News;
-import org.example.service.DBService;
 import org.example.service.enumCRUD.SQLQuery;
 
 import java.io.File;
@@ -14,14 +13,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DBServiceImpl implements DBService {
+public class ImportNewsFromDataset {
 
     private static final Dotenv dotenv = Dotenv.load();
     private final Gson gson = new Gson();
     private static final int BATCH_SIZE = 2000;
 
     //Chuyển dữ liệu t file .json vòa db
-    @Override
     public void importDataFromJsonFileToDatabase(String url, Connection connection) {
         int count = 0;
 
@@ -101,7 +99,6 @@ public class DBServiceImpl implements DBService {
 
 
     //Kiểm tra Bảng này đã được insert vào db chưa để tránh insert nhiều lần
-    @Override
     public boolean isCheckTable(Connection connection, String tableName) throws SQLException {
 
         // 1. Validate tên table

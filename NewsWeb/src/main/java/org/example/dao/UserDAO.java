@@ -1,10 +1,13 @@
 package org.example.dao;
 
+import org.example.dto.UserDTO;
 import org.example.entity.User;
+import org.example.utils.PasswordUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
 
 public class UserDAO {
 
@@ -74,12 +77,19 @@ public class UserDAO {
         }
     }
 
-    public void createUser(User user) {
+    public void createUser(UserDTO userCreate) {
 
         String sql = """
         INSERT INTO users (id, username, email, password, created_at, role)
         VALUES (?, ?, ?, ?, ?, ?)
         """;
+
+        User user = new User();
+        user.setUsername(userCreate.getUsername());
+        user.setEmail(userCreate.getEmail());
+        user.setPassword(userCreate.getPassword());
+        user.setCreated_at(LocalDate.now().toString());
+        user.setRole("user");
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

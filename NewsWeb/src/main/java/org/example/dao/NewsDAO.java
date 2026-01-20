@@ -1,6 +1,6 @@
 package org.example.dao;
 
-import org.example.entity.News;
+import org.example.dto.NewsDTO;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,8 +12,8 @@ public class NewsDAO {
 
     // Lấy 10 bài báo mới nhất
     // Lấy các bài báo mới nhất
-    public List<News> getNewNews(int limit) {
-        List<News> newsList = new ArrayList<>();
+    public List<NewsDTO> getNewNews(int limit) {
+        List<NewsDTO> newsList = new ArrayList<>();
 
         String sql = """
         SELECT headline,
@@ -36,7 +36,7 @@ public class NewsDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    News news = new News();
+                    NewsDTO news = new NewsDTO();
                     news.setHeadline(rs.getString("headline"));
                     news.setCategory(rs.getString("category"));
                     news.setShort_description(rs.getString("short_description"));
@@ -58,8 +58,8 @@ public class NewsDAO {
 
 
     // Lấy 10 bài báo có view cao nhất
-    public List<News> getHotNews(int limit) {
-        List<News> newsList = new ArrayList<>();
+    public List<NewsDTO> getHotNews(int limit) {
+        List<NewsDTO> newsList = new ArrayList<>();
 
         String sql = """
         SELECT headline,
@@ -82,7 +82,7 @@ public class NewsDAO {
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    News news = new News();
+                    NewsDTO news = new NewsDTO();
                     news.setHeadline(rs.getString("headline"));
                     news.setCategory(rs.getString("category"));
                     news.setShort_description(rs.getString("short_description"));
@@ -101,6 +101,4 @@ public class NewsDAO {
 
         return newsList;
     }
-
-
 }

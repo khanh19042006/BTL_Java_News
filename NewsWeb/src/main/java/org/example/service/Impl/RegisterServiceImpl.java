@@ -1,7 +1,7 @@
 package org.example.service.Impl;
 
 import org.example.dao.UserDAO;
-import org.example.entity.User;
+import org.example.dto.UserDTO;
 import org.example.service.RegisterService;
 import org.example.utils.EmailUtils;
 import org.example.utils.PasswordUtils;
@@ -22,7 +22,7 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public boolean register(User user){
+    public boolean register(UserDTO user){
         boolean isExist = userDAO.checkUsername(user.getUsername());
         if (isExist) return false;
         //Kiểm tra email có định dạng phù hợp không

@@ -1,12 +1,14 @@
 package org.example.service;
 
-import org.example.entity.News;
+import org.example.dto.CategoryDTO;
+import org.example.dto.NewsDTO;
 
 import java.util.List;
 
 public interface HomeService {
-    public List<News> getNewNews(); //Lấy 10 bài báo mới nhất
-    public List<News> getHotNews(); //Lấy 10 bài báo có lượt view cao nhất
-    public List<News> getNewsByFind(String headline); //Lấy 10 bài viết theo thanh tìm kiếm
-    public List<News> getNewsByCategory(String category);   //Lấy 10 bài viết theo chủ đề
+    public List<NewsDTO> getNewNews(); //Lấy 10 bài báo mới nhất
+    public List<NewsDTO> getHotNews(); //Lấy 10 bài báo có lượt view cao nhất
+    public List<NewsDTO> getNewsByFind(String headline); //Lấy 10 bài viết theo thanh tìm kiếm
+    public List<NewsDTO> getNewsByCategory(String category);   //Lấy 10 bài viết theo chủ đề
+    public List<CategoryDTO> getCategory();    //Lấy toàn bộ danh sách Category
 }
