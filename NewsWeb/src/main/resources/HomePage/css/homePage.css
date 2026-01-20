@@ -1,58 +1,78 @@
 .root {
-    -fx-background-color: #FDFBD4;
-    -fx-font-family: "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -fx-background-color: #F5F5F5;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
 }
 
-VBox {
-    -fx-background-color: #f0eded;
-    -fx-border-width: 0 0 1 0;
-    -fx-border-color: #1E2530;
-}
-
-HBox:first-child {
+.header {
     -fx-padding: 12 16;
-    -fx-spacing: 16;
+    -fx-spacing: 12;
     -fx-alignment: center-left;
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #E0E0E0;
 }
 
-Label {
-    -fx-text-fill: #FF6600;
+.app-title {
+    -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-font-size: 22;
+    -fx-text-fill: #FF6600;
 }
 
-TextField {
-    -fx-background-color: #FDFBD4;
-    -fx-text-fill: #E8EAEE;
-    -fx-prompt-text-fill: #7A8599;
-    -fx-background-radius: 24;
-    -fx-border-radius: 24;
-    -fx-border-color: #2A3344;
-    -fx-border-width: 1;
-    -fx-padding: 10 16;
+.search-field {
+    -fx-pref-height: 36;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: #DDDDDD;
+    -fx-padding: 0 14;
 }
 
-Button:not(.tab-button) {
+.icon-button {
     -fx-background-color: #FF6600;
     -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-background-radius: 24;
-    -fx-padding: 10 20;
+    -fx-font-size: 14px;
+    -fx-background-radius: 18;
     -fx-cursor: hand;
-    -fx-font-size: 14;
 }
 
-Button:not(.tab-button):hover {
+.icon-button:hover {
     -fx-background-color: #FF8533;
 }
 
-Button:not(.tab-button):pressed {
-    -fx-background-color: #CC5200;
+.menu-bar {
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #E0E0E0;
 }
 
-HBox[fx:id="main"] {
-    -fx-background-color: #75ecf0;
-    -fx-padding: 0;
+.tab-button {
+    -fx-background-color: transparent;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 12 0;
+    -fx-pref-width: 105;
+    -fx-border-width: 0 0 3 0;
+    -fx-border-color: transparent;
+    -fx-cursor: hand;
 }
 
-Button.tab{}
+.tab-button:hover {
+    -fx-background-color: #F2F2F2;
+}
+
+.tab-button:selected {
+    -fx-border-color: #FF6600;
+    -fx-text-fill: #FF6600;
+}
+
+.news-list {
+    -fx-background-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 6 10;
+}
+
+.list-cell:selected {
+    -fx-background-color: transparent;
+}
