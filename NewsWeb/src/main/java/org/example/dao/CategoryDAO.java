@@ -1,6 +1,6 @@
 package org.example.dao;
 
-import org.example.entity.Category;
+import org.example.dto.CategoryDTO;
 import org.example.utils.TextUtils;
 
 import java.sql.Connection;
@@ -13,16 +13,16 @@ import java.util.List;
 
 public class CategoryDAO {
 
-    public List<Category> getCategory(){
+    public List<CategoryDTO> getCategory(){
         String sql = "Select code, name " +
                 "from category";
-        List<Category> categories = new ArrayList<>();
+        List<CategoryDTO> categories = new ArrayList<>();
         try(Connection conn = DBConnection.getConnection()){
             PreparedStatement ps = conn.prepareStatement(sql);
 
             try(ResultSet rs = ps.executeQuery()){
                 while (rs.next()) {
-                    Category category = new Category();
+                    CategoryDTO category = new CategoryDTO();
 
                     category.setCode(rs.getString("code"));
 

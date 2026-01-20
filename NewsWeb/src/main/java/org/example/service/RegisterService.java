@@ -1,8 +1,8 @@
 package org.example.service;
 
-import org.example.entity.User;
+import org.example.dto.UserDTO;
 
 public interface RegisterService {
-    boolean register(User user);
+    boolean register(UserDTO user);
     boolean checkEmail(String email);
 }

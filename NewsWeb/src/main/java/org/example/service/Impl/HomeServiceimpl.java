@@ -1,10 +1,9 @@
 package org.example.service.Impl;
 
-import javafx.fxml.FXML;
 import org.example.dao.CategoryDAO;
 import org.example.dao.NewsDAO;
-import org.example.entity.Category;
-import org.example.entity.News;
+import org.example.dto.CategoryDTO;
+import org.example.dto.NewsDTO;
 import org.example.service.HomeService;
 
 import java.util.List;
@@ -16,27 +15,27 @@ public class HomeServiceimpl implements HomeService {
     private final CategoryDAO categoryDAO = new CategoryDAO();
 
     @Override
-    public List<News> getNewNews(){
+    public List<NewsDTO> getNewNews(){
         return newsDAO.getNewNews(limit);
     }
 
     @Override
-    public List<News> getHotNews(){
+    public List<NewsDTO> getHotNews(){
         return newsDAO.getHotNews(limit);
     }
 
     @Override
-    public List<News> getNewsByFind(String headline){
+    public List<NewsDTO> getNewsByFind(String headline){
 return null;
     }
 
     @Override
-    public List<News> getNewsByCategory(String category){
+    public List<NewsDTO> getNewsByCategory(String category){
 return null;
     }
 
     @Override
-    public List<Category> getCategory(){
+    public List<CategoryDTO> getCategory(){
         return categoryDAO.getCategory();
     }
 }
