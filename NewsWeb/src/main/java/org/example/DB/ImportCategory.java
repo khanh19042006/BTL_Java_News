@@ -1,9 +1,8 @@
 package org.example.DB;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.example.entity.Category;
+
+import java.sql.*;
 
 public class ImportCategory {
 
@@ -14,34 +13,85 @@ public class ImportCategory {
             return;
         }
 
-        String sql =
-                "INSERT INTO category (id, name) " +
-                        "SELECT DISTINCT " +
-                        "    LOWER(category) AS id, " +
-                        "    category AS name " +
+        String selectSql =
+                "SELECT DISTINCT category " +
                         "FROM news " +
-                        "WHERE category IS NOT NULL";
+                        "WHERE category IS NOT NULL AND TRIM(category) <> ''";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            int rows = ps.executeUpdate();
-            System.out.println("Inserted categories: " + rows);
+        String insertSql =
+                "INSERT INTO category (id, code, name) VALUES (?, ?, ?)";
+
+        try (PreparedStatement selectPs = conn.prepareStatement(selectSql);
+             ResultSet rs = selectPs.executeQuery();
+             PreparedStatement insertPs = conn.prepareStatement(insertSql)) {
+
+            int count = 0;
+
+            while (rs.next()) {
+                String rawCategory = rs.getString("category").trim();
+                String code = rawCategory.toLowerCase();
+
+                Category category = new Category(); // ⭐ sinh UUID ở đây
+                category.setCode(code);
+                category.setName(rawCategory);
+
+                insertPs.setString(1, category.getId());   // id
+                insertPs.setString(2, category.getCode()); // code
+                insertPs.setString(3, category.getName()); // name
+                insertPs.addBatch();
+
+                count++;
+            }
+
+            insertPs.executeBatch();
+            System.out.println("Inserted categories: " + count);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    // kiểm tra category có dữ liệu hay chưa
+
+    // kiểm tra bảng category đã có dữ liệu hay chưa
     public boolean hasData(Connection conn) {
         String sql = "SELECT 1 FROM category LIMIT 1";
 
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
 
-            return rs.next();
+        try {
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            // nếu có ít nhất 1 dòng => bảng có dữ liệu
+            if (rs.next()) {
+                return true;
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            // đóng ResultSet
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // đóng PreparedStatement
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+
+        // không có dòng nào
         return false;
     }
 }
+

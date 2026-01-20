@@ -1,24 +1,32 @@
 package org.example.entity;
 
+import java.util.UUID;
+
 public class Category {
-    //id là dạng chuẩn hóa của name, không phải UUID
     private String id;
+    private String code;
     private String name;
 
-    public Category(String id, String name) {
-        this.id = id;
+    public Category(String code, String name) {
+        this.id = UUID.randomUUID().toString();
+        this.code = code;
         this.name = name;
     }
 
     public Category() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {

@@ -14,7 +14,7 @@ import java.util.List;
 public class CategoryDAO {
 
     public List<Category> getCategory(){
-        String sql = "Select id, name " +
+        String sql = "Select code, name " +
                 "from category";
         List<Category> categories = new ArrayList<>();
         try(Connection conn = DBConnection.getConnection()){
@@ -24,7 +24,7 @@ public class CategoryDAO {
                 while (rs.next()) {
                     Category category = new Category();
 
-                    category.setId(rs.getString("id"));
+                    category.setCode(rs.getString("code"));
 
                     category.setName(TextUtils.capitalizeFully
                             (rs.getString("name"))
