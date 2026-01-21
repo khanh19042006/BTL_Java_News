@@ -23,7 +23,7 @@ public class NewsDAO {
                thumbnail,
                authors,
                date,
-               views
+               view
         FROM news
         ORDER BY date DESC
         LIMIT ?
@@ -44,7 +44,7 @@ public class NewsDAO {
                     news.setThumbnail(rs.getString("thumbnail"));  // NEW
                     news.setAuthors(rs.getString("authors"));
                     news.setDate(rs.getString("date"));
-                    news.setView(rs.getInt("views"));
+                    news.setView(rs.getInt("view"));
 
                     newsList.add(news);
                 }
@@ -69,9 +69,9 @@ public class NewsDAO {
                thumbnail,
                authors,
                date,
-               views
+               view
         FROM news
-        ORDER BY views DESC, date DESC
+        ORDER BY view DESC, date DESC
         LIMIT ?
     """;
 
@@ -90,7 +90,7 @@ public class NewsDAO {
                     news.setThumbnail(rs.getString("thumbnail"));  // NEW
                     news.setAuthors(rs.getString("authors"));
                     news.setDate(rs.getString("date"));
-                    news.setView(rs.getInt("views"));
+                    news.setView(rs.getInt("view"));
 
                     newsList.add(news);
                 }
