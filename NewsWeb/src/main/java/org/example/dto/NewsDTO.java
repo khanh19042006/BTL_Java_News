@@ -6,7 +6,7 @@ public class NewsDTO {
     private String short_description;
     private String authors;
     private String date;
-    private int view;
+    private int views;
     private String content;
     private String thumbnail;
 
@@ -53,12 +53,12 @@ public class NewsDTO {
         this.date = date;
     }
 
-    public int getView() {
-        return view;
+    public int getViews() {
+        return views;
     }
 
-    public void setView(int view) {
-        this.view = view;
+    public void setViews(int view) {
+        this.views = view;
     }
 
     public String getContent() {
@@ -77,13 +77,13 @@ public class NewsDTO {
         this.thumbnail = thumbnail;
     }
 
-    public NewsDTO(String headline, String category, String short_description, String authors, String date, int view, String content, String thumbnail) {
+    public NewsDTO(String headline, String category, String short_description, String authors, String date, int views, String content, String thumbnail) {
         this.headline = headline;
         this.category = category;
         this.short_description = short_description;
         this.authors = authors;
         this.date = date;
-        this.view = view;
+        this.views = views;
         this.content = content;
         this.thumbnail = thumbnail;
     }

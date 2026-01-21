@@ -59,7 +59,7 @@ public class ImportNewsFromDataset {
                         stmt.setString(5, news.getShort_description());
                         stmt.setString(6, news.getAuthors());
                         stmt.setString(7, news.getDate());
-                        stmt.setInt(8, news.getView());
+                        stmt.setInt(8, news.getViews());
                         stmt.addBatch();
 
                         count++;

@@ -10,7 +10,7 @@ public class News {
     private String short_description;
     private String authors;
     private String date;
-    private int view;
+    private int views;
     private String content;
     private String thumbnail;
 
@@ -26,7 +26,7 @@ public class News {
         this.short_description = short_description;
         this.authors = authors;
         this.date = date;
-        this.view = 0;
+        this.views = 0;
         this.content = content;
         this.thumbnail = thumbnail;
     }
@@ -43,9 +43,9 @@ public class News {
         this.link = link;
     }
 
-    public int getView() {return view;}
+    public int getViews() {return views;}
 
-    public void setView(int view) {this.view = view;}
+    public void setViews(int view) {this.views = view;}
 
     public String getHeadline() {
         return headline;

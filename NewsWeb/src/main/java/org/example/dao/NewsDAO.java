@@ -5,6 +5,7 @@ import org.example.dto.NewsDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class NewsDAO {
                thumbnail,
                authors,
                date,
-               view
+               views
         FROM news
         ORDER BY date DESC
         LIMIT ?
@@ -40,11 +41,11 @@ public class NewsDAO {
                     news.setHeadline(rs.getString("headline"));
                     news.setCategory(rs.getString("category"));
                     news.setShort_description(rs.getString("short_description"));
-                    news.setContent(rs.getString("content"));      // NEW
-                    news.setThumbnail(rs.getString("thumbnail"));  // NEW
+                    news.setContent(rs.getString("content"));
+                    news.setThumbnail(rs.getString("thumbnail"));
                     news.setAuthors(rs.getString("authors"));
                     news.setDate(rs.getString("date"));
-                    news.setView(rs.getInt("view"));
+                    news.setView(rs.getInt("views"));
 
                     newsList.add(news);
                 }
@@ -69,9 +70,9 @@ public class NewsDAO {
                thumbnail,
                authors,
                date,
-               view
+               views
         FROM news
-        ORDER BY view DESC, date DESC
+        ORDER BY views DESC, date DESC
         LIMIT ?
     """;
 
@@ -86,11 +87,11 @@ public class NewsDAO {
                     news.setHeadline(rs.getString("headline"));
                     news.setCategory(rs.getString("category"));
                     news.setShort_description(rs.getString("short_description"));
-                    news.setContent(rs.getString("content"));      // NEW
-                    news.setThumbnail(rs.getString("thumbnail"));  // NEW
+                    news.setContent(rs.getString("content"));
+                    news.setThumbnail(rs.getString("thumbnail"));
                     news.setAuthors(rs.getString("authors"));
                     news.setDate(rs.getString("date"));
-                    news.setView(rs.getInt("view"));
+                    news.setView(rs.getInt("views"));
 
                     newsList.add(news);
                 }
@@ -101,4 +102,61 @@ public class NewsDAO {
 
         return newsList;
     }
+
+    public List<NewsDTO> searchNews(String keyword) {
+        List<NewsDTO> list = new ArrayList<>();
+
+        String sql = """
+        SELECT
+            headline,
+            category_code,
+            short_description,
+            authors,
+            date,
+            views,
+            content,
+            thumbnail,
+            (
+              MATCH(headline) AGAINST (?) * 3 +
+              MATCH(short_description) AGAINST (?) * 2 +
+              MATCH(content) AGAINST (?)
+            ) AS score
+        FROM news
+        WHERE MATCH(headline, short_description, content)
+              AGAINST (?)
+        ORDER BY score DESC
+        """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, keyword);
+            ps.setString(2, keyword);
+            ps.setString(3, keyword);
+            ps.setString(4, keyword);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    NewsDTO dto = new NewsDTO();
+
+                    dto.setHeadline(rs.getString("headline"));
+                    dto.setCategory(rs.getString("category_code"));
+                    dto.setShort_description(rs.getString("short_description"));
+                    dto.setAuthors(rs.getString("authors"));
+                    dto.setDate(rs.getString("date"));
+                    dto.setView(rs.getInt("view"));
+                    dto.setContent(rs.getString("content"));
+                    dto.setThumbnail(rs.getString("thumbnail"));
+
+                    list.add(dto);
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
 }
