@@ -160,8 +160,9 @@ public class NewsDAO {
         return list;
     }
 
-    public List<NewsDTO> getNewsByCategory(String categoryCode, int limit) {
+    public List<NewsDTO> getNewsByCategory(String categoryName, int limit) {
         List<NewsDTO> list = new ArrayList<>();
+        String categoryCode = getCategoryCodeByName(categoryName);
 
         String sql = """
         SELECT
@@ -204,6 +205,27 @@ public class NewsDAO {
         }
 
         return list;
+    }
+
+    private String getCategoryCodeByName(String categoryName) {
+        String sql = "SELECT code FROM category WHERE name = ?";
+        String code = null;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, categoryName);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    code = rs.getString("code");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return code;
     }
 
 }

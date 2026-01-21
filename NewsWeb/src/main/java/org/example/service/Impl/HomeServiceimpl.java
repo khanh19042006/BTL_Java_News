@@ -30,9 +30,9 @@ public class HomeServiceimpl implements HomeService {
     }
 
     @Override
-    public List<NewsDTO> getNewsByCategory(String categoryCode){
+    public List<NewsDTO> getNewsByCategory(String categoryName){
 
-        return newsDAO.getNewsByCategory(categoryCode, limit);
+        return newsDAO.getNewsByCategory(categoryName, limit);
     }
 
     @Override
