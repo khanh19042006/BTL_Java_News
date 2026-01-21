@@ -45,7 +45,7 @@ public class NewsDAO {
                     news.setThumbnail(rs.getString("thumbnail"));
                     news.setAuthors(rs.getString("authors"));
                     news.setDate(rs.getString("date"));
-                    news.setView(rs.getInt("views"));
+                    news.setViews(rs.getInt("views"));
 
                     newsList.add(news);
                 }
@@ -91,7 +91,7 @@ public class NewsDAO {
                     news.setThumbnail(rs.getString("thumbnail"));
                     news.setAuthors(rs.getString("authors"));
                     news.setDate(rs.getString("date"));
-                    news.setView(rs.getInt("views"));
+                    news.setViews(rs.getInt("views"));
 
                     newsList.add(news);
                 }
@@ -144,7 +144,7 @@ public class NewsDAO {
                     dto.setShort_description(rs.getString("short_description"));
                     dto.setAuthors(rs.getString("authors"));
                     dto.setDate(rs.getString("date"));
-                    dto.setView(rs.getInt("view"));
+                    dto.setViews(rs.getInt("view"));
                     dto.setContent(rs.getString("content"));
                     dto.setThumbnail(rs.getString("thumbnail"));
 
