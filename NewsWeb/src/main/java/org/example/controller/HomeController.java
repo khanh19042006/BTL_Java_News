@@ -1,29 +1,68 @@
 package org.example.controller;
 
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.example.entity.News;
+import org.example.dto.NewsDTO;
+import org.example.service.HomeService;
+import org.example.service.Impl.HomeServiceimpl;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class HomeController implements Initializable {
 
     @FXML
-    private ListView<News> newsList;
+    private ListView<NewsDTO> newsList;
+
+    private final HomeService homeService = new HomeServiceimpl();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // 1️⃣ ép ListView có chiều cao → KHÔNG còn trắng màn hình
+        forceListViewVisible();
+
+        // 2️⃣ setup giao diện item
         setupListView();
-        loadData();
+
+        // 3️⃣ load data
+        loadNewNews();
     }
 
+    /* ================= FORCE LIST VIEW HEIGHT ================= */
+    private void forceListViewVisible() {
+        newsList.setFixedCellSize(120);
+
+        newsList.prefHeightProperty().bind(
+                Bindings.size(newsList.getItems())
+                        .multiply(newsList.getFixedCellSize())
+                        .add(5)
+        );
+    }
+
+    /* ================= LOAD DATA ================= */
+    private void loadNewNews() {
+        List<NewsDTO> news = homeService.getNewNews();
+
+        System.out.println("Loaded news size = " + (news == null ? 0 : news.size()));
+
+        if (news != null) {
+            newsList.getItems().setAll(news);
+        }
+    }
+
+    /* ================= LIST VIEW UI ================= */
     private void setupListView() {
+
         newsList.setCellFactory(listView -> new ListCell<>() {
 
             private final ImageView imageView = new ImageView();
@@ -40,22 +79,11 @@ public class HomeController implements Initializable {
                 imageView.setPreserveRatio(true);
 
                 title.setWrapText(true);
-                title.setStyle("""
-                        -fx-font-size: 15px;
-                        -fx-font-weight: bold;
-                        -fx-text-fill: #222;
-                        """);
-
                 description.setWrapText(true);
-                description.setStyle("""
-                        -fx-font-size: 12px;
-                        -fx-text-fill: #666;
-                        """);
 
-                date.setStyle("""
-                        -fx-font-size: 11px;
-                        -fx-text-fill: #999;
-                        """);
+                title.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+                description.setStyle("-fx-font-size: 12px;");
+                date.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
 
                 textBox.getChildren().addAll(title, description, date);
                 textBox.setPrefWidth(260);
@@ -68,26 +96,10 @@ public class HomeController implements Initializable {
                         -fx-border-radius: 10;
                         -fx-border-color: #E0E0E0;
                         """);
-
-                root.setOnMouseEntered(e -> root.setStyle("""
-                        -fx-padding: 12;
-                        -fx-background-color: #F7F7F7;
-                        -fx-background-radius: 10;
-                        -fx-border-radius: 10;
-                        -fx-border-color: #CCCCCC;
-                        """));
-
-                root.setOnMouseExited(e -> root.setStyle("""
-                        -fx-padding: 12;
-                        -fx-background-color: white;
-                        -fx-background-radius: 10;
-                        -fx-border-radius: 10;
-                        -fx-border-color: #E0E0E0;
-                        """));
             }
 
             @Override
-            protected void updateItem(News news, boolean empty) {
+            protected void updateItem(NewsDTO news, boolean empty) {
                 super.updateItem(news, empty);
 
                 if (empty || news == null) {
@@ -99,41 +111,22 @@ public class HomeController implements Initializable {
                 description.setText(news.getShort_description());
                 date.setText("🕒 " + news.getDate());
 
-                Image image;
-                try {
-                    image = new Image(getClass().getResourceAsStream(news.getThumbnail()));
-                } catch (Exception e) {
-                    image = new Image(getClass().getResourceAsStream("/Image/default-thumbnail.jpg"));
-                }
+                imageView.setImage(loadImage(news.getThumbnail()));
 
-                imageView.setImage(image);
                 setGraphic(root);
             }
         });
     }
 
-    private void loadData() {
-        newsList.getItems().addAll(
-                new News(
-                        "link1",
-                        "Giá vàng hôm nay tăng mạnh",
-                        "Kinh tế",
-                        "Giá vàng trong nước tăng cao nhất 10 năm",
-                        "PV",
-                        "19/01/2026",
-                        "Nội dung...",
-                        "/Image/default-thumbnail.jpg"
-                ),
-                new News(
-                        "link2",
-                        "JavaFX quay trở lại",
-                        "Công nghệ",
-                        "JavaFX được dùng nhiều trong app desktop",
-                        "Tech",
-                        "19/01/2026",
-                        "Nội dung...",
-                        "/Image/default-thumbnail.jpg"
-                )
-        );
+    /* ================= IMAGE ================= */
+    private Image loadImage(String path) {
+        try {
+            if (path == null || path.isBlank()) throw new Exception();
+            return new Image(getClass().getResourceAsStream(path));
+        } catch (Exception e) {
+            return new Image(
+                    getClass().getResourceAsStream("/Image/default-thumbnail.jpg")
+            );
+        }
     }
 }
