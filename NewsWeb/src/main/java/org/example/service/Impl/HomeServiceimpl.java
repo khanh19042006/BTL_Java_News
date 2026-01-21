@@ -25,13 +25,14 @@ public class HomeServiceimpl implements HomeService {
     }
 
     @Override
-    public List<NewsDTO> getNewsByFind(String headline){
-return null;
+    public List<NewsDTO> getNewsByFind(String keyword){
+            return newsDAO.searchNews(keyword, limit);
     }
 
     @Override
-    public List<NewsDTO> getNewsByCategory(String category){
-return null;
+    public List<NewsDTO> getNewsByCategory(String categoryCode){
+
+        return newsDAO.getNewsByCategory(categoryCode, limit);
     }
 
     @Override

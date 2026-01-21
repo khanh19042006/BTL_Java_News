@@ -103,7 +103,7 @@ public class NewsDAO {
         return newsList;
     }
 
-    public List<NewsDTO> searchNews(String keyword) {
+    public List<NewsDTO> searchNews(String keyword, int limit) {
         List<NewsDTO> list = new ArrayList<>();
 
         String sql = """
@@ -119,13 +119,13 @@ public class NewsDAO {
             (
               MATCH(headline) AGAINST (?) * 3 +
               MATCH(short_description) AGAINST (?) * 2 +
-              MATCH(content) AGAINST (?)
+              MATCH(content) AGAINST (?) * 1
             ) AS score
         FROM news
-        WHERE MATCH(headline, short_description, content)
-              AGAINST (?)
+        WHERE
+            MATCH(headline, short_description, content) AGAINST (?)
         ORDER BY score DESC
-        """;
+        LIMIT (?)""";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -134,6 +134,7 @@ public class NewsDAO {
             ps.setString(2, keyword);
             ps.setString(3, keyword);
             ps.setString(4, keyword);
+            ps.setInt(5, limit);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -144,7 +145,7 @@ public class NewsDAO {
                     dto.setShort_description(rs.getString("short_description"));
                     dto.setAuthors(rs.getString("authors"));
                     dto.setDate(rs.getString("date"));
-                    dto.setViews(rs.getInt("view"));
+                    dto.setViews(rs.getInt("views"));
                     dto.setContent(rs.getString("content"));
                     dto.setThumbnail(rs.getString("thumbnail"));
 
@@ -152,6 +153,52 @@ public class NewsDAO {
                 }
             }
 
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public List<NewsDTO> getNewsByCategory(String categoryCode, int limit) {
+        List<NewsDTO> list = new ArrayList<>();
+
+        String sql = """
+        SELECT
+            headline,
+            category_code,
+            short_description,
+            authors,
+            date,
+            views,
+            content,
+            thumbnail
+        FROM news
+        WHERE category_code = ?
+        ORDER BY date DESC
+        LIMIT ?
+        """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, categoryCode);
+            ps.setInt(2, limit);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    NewsDTO dto = new NewsDTO();
+                    dto.setHeadline(rs.getString("headline"));
+                    dto.setCategory(rs.getString("category_code"));
+                    dto.setShort_description(rs.getString("short_description"));
+                    dto.setAuthors(rs.getString("authors"));
+                    dto.setDate(rs.getString("date"));
+                    dto.setViews(rs.getInt("views"));
+                    dto.setContent(rs.getString("content"));
+                    dto.setThumbnail(rs.getString("thumbnail"));
+                    list.add(dto);
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
