@@ -1,6 +1,5 @@
 package org.example.controller;
 
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -27,40 +26,30 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        // 1️⃣ ép ListView có chiều cao → KHÔNG còn trắng màn hình
-        forceListViewVisible();
-
-        // 2️⃣ setup giao diện item
         setupListView();
-
-        // 3️⃣ load data
         loadNewNews();
     }
 
-    /* ================= FORCE LIST VIEW HEIGHT ================= */
-    private void forceListViewVisible() {
-        newsList.setFixedCellSize(120);
+    /* ================= LOAD DATA ================= */
 
-        newsList.prefHeightProperty().bind(
-                Bindings.size(newsList.getItems())
-                        .multiply(newsList.getFixedCellSize())
-                        .add(5)
-        );
+    @FXML
+    private void loadNewNews() {
+        newsList.getItems().clear();
+        List<NewsDTO> news = homeService.getNewNews();
+        System.out.println("NEW size = " + news.size());
+        newsList.getItems().addAll(news);
     }
 
-    /* ================= LOAD DATA ================= */
-    private void loadNewNews() {
-        List<NewsDTO> news = homeService.getNewNews();
-
-        System.out.println("Loaded news size = " + (news == null ? 0 : news.size()));
-
-        if (news != null) {
-            newsList.getItems().setAll(news);
-        }
+    @FXML
+    private void loadHotNews() {
+        newsList.getItems().clear();
+        List<NewsDTO> news = homeService.getHotNews();
+        System.out.println("HOT size = " + news.size());
+        newsList.getItems().addAll(news);
     }
 
     /* ================= LIST VIEW UI ================= */
+
     private void setupListView() {
 
         newsList.setCellFactory(listView -> new ListCell<>() {
@@ -79,10 +68,11 @@ public class HomeController implements Initializable {
                 imageView.setPreserveRatio(true);
 
                 title.setWrapText(true);
-                description.setWrapText(true);
-
                 title.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+
+                description.setWrapText(true);
                 description.setStyle("-fx-font-size: 12px;");
+
                 date.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
 
                 textBox.getChildren().addAll(title, description, date);
@@ -110,7 +100,6 @@ public class HomeController implements Initializable {
                 title.setText(news.getHeadline());
                 description.setText(news.getShort_description());
                 date.setText("🕒 " + news.getDate());
-
                 imageView.setImage(loadImage(news.getThumbnail()));
 
                 setGraphic(root);
@@ -119,6 +108,7 @@ public class HomeController implements Initializable {
     }
 
     /* ================= IMAGE ================= */
+
     private Image loadImage(String path) {
         try {
             if (path == null || path.isBlank()) throw new Exception();

@@ -15,6 +15,7 @@
    <top>
       <VBox>
 
+         <!-- HEADER -->
          <HBox styleClass="header">
             <Label text="BÁO MỚI" styleClass="app-title"/>
 
@@ -29,9 +30,20 @@
             <Button text="👤" styleClass="icon-button"/>
          </HBox>
 
+         <!-- MENU -->
          <HBox styleClass="menu-bar">
-            <Button text="NÓNG" styleClass="tab-button"/>
-            <Button text="MỚI" styleClass="tab-button"/>
+            <Button
+                    fx:id="hotBtn"
+                    text="NÓNG"
+                    styleClass="tab-button"
+                    onAction="#loadHotNews"/>
+
+            <Button
+                    fx:id="newBtn"
+                    text="MỚI"
+                    styleClass="tab-button"
+                    onAction="#loadNewNews"/>
+
             <Button text="VIDEO" styleClass="tab-button"/>
             <Button text="CHỦ ĐỀ" styleClass="tab-button"/>
          </HBox>
@@ -39,16 +51,11 @@
       </VBox>
    </top>
 
+   <!-- CONTENT -->
    <center>
-      <!-- Phần nội dung chính (sau này bạn thêm WebView, ListView,...) -->
-      <!--      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">-->
-      <!--         <children>-->
-      <!--            <GridPane alignment="TOP_CENTER" visible="false" StackPane.alignment="TOP_CENTER">-->
-      <!--               &lt;!&ndash; giữ nguyên nếu bạn dùng sau &ndash;&gt;-->
-      <!--            </GridPane>-->
-      <!--         </children>-->
-      <!--      </StackPane>-->
-      <ListView fx:id="newsList" styleClass="news-list"/>
+      <ListView
+              fx:id="newsList"
+              styleClass="news-list"/>
    </center>
 
 </BorderPane>
