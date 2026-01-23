@@ -22,6 +22,20 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
+    public boolean checkUsername(String username){
+        boolean isExist = userDAO.checkUsername(username);
+        if (isExist) return false;  //username đã tồn tại rồi
+        return true;
+    }
+
+    @Override
+    public boolean checkPassword(String password){
+        // Mật khẩu phải dài ít nhất 8 ký tự bao gồm cả chữ hoa, chữ thường, số và ký tự đặc biệt
+        if (!PasswordUtils.isValidPassword(password)) return false;
+        return true;
+    }
+
+    @Override
     public boolean register(UserDTO user){
         boolean isExist = userDAO.checkUsername(user.getUsername());
         if (isExist) return false;
