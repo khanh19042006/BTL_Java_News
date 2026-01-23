@@ -1,48 +1,91 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.Hyperlink?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
+<AnchorPane
+        prefWidth="420"
+        prefHeight="720"
+        stylesheets="@css/login.css"
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="org.example.controller.LoginController">
 
-<AnchorPane prefHeight="408.0" prefWidth="595.0" stylesheets="@css/login.css"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.controller.LoginController">
+    <children>
 
-    <!-- Khung chính cho app mobile -->
-    <VBox layoutX="150.0" prefWidth="300" spacing="16">
+        <VBox
+                alignment="CENTER"
+                spacing="16"
+                AnchorPane.topAnchor="0"
+                AnchorPane.bottomAnchor="0"
+                AnchorPane.leftAnchor="0"
+                AnchorPane.rightAnchor="0">
 
-        <!-- Logo / Title -->
-        <Label fx:id="web" text="BÁO ONLINE">
-        </Label>
+            <!-- LOGIN CARD -->
+            <VBox
+                    alignment="CENTER"
+                    spacing="14"
+                    maxWidth="320"
+                    styleClass="login-card">
 
-        <Label fx:id="hello" text="Xin chào," />
+                <!-- TITLE -->
+                <Label
+                        text="BÁO MỚI"
+                        styleClass="app-title"/>
 
-        <!-- Username -->
-        <Label fx:id="usernameField" text="Tên tài khoản:" />
-        <TextField fx:id="name_input" promptText="Nhập tên tài khoản" />
+                <Label
+                        text="Đăng nhập để tiếp tục"
+                        styleClass="sub-title"/>
 
-        <!-- Password -->
-        <Label fx:id="passwordField" text="Mật khẩu:" />
-        <PasswordField fx:id="pass_input" promptText="Nhập mật khẩu" />
+                <!-- USERNAME -->
+                <TextField
+                        fx:id="usernameField"
+                        promptText="Tên tài khoản"
+                        styleClass="input-field"/>
 
-        <!-- Remember -->
-        <CheckBox fx:id="nho" text="Nhớ tài khoản" />
+                <!-- PASSWORD -->
+                <PasswordField
+                        fx:id="passwordField"
+                        promptText="Mật khẩu"
+                        styleClass="input-field"/>
 
-        <!-- Error -->
-        <Label fx:id="error" style="-fx-text-fill: red;" text="Sai tên tài khoản hoặc mật khẩu." />
+                <!-- ERROR MESSAGE -->
+                <Label
+                        fx:id="errorLabel"
+                        text="Sai tài khoản hoặc mật khẩu"
+                        visible="false"
+                        managed="false"
+                        styleClass="error-text"/>
 
-        <!-- Login button -->
-        <Button fx:id="login" maxWidth="Infinity" prefHeight="45" text="Đăng Nhập" onAction="#handleLogin" />
+                <!-- REMEMBER -->
+                <HBox alignment="CENTER_LEFT" maxWidth="Infinity">
+                    <CheckBox
+                            fx:id="rememberCheckBox"
+                            text="Nhớ tài khoản"/>
+                </HBox>
 
-        <!-- Links -->
-        <Hyperlink fx:id="link_quen" text="Quên mật khẩu ?" />
-        <Hyperlink fx:id="link_dki" text="Đăng ký" />
+                <!-- LOGIN BUTTON -->
+                <Button
+                        fx:id="loginButton"
+                        text="Đăng nhập"
+                        maxWidth="Infinity"
+                        onAction="#handleLogin"
+                        styleClass="login-button"/>
 
-    </VBox>
+                <!-- FORGOT PASSWORD -->
+                <Hyperlink
+                        fx:id="forgotPasswordLink"
+                        text="Quên mật khẩu?"/>
+
+                <!-- REGISTER -->
+                <HBox alignment="CENTER" spacing="4">
+                    <Label text="Chưa có tài khoản?"/>
+                    <Hyperlink
+                            fx:id="registerLink"
+                            text="Đăng ký"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+
+    </children>
 </AnchorPane>
