@@ -11,26 +11,18 @@
         xmlns="http://javafx.com/javafx/17"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="org.example.controller.HomeController">
-
    <top>
       <VBox>
-
-         <!-- HEADER -->
          <HBox styleClass="header">
             <Label text="BÁO MỚI" styleClass="app-title"/>
-
             <Region HBox.hgrow="ALWAYS"/>
-
             <TextField
                     fx:id="searchField"
                     promptText="Nhập nội dung tìm kiếm"
                     styleClass="search-field"/>
-
             <Button text="🔍" styleClass="icon-button"/>
             <Button text="👤" styleClass="icon-button"/>
          </HBox>
-
-         <!-- MENU -->
          <HBox styleClass="menu-bar">
             <Button
                     fx:id="hotBtn"
@@ -43,19 +35,14 @@
                     text="MỚI"
                     styleClass="tab-button"
                     onAction="#loadNewNews"/>
-
             <Button text="VIDEO" styleClass="tab-button"/>
             <Button text="CHỦ ĐỀ" styleClass="tab-button"/>
          </HBox>
-
       </VBox>
    </top>
-
-   <!-- CONTENT -->
    <center>
       <ListView
               fx:id="newsList"
               styleClass="news-list"/>
    </center>
-
 </BorderPane>

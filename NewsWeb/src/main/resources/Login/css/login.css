@@ -7,18 +7,8 @@
     -fx-background-color: #ffffff;
     -fx-padding: 32;
     -fx-background-radius: 18;
-
-    -fx-border-color: #eeeeee;
     -fx-border-radius: 18;
-
-    -fx-effect: dropshadow(
-        gaussian,
-        rgba(0, 0, 0, 0.12),
-        18,
-        0,
-        0,
-        6
-    );
+    -fx-border-color: #000000;
 }
 
 .app-title {
@@ -32,24 +22,30 @@
     -fx-text-fill: #777777;
 }
 
-.text-field,
-.password-field {
+.input-field {
     -fx-pref-height: 42;
     -fx-font-size: 13px;
-
     -fx-background-color: #ffffff;
     -fx-background-radius: 10;
-
-    -fx-border-color: #dddddd;
+    -fx-border-color: #000000;
     -fx-border-radius: 10;
-
-    -fx-padding: 0 14;
+    -fx-padding: 0 40 0 12;
 }
 
-.text-field:focused,
-.password-field:focused {
-    -fx-border-color: #ff6600;
+.input-field:focused {
     -fx-border-width: 1.5;
+}
+
+.password-wrapper {
+    -fx-pref-width: 100%;
+}
+
+.eye-button {
+    -fx-background-color: transparent;
+    -fx-font-size: 16px;
+    -fx-text-fill: #000000;
+    -fx-cursor: hand;
+    -fx-padding: 0 12 0 0;
 }
 
 .error-text {
@@ -65,22 +61,15 @@
 .login-button {
     -fx-background-color: #ff6600;
     -fx-text-fill: white;
-
     -fx-font-size: 14px;
     -fx-font-weight: bold;
-
     -fx-background-radius: 10;
     -fx-pref-height: 42;
-
     -fx-cursor: hand;
 }
 
 .login-button:hover {
     -fx-background-color: #e65c00;
-}
-
-.login-button:pressed {
-    -fx-background-color: #cc5200;
 }
 
 .hyperlink {
@@ -90,6 +79,5 @@
 }
 
 .hyperlink:hover {
-    -fx-text-fill: #e65c00;
     -fx-underline: true;
 }
