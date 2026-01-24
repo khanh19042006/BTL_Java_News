@@ -37,3 +37,43 @@ CREATE TABLE users (
 
 ALTER TABLE users
 ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'USER';
+
+--Thêm trường content, thumbnail vào news
+ALTER TABLE news
+ADD COLUMN content TEXT,
+ADD COLUMN thumbnail VARCHAR(255);
+
+--Thêm FULLTEXT cho headline, short_description,  content (chạy khá lâu, khoảng 5-10p)
+--Nếu có báo lỗi thì báo lại
+ALTER TABLE news
+ADD FULLTEXT(headline, short_description, content);
+
+--Thêm table category
+CREATE TABLE category (
+    id CHAR(36) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL
+);
+
+
+--Thêm table role (admin, user, journalist)
+CREATE TABLE role (
+    id VARCHAR(36) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL
+);
+
+INSERT IGNORE INTO role (id, code, name) VALUES
+(UUID(), 'admin', 'Administrator'),
+(UUID(), 'user', 'User'),
+(UUID(), 'journalist', 'Journalist');
+
+--Format lại các thuộc tính của news cho phù hợp
+SET SQL_SAFE_UPDATES = 0;
+UPDATE news n
+JOIN category c
+  ON LOWER(TRIM(n.category)) = LOWER(TRIM(c.name))
+SET n.category = c.code;
+SET SQL_SAFE_UPDATES = 1;
+
+
