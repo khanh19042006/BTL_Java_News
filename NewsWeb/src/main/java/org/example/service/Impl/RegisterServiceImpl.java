@@ -1,19 +1,17 @@
 package org.example.service.Impl;
 
-import org.example.dao.UserDAO;
+import org.example.dao.AuthDAO;
 import org.example.dto.UserDTO;
 import org.example.service.RegisterService;
 import org.example.utils.EmailUtils;
 import org.example.utils.PasswordUtils;
 
-import java.util.regex.Pattern;
-
 public class RegisterServiceImpl implements RegisterService {
 
-    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public RegisterServiceImpl(){
-        this.userDAO = new UserDAO();
+        this.authDAO = new AuthDAO();
     }
 
     @Override
@@ -23,7 +21,7 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Override
     public boolean checkUsername(String username){
-        boolean isExist = userDAO.checkUsername(username);
+        boolean isExist = authDAO.checkUsername(username);
         if (isExist) return false;  //username đã tồn tại rồi
         return true;
     }
@@ -37,7 +35,7 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Override
     public boolean register(UserDTO user){
-        boolean isExist = userDAO.checkUsername(user.getUsername());
+        boolean isExist = authDAO.checkUsername(user.getUsername());
         if (isExist) return false;
         //Kiểm tra email có định dạng phù hợp không
         if (!checkEmail(user.getEmail())) return false;
@@ -47,7 +45,7 @@ public class RegisterServiceImpl implements RegisterService {
 
         //Khởi tạo user trong DB
         user.setPassword(PasswordUtils.hash(user.getPassword()));
-        userDAO.createUser(user);
+        authDAO.createUser(user);
         return true;
     }
 }

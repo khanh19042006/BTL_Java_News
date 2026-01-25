@@ -2,14 +2,13 @@ package org.example.dao;
 
 import org.example.dto.UserDTO;
 import org.example.entity.User;
-import org.example.utils.PasswordUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
 
-public class UserDAO {
+public class AuthDAO {
 
     public String getPasswordByUsername(String username) {
 
@@ -108,5 +107,12 @@ public class UserDAO {
         }
     }
 
+    public boolean isCheckVerity(String username){
+
+    }
+
+    public void createToken(){
+        return;
+    }
 }
 

@@ -9,18 +9,20 @@ public class User {
     private String password;
     private String created_at;
     private String role;    //role_code
+    private boolean isVerity;
 
     public User() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public User(String username, String email, String password, String created_at, String role) {
+    public User(String username, String email, String password, String created_at, String role, boolean isVerity) {
         this.id = UUID.randomUUID().toString();
         this.username = username;
         this.email = email;
         this.password = password;
         this.created_at = created_at;
         this.role = role;
+        this.isVerity = isVerity;
     }
 
     public String getId() {
@@ -65,5 +67,13 @@ public class User {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public boolean isVerity() {
+        return isVerity;
+    }
+
+    public void setVerity(boolean verity) {
+        isVerity = verity;
     }
 }
