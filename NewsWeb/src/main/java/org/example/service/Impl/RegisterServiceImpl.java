@@ -35,17 +35,28 @@ public class RegisterServiceImpl implements RegisterService {
 
     @Override
     public boolean register(UserDTO user){
-        boolean isExist = authDAO.checkUsername(user.getUsername());
+        boolean isExist = this.checkUsername(user.getUsername());
         if (isExist) return false;
         //Kiểm tra email có định dạng phù hợp không
-        if (!checkEmail(user.getEmail())) return false;
+        if (!this.checkEmail(user.getEmail())) return false;
 
         //Kiểm tra độ mạnh của mật khẩu
-        if (!PasswordUtils.isValidPassword(user.getPassword()))  return false;
+        if (!this.checkPassword(user.getPassword()))  return false;
 
         //Khởi tạo user trong DB
         user.setPassword(PasswordUtils.hash(user.getPassword()));
-        authDAO.createUser(user);
+        String userId = authDAO.createUser(user);
         return true;
+    }
+
+    @Override
+    public boolean verityOtp(String userId, String otpInput){
+        if (authDAO.verifyOtp(userId, otpInput)) return true;
+        return false;
+    }
+
+    @Override
+    public String getUserIdByUsername(String username){
+        return authDAO.getUserIdByUsername(username);
     }
 }

@@ -5,8 +5,7 @@ import java.util.UUID;
 public class Token {
     private String id;
     private String userId;
-    private String email;
-    private String username;
+    private String otp;
     private int iat;
     private int exp;
 
@@ -14,11 +13,10 @@ public class Token {
         this.id = UUID.randomUUID().toString();
     }
 
-    public Token(String userId, String email, String username, int iat, int exp) {
+    public Token(String userId, String otp, int iat, int exp) {
         this.id = UUID.randomUUID().toString();
         this.userId = userId;
-        this.email = email;
-        this.username = username;
+        this.otp = otp;
         this.iat = iat;
         this.exp = exp;
     }
@@ -27,28 +25,20 @@ public class Token {
         return id;
     }
 
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
     public String getUserId() {
         return userId;
     }
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public int getIat() {

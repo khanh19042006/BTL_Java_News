@@ -3,6 +3,7 @@ package org.example.dao;
 import org.example.dto.UserDTO;
 import org.example.entity.Token;
 import org.example.entity.User;
+import org.example.utils.GenerateOtp;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -78,7 +79,7 @@ public class AuthDAO {
         }
     }
 
-    public void createUser(UserDTO userCreate) {
+    public String createUser(UserDTO userCreate) {
 
         String sql = """
         
@@ -109,6 +110,7 @@ public class AuthDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return user.getId();
     }
 
     public boolean isCheckVerity(String username) {
@@ -130,6 +132,57 @@ public class AuthDAO {
 
         // không tìm thấy user hoặc lỗi → coi như chưa verify
         return false;
+    }
+
+    public String getUserIdByUsername(String username) {
+
+        String sql = "SELECT id FROM user WHERE username = ?";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, username);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("id");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return null;
     }
 
     public User getUserbyUserId(String userId) {
@@ -192,9 +245,66 @@ public class AuthDAO {
         return null;
     }
 
-    public String getUserIdByUsername(String username) {
 
-        String sql = "SELECT id FROM user WHERE username = ?";
+    public String createOtp(String userId) {
+
+        // tạo OTP 6 số
+        String otpCode = GenerateOtp.genOtp();
+
+        long iat = System.currentTimeMillis() / 1000; // epoch seconds
+        long exp = iat + 5 * 60; // hết hạn sau 5 phút
+
+        String otpId = java.util.UUID.randomUUID().toString();
+
+        String sql = "INSERT INTO token (id, user_id, otp_code, iat, exp) "
+                + "VALUES (?, ?, ?, ?, ?)";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement(sql);
+
+            ps.setString(1, otpId);
+            ps.setString(2, userId);
+            ps.setString(3, otpCode);
+            ps.setLong(4, iat);
+            ps.setLong(5, exp);
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        } finally {
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        // trả OTP để gửi email
+        return otpCode;
+    }
+
+    public boolean verifyOtp(String userId, String otpInput) {
+
+        String sql = "SELECT otp_code, exp FROM token "
+                + "WHERE user_id = ? ORDER BY iat DESC LIMIT 1";
+
+        long now = System.currentTimeMillis() / 1000; // epoch seconds
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -203,12 +313,18 @@ public class AuthDAO {
         try {
             conn = DBConnection.getConnection();
             ps = conn.prepareStatement(sql);
-            ps.setString(1, username);
+            ps.setString(1, userId);
 
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                return rs.getString("id");
+                String otpCode = rs.getString("otp_code");
+                long exp = rs.getLong("exp");
+
+                // kiểm tra OTP đúng và chưa hết hạn
+                if (otpInput.equals(otpCode) && now <= exp) {
+                    return true;
+                }
             }
 
         } catch (SQLException e) {
@@ -240,66 +356,12 @@ public class AuthDAO {
             }
         }
 
-        return null;
+        return false;
     }
 
-    public void createToken(UserDTO userDTO) {
 
-        String username = userDTO.getUsername();
-        String id = this.getUserIdByUsername(username);
-        User user = this.getUserbyUserId(id);
+    public void veritySuccess(){
 
-        // tạo token
-        Token token = new Token();
-
-        token.setUserId(user.getId());
-        token.setEmail(user.getEmail());
-        token.setUsername(user.getUsername());
-
-        long iat = System.currentTimeMillis() / 1000; // epoch seconds
-        long exp = iat + 5 * 60; // hết hạn sau 5 phút
-
-        token.setIat((int) iat);
-        token.setExp((int) exp);
-
-        String sql = "INSERT INTO token (id, user_id, email, username, iat, exp) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
-
-        Connection conn = null;
-        PreparedStatement ps = null;
-
-        try {
-            conn = DBConnection.getConnection();
-            ps = conn.prepareStatement(sql);
-
-            ps.setString(1, token.getId());
-            ps.setString(2, token.getUserId());
-            ps.setString(3, token.getEmail());
-            ps.setString(4, token.getUsername());
-            ps.setInt(5, token.getIat());
-            ps.setInt(6, token.getExp());
-
-            ps.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-
-        } finally {
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (conn != null) {
-                try {
-                    conn.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        return;
     }
 }
