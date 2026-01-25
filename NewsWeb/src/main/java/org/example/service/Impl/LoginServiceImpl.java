@@ -16,7 +16,10 @@ public class LoginServiceImpl implements LoginService {
     public boolean checkLogin(String username, String password){
 
         String passwordHash = authDAO.getPasswordByUsername(username);
+        boolean isVerity = authDAO.isCheckVerity(username);
         if (passwordHash == null) return false;
+        // Kiểm tra xác thực
+        if (!isVerity) return false;
 
         return PasswordUtils.check(password, passwordHash);
     }
