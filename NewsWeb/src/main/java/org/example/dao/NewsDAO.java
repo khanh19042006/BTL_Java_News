@@ -287,4 +287,54 @@ public class NewsDAO {
         return list;
     }
 
+    public NewsDTO getNewsById(String id) {
+
+        String sql = """
+        SELECT
+            id,
+            headline,
+            category,
+            short_description,
+            authors,
+            date,
+            views,
+            content,
+            thumbnail,
+            author_id
+        FROM news
+        WHERE id = ?
+        LIMIT 1
+    """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    NewsDTO dto = new NewsDTO();
+
+                    dto.setId(rs.getString("id"));
+                    dto.setHeadline(rs.getString("headline"));
+                    dto.setCategory(rs.getString("category"));
+                    dto.setShort_description(rs.getString("short_description"));
+                    dto.setAuthors(rs.getString("authors"));
+                    dto.setDate(rs.getString("date"));
+                    dto.setViews(rs.getInt("views"));
+                    dto.setContent(rs.getString("content"));
+                    dto.setThumbnail(rs.getString("thumbnail"));
+                    dto.setAuthorId(rs.getString("author_id"));
+
+                    return dto;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
 }
