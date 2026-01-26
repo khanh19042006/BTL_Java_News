@@ -76,4 +76,28 @@ JOIN category c
 SET n.category = c.code;
 SET SQL_SAFE_UPDATES = 1;
 
+--Tạo table Token
+CREATE TABLE token (
+    id VARCHAR(36) NOT NULL,
+    user_id VARCHAR(36) NOT NULL,
+    otp_code VARCHAR(6) NOT NULL,
+    iat BIGINT NOT NULL,
+    exp BIGINT NOT NULL,
+    PRIMARY KEY (id)
+)
+
+--Xây dựng lại table user
+drop table users;
+CREATE TABLE user (
+    id VARCHAR(50) NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at VARCHAR(50) DEFAULT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'USER',
+    isVerity TINYINT(1) DEFAULT '0',
+    PRIMARY KEY (id),
+    UNIQUE KEY username (username)
+);
+
 
