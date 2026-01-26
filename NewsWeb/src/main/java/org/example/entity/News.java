@@ -13,12 +13,13 @@ public class News {
     private int views;
     private String content;
     private String thumbnail;
+    private String authorId;
 
     public News() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public News(String link, String headline, String category, String short_description, String authors, String date, String content, String thumbnail) {
+    public News(String link, String headline, String category, String short_description, String authors, String date, String content, String thumbnail, String authorId) {
         this.id = UUID.randomUUID().toString();
         this.link = link;
         this.headline = headline;
@@ -29,6 +30,7 @@ public class News {
         this.views = 0;
         this.content = content;
         this.thumbnail = thumbnail;
+        this.authorId = authorId;
     }
 
     public String getId() {
@@ -101,5 +103,13 @@ public class News {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 }

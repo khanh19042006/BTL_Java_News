@@ -100,4 +100,12 @@ CREATE TABLE user (
     UNIQUE KEY username (username)
 );
 
+-- 26/01/2026
+-- Thêm author id vào news để làm phần lịch sử đăng bài
+ALTER TABLE news DROP INDEX headline;
+ALTER TABLE news
+ADD COLUMN author_id CHAR(36);
+
+ALTER TABLE news
+ADD FULLTEXT ft_news_search (headline, short_description, content);
 
