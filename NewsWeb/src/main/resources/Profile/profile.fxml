@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
+<BorderPane
+        prefWidth="420"
+        prefHeight="720"
+        xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="org.example.controller.HomeController">
 
-<BorderPane prefHeight="720" prefWidth="420" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.HomeController">
    <top>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label text="PROFILE" />
-            <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <VBox prefHeight="150.0" prefWidth="239.0">
-                     <children>
-                        <Label text="Username:" />
-                        <Label text="Gmail:" />
-                        <Label text="Trạng Thái: " />
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <Label text="Bài viết của bạn:" />
-         </children>
+      <VBox spacing="10" padding="10">
+
+         <Label text="PROFILE"/>
+
+         <HBox spacing="10">
+            <ImageView fx:id="avatarImage"
+                       fitWidth="80"
+                       fitHeight="80"
+                       preserveRatio="true"/>
+
+            <VBox spacing="5">
+               <Label fx:id="usernameLabel" text="Username"/>
+               <Label fx:id="emailLabel" text="Gmail"/>
+               <Label fx:id="statusLabel" text="Trạng thái"/>
+            </VBox>
+         </HBox>
+
+         <Label text="Bài viết của bạn"/>
       </VBox>
    </top>
+
    <center>
-      <ListView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <ListView fx:id="userPostsList"/>
    </center>
+
 </BorderPane>
