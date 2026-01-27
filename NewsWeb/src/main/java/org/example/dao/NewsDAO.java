@@ -17,14 +17,16 @@ public class NewsDAO {
         List<NewsDTO> newsList = new ArrayList<>();
 
         String sql = """
-        SELECT headline,
+        SELECT id,
+                headline,
                category,
                short_description,
                content,
                thumbnail,
                authors,
                date,
-               views
+               views,
+                author_id
         FROM news
         ORDER BY date DESC
         LIMIT ?
@@ -38,6 +40,7 @@ public class NewsDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     NewsDTO news = new NewsDTO();
+                    news.setId(rs.getString("id"));
                     news.setHeadline(rs.getString("headline"));
                     news.setCategory(rs.getString("category"));
                     news.setShort_description(rs.getString("short_description"));
@@ -46,7 +49,7 @@ public class NewsDAO {
                     news.setAuthors(rs.getString("authors"));
                     news.setDate(rs.getString("date"));
                     news.setViews(rs.getInt("views"));
-
+                    news.setAuthorId(rs.getString("author_id"));
                     newsList.add(news);
                 }
             }
@@ -63,14 +66,16 @@ public class NewsDAO {
         List<NewsDTO> newsList = new ArrayList<>();
 
         String sql = """
-        SELECT headline,
+        SELECT id,
+                headline,
                category,
                short_description,
                content,
                thumbnail,
                authors,
                date,
-               views
+               views,
+                author_id
         FROM news
         ORDER BY views DESC, date DESC
         LIMIT ?
@@ -84,6 +89,7 @@ public class NewsDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     NewsDTO news = new NewsDTO();
+                    news.setId(rs.getString("id"));
                     news.setHeadline(rs.getString("headline"));
                     news.setCategory(rs.getString("category"));
                     news.setShort_description(rs.getString("short_description"));
@@ -92,6 +98,7 @@ public class NewsDAO {
                     news.setAuthors(rs.getString("authors"));
                     news.setDate(rs.getString("date"));
                     news.setViews(rs.getInt("views"));
+                    news.setAuthorId(rs.getString("author_id"));
 
                     newsList.add(news);
                 }
@@ -108,6 +115,7 @@ public class NewsDAO {
 
         String sql = """
         SELECT
+            id,
             headline,
             category_code,
             short_description,
@@ -116,6 +124,7 @@ public class NewsDAO {
             views,
             content,
             thumbnail,
+            author_id,
             (
               MATCH(headline) AGAINST (?) * 3 +
               MATCH(short_description) AGAINST (?) * 2 +
@@ -140,6 +149,7 @@ public class NewsDAO {
                 while (rs.next()) {
                     NewsDTO dto = new NewsDTO();
 
+                    dto.setId(rs.getString("id"));
                     dto.setHeadline(rs.getString("headline"));
                     dto.setCategory(rs.getString("category_code"));
                     dto.setShort_description(rs.getString("short_description"));
@@ -148,6 +158,7 @@ public class NewsDAO {
                     dto.setViews(rs.getInt("views"));
                     dto.setContent(rs.getString("content"));
                     dto.setThumbnail(rs.getString("thumbnail"));
+                    dto.setAuthorId(rs.getString("author_id"));
 
                     list.add(dto);
                 }
@@ -166,6 +177,7 @@ public class NewsDAO {
 
         String sql = """
         SELECT
+            id,
             headline,
             category_code,
             short_description,
@@ -173,7 +185,8 @@ public class NewsDAO {
             date,
             views,
             content,
-            thumbnail
+            thumbnail,
+            author_id
         FROM news
         WHERE category_code = ?
         ORDER BY date DESC
@@ -189,6 +202,7 @@ public class NewsDAO {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     NewsDTO dto = new NewsDTO();
+                    dto.setId(rs.getString("id"));
                     dto.setHeadline(rs.getString("headline"));
                     dto.setCategory(rs.getString("category_code"));
                     dto.setShort_description(rs.getString("short_description"));
@@ -197,6 +211,7 @@ public class NewsDAO {
                     dto.setViews(rs.getInt("views"));
                     dto.setContent(rs.getString("content"));
                     dto.setThumbnail(rs.getString("thumbnail"));
+                    dto.setAuthorId(rs.getString("author_id"));
                     list.add(dto);
                 }
             }
@@ -226,6 +241,100 @@ public class NewsDAO {
         }
 
         return code;
+    }
+
+    public List<NewsDTO> getNewsByAuthorId(String authorId) {
+
+        List<NewsDTO> list = new ArrayList<>();
+
+        String sql = """
+        SELECT id, headline, category, short_description,
+               authors, date, views, content,
+               thumbnail, author_id
+        FROM news
+        WHERE author_id = ?
+        ORDER BY date DESC
+    """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, authorId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                NewsDTO dto = new NewsDTO();
+
+                dto.setId(rs.getString("id"));
+                dto.setHeadline(rs.getString("headline"));
+                dto.setCategory(rs.getString("category"));
+                dto.setShort_description(rs.getString("short_description"));
+                dto.setAuthors(rs.getString("authors"));
+                dto.setDate(rs.getString("date"));
+                dto.setViews(rs.getInt("views"));
+                dto.setContent(rs.getString("content"));
+                dto.setThumbnail(rs.getString("thumbnail"));
+                dto.setAuthorId(rs.getString("author_id"));
+
+                list.add(dto);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public NewsDTO getNewsById(String id) {
+
+        String sql = """
+        SELECT
+            id,
+            headline,
+            category,
+            short_description,
+            authors,
+            date,
+            views,
+            content,
+            thumbnail,
+            author_id
+        FROM news
+        WHERE id = ?
+        LIMIT 1
+    """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    NewsDTO dto = new NewsDTO();
+
+                    dto.setId(rs.getString("id"));
+                    dto.setHeadline(rs.getString("headline"));
+                    dto.setCategory(rs.getString("category"));
+                    dto.setShort_description(rs.getString("short_description"));
+                    dto.setAuthors(rs.getString("authors"));
+                    dto.setDate(rs.getString("date"));
+                    dto.setViews(rs.getInt("views"));
+                    dto.setContent(rs.getString("content"));
+                    dto.setThumbnail(rs.getString("thumbnail"));
+                    dto.setAuthorId(rs.getString("author_id"));
+
+                    return dto;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }
