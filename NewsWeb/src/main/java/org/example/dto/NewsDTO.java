@@ -1,6 +1,7 @@
 package org.example.dto;
 
 public class NewsDTO {
+    private String id;
     private String headline;
     private String category;    //category_code
     private String short_description;
@@ -9,8 +10,25 @@ public class NewsDTO {
     private int views;
     private String content;
     private String thumbnail;
+    private String authorId;
 
     public NewsDTO() {
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 
     public String getHeadline() {
@@ -77,7 +95,8 @@ public class NewsDTO {
         this.thumbnail = thumbnail;
     }
 
-    public NewsDTO(String headline, String category, String short_description, String authors, String date, int views, String content, String thumbnail) {
+    public NewsDTO(String id, String headline, String category, String short_description, String authors, String date, int views, String content, String thumbnail, String authorId) {
+        this.id = id;
         this.headline = headline;
         this.category = category;
         this.short_description = short_description;
@@ -86,5 +105,6 @@ public class NewsDTO {
         this.views = views;
         this.content = content;
         this.thumbnail = thumbnail;
+        this.authorId = authorId;
     }
 }
