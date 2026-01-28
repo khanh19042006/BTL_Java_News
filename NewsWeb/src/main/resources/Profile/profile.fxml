@@ -8,34 +8,71 @@
 <BorderPane
         prefWidth="420"
         prefHeight="720"
+        stylesheets="@css/profile.css"
         xmlns="http://javafx.com/javafx/17"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="org.example.controller.HomeController">
+        fx:controller="org.example.controller.ProfileController">
 
    <top>
-      <VBox spacing="10" padding="10">
+      <HBox styleClass="header">
+         <Label text="BÁO MỚI" styleClass="app-title"/>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Button text="🏠" styleClass="icon-button"/>
+      </HBox>
+   </top>
 
-         <Label text="PROFILE"/>
+   <center>
+      <VBox spacing="16">
+         <padding>
+            <Insets top="20" right="15" bottom="15" left="15"/>
+         </padding>
 
-         <HBox spacing="10">
-            <ImageView fx:id="avatarImage"
+         <VBox
+                 fx:id="userInfoBox"
+                 spacing="15"
+                 styleClass="profile-card"
+                 visible="false"
+                 managed="false">
+
+            <HBox spacing="15" alignment="CENTER_LEFT">
+               <ImageView
+                       fx:id="avatarImage"
                        fitWidth="80"
                        fitHeight="80"
                        preserveRatio="true"/>
 
-            <VBox spacing="5">
-               <Label fx:id="usernameLabel" text="Username"/>
-               <Label fx:id="emailLabel" text="Gmail"/>
-               <Label fx:id="statusLabel" text="Trạng thái"/>
-            </VBox>
-         </HBox>
+               <VBox spacing="6">
+                  <Label
+                          fx:id="usernameLabel"
+                          text="Username"
+                          styleClass="profile-name"/>
 
-         <Label text="Bài viết của bạn"/>
+                  <Label
+                          fx:id="emailLabel"
+                          text="email@gmail.com"
+                          styleClass="profile-email"/>
+
+                  <Label
+                          fx:id="roleLabel"
+                          text="USER"
+                          styleClass="role-badge"/>
+               </VBox>
+            </HBox>
+         </VBox>
+
+         <Label
+                 fx:id="postTitleLabel"
+                 text="Bài viết của bạn"
+                 styleClass="section-title"
+                 visible="false"
+                 managed="false"/>
+
+         <ListView
+                 fx:id="userPostsList"
+                 styleClass="news-list"
+                 visible="false"
+                 managed="false"/>
       </VBox>
-   </top>
-
-   <center>
-      <ListView fx:id="userPostsList"/>
    </center>
 
 </BorderPane>
