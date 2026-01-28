@@ -31,8 +31,8 @@
                  fx:id="userInfoBox"
                  spacing="15"
                  styleClass="profile-card"
-                 visible="false"
-                 managed="false">
+                 visible="true"
+                 managed="true">
 
             <HBox spacing="15" alignment="CENTER_LEFT">
                <ImageView
@@ -64,14 +64,14 @@
                  fx:id="postTitleLabel"
                  text="Bài viết của bạn"
                  styleClass="section-title"
-                 visible="false"
-                 managed="false"/>
+                 visible="true"
+                 managed="true"/>
 
          <ListView
                  fx:id="userPostsList"
                  styleClass="news-list"
-                 visible="false"
-                 managed="false"/>
+                 visible="true"
+                 managed="true"/>
       </VBox>
    </center>
 
