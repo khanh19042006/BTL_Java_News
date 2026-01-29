@@ -14,25 +14,20 @@
         fx:controller="org.example.controller.ProfileController">
 
    <top>
-      <HBox styleClass="header">
+      <HBox spacing="10" alignment="CENTER_LEFT" styleClass="header">
          <Label text="BÁO MỚI" styleClass="app-title"/>
          <Region HBox.hgrow="ALWAYS"/>
-         <Button text="🏠" styleClass="icon-button"/>
+         <Button fx:id="homeBtn" text="🏠" styleClass="icon-button"/>
       </HBox>
    </top>
 
    <center>
-      <VBox spacing="16">
+      <VBox spacing="20">
          <padding>
-            <Insets top="20" right="15" bottom="15" left="15"/>
+            <Insets top="20" right="16" bottom="16" left="16"/>
          </padding>
 
-         <VBox
-                 fx:id="userInfoBox"
-                 spacing="15"
-                 styleClass="profile-card"
-                 visible="true"
-                 managed="true">
+         <VBox fx:id="userInfoBox" spacing="15" styleClass="profile-card">
 
             <HBox spacing="15" alignment="CENTER_LEFT">
                <ImageView
@@ -59,19 +54,16 @@
                </VBox>
             </HBox>
          </VBox>
-
          <Label
-                 fx:id="postTitleLabel"
                  text="Bài viết của bạn"
-                 styleClass="section-title"
-                 visible="true"
-                 managed="true"/>
-
+                 styleClass="section-title"/>
+         <TextField
+                 fx:id="searchField"
+                 promptText="🔍 Tìm kiếm bài viết..."
+                 styleClass="search-field"/>
          <ListView
                  fx:id="userPostsList"
-                 styleClass="news-list"
-                 visible="true"
-                 managed="true"/>
+                 styleClass="news-list"/>
       </VBox>
    </center>
 

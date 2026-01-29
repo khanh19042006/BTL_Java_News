@@ -30,8 +30,6 @@ public class HomeController implements Initializable {
         loadNewNews();
     }
 
-    /* ================= LOAD DATA ================= */
-
     @FXML
     private void loadNewNews() {
         newsList.getItems().clear();
@@ -47,8 +45,6 @@ public class HomeController implements Initializable {
         System.out.println("HOT size = " + news.size());
         newsList.getItems().addAll(news);
     }
-
-    /* ================= LIST VIEW UI ================= */
 
     private void setupListView() {
 
@@ -106,8 +102,6 @@ public class HomeController implements Initializable {
             }
         });
     }
-
-    /* ================= IMAGE ================= */
 
     private Image loadImage(String path) {
         try {
