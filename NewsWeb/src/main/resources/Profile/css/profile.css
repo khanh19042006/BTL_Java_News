@@ -99,3 +99,17 @@
     -fx-border-color: #FF6600;
     -fx-border-width: 1.5;
 }
+
+.edit-avatar-button {
+    -fx-background-color: #FF6600;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-background-radius: 50%;
+    -fx-min-width: 24;
+    -fx-min-height: 24;
+    -fx-cursor: hand;
+}
+
+.edit-avatar-button:hover {
+    -fx-background-color: #FF8533;
+}
