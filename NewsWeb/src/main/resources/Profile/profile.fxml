@@ -12,45 +12,68 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="720" prefWidth="420" stylesheets="@css/profile.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ProfileController">
+<BorderPane prefWidth="420"
+            prefHeight="720"
+            stylesheets="@css/profile.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.ProfileController">
 
+   <!-- HEADER -->
    <top>
       <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
-         <Label styleClass="app-title" text="BÁO MỚI" />
-         <Region HBox.hgrow="ALWAYS" />
-         <Button fx:id="homeBtn" styleClass="icon-button" text="🏠" />
+         <Label text="BÁO MỚI" styleClass="app-title"/>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Button fx:id="homeBtn" text="🏠" styleClass="icon-button"/>
       </HBox>
    </top>
 
+   <!-- CONTENT -->
    <center>
-      <VBox spacing="20">
+      <VBox spacing="20" alignment="TOP_CENTER">
          <padding>
-            <Insets bottom="16" left="16" right="16" top="20" />
+            <Insets top="20" right="16" bottom="16" left="16"/>
          </padding>
 
+         <!-- PROFILE CARD -->
          <VBox fx:id="userInfoBox" spacing="15" styleClass="profile-card">
-
             <HBox alignment="CENTER_LEFT" spacing="15">
-               <StackPane prefHeight="80" prefWidth="80">
 
-                  <ImageView fx:id="avatarImage" fitHeight="80" fitWidth="80" preserveRatio="true" />
-                  <Button fx:id="editAvatarBtn" styleClass="edit-avatar-button" text="🖊" StackPane.alignment="BOTTOM_RIGHT" />
-
+               <StackPane prefWidth="80" prefHeight="80">
+                  <ImageView fx:id="avatarImage"
+                             fitWidth="80"
+                             fitHeight="80"
+                             preserveRatio="true"/>
+                  <Button fx:id="editAvatarBtn"
+                          text="🖊"
+                          onAction="#onEditAvatar"
+                          styleClass="edit-avatar-button"
+                          StackPane.alignment="BOTTOM_RIGHT"/>
                </StackPane>
 
-
                <VBox spacing="6">
-                  <Label fx:id="usernameLabel" styleClass="profile-name" text="Username" />
-
-                  <Label fx:id="emailLabel" styleClass="profile-email" text="email@gmail.com" />
-
-                  <Label fx:id="roleLabel" styleClass="role-badge" text="USER" />
+                  <Label fx:id="usernameLabel"
+                         text="Username"
+                         styleClass="profile-name"/>
+                  <Label fx:id="emailLabel"
+                         text="email@gmail.com"
+                         styleClass="profile-email"/>
+                  <Label fx:id="roleLabel"
+                         text="USER"
+                         styleClass="role-badge"/>
                </VBox>
             </HBox>
          </VBox>
-         <Label styleClass="section-title" text="Bài viết của bạn" />
-         <TextField fx:id="searchField" promptText="🔍 Tìm kiếm bài viết..." styleClass="search-field" />
-         <ListView fx:id="userPostsList" styleClass="news-list" />
+
+         <Label text="Bài viết của bạn" styleClass="section-title"/>
+
+         <TextField fx:id="searchField"
+                    promptText="🔍 Tìm kiếm bài viết..."
+                    styleClass="search-field"/>
+
+         <ListView fx:id="userPostsList"
+                   styleClass="news-list"
+                   VBox.vgrow="ALWAYS"/>
       </VBox>
    </center>
 
