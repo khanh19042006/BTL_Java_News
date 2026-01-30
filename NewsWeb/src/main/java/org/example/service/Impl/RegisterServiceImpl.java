@@ -1,5 +1,6 @@
 package org.example.service.Impl;
 
+import com.sun.javafx.embed.EmbeddedSceneInterface;
 import org.example.dao.AuthDAO;
 import org.example.dto.UserDTO;
 import org.example.service.RegisterService;
@@ -50,13 +51,32 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public boolean verityOtp(String userId, String otpInput){
-        if (authDAO.verifyOtp(userId, otpInput)) return true;
-        return false;
+    public String getUserIdByUsername(String username){
+        return authDAO.getUserIdByUsername(username);
     }
 
     @Override
-    public String getUserIdByUsername(String username){
-        return authDAO.getUserIdByUsername(username);
+    public String createOtp(String userId){
+        return authDAO.createOtp(userId);
+    }
+
+    @Override
+    public void sendOtp(String toEmail, String userId){
+        String otp = this.createOtp(userId);
+        EmailUtils.sendOTP(toEmail, otp);
+        return;
+    }
+
+    @Override
+    public boolean verityOtp(String userId, String otpInput){
+        // Kiểm tra otp nhập đúng chưa, còn hạn không
+        if (authDAO.verifyOtp(userId, otpInput)){
+            // Chuyển trạng thái cho tài khoản
+            if (!authDAO.updateUserVerified(userId)) return false;
+            // Xóa token otp
+            authDAO.deleteToken(userId);
+            return true;
+        }
+        return false;
     }
 }
