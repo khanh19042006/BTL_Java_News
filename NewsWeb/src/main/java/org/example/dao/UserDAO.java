@@ -1,5 +1,7 @@
 package org.example.dao;
 
+import org.example.dto.UserDTO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,4 +33,31 @@ public class UserDAO {
         }
         return false;
     }
+
+    public UserDTO getUserById(String id) {
+        UserDTO user = null;
+        String sql = "SELECT username, email, password, created_at, role FROM users WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                user = new UserDTO();
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setCreated_at(rs.getString("created_at"));
+                user.setRole(rs.getString("role"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return user;
+    }
+
 }
