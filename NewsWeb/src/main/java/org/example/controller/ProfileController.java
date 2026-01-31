@@ -1,16 +1,26 @@
 package org.example.controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import org.example.dto.NewsDTO;
+import org.example.dto.UserDTO;
+import org.example.service.ProfileService;
+import org.example.service.Impl.ProfileServiceImpl;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 public class ProfileController {
 
@@ -18,18 +28,68 @@ public class ProfileController {
     @FXML private Label usernameLabel;
     @FXML private Label emailLabel;
     @FXML private Label roleLabel;
+    @FXML private ListView<NewsDTO> userPostsList;
+    @FXML private Button homeBtn;
+
+    private final ProfileService profileService = new ProfileServiceImpl();
 
     private static final double AVATAR_SIZE = 80;
-
     private static final String AVATAR_DIR = "user-data/avatars/";
+    private static final String DEFAULT_AVATAR = "/Image/default-thumbnail.jpg";
+
+    private final String currentUserId = "1";
 
     @FXML
     public void initialize() {
-        usernameLabel.setText("Nguyễn Đình Hoàng");
-        emailLabel.setText("nguyendinhhoang.241206@gmail.com");
-        roleLabel.setText("ADMIN");
+        setupListView();
+        loadUserInfo();
+        loadAvatar();
+        loadUserNews();
+    }
 
-        loadAvatarFromLocal();
+    private void loadUserInfo() {
+        UserDTO user = profileService.getUserById(currentUserId);
+
+        if (user == null) {
+            usernameLabel.setText("Unknown User");
+            emailLabel.setText("");
+            roleLabel.setText("");
+            return;
+        }
+
+        usernameLabel.setText(user.getUsername());
+        emailLabel.setText(user.getEmail());
+        roleLabel.setText(user.getRole());
+    }
+
+    private void loadUserNews() {
+        List<NewsDTO> news = profileService.getNewsByUserId(currentUserId);
+
+        if (news == null || news.isEmpty()) {
+            userPostsList.setPlaceholder(
+                    new Label("📰 Bạn chưa có bài viết nào")
+            );
+            return;
+        }
+
+        ObservableList<NewsDTO> data =
+                FXCollections.observableArrayList(news);
+        userPostsList.setItems(data);
+    }
+
+    private void setupListView() {
+        userPostsList.setCellFactory(list -> new ListCell<>() {
+            @Override
+            protected void updateItem(NewsDTO item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.toString());
+                }
+            }
+        });
     }
 
     @FXML
@@ -42,55 +102,43 @@ public class ProfileController {
                 )
         );
 
-        File selectedFile = chooser.showOpenDialog(
+        File file = chooser.showOpenDialog(
                 avatarImage.getScene().getWindow()
         );
 
-        if (selectedFile == null) return;
+        if (file == null) return;
 
         try {
             Files.createDirectories(Path.of(AVATAR_DIR));
 
-            String avatarName = "user_avatar.jpg";
-            Path target = Path.of(AVATAR_DIR + avatarName);
+            Path target = Path.of(
+                    AVATAR_DIR + "avatar_" + currentUserId + ".jpg"
+            );
 
             Files.copy(
-                    selectedFile.toPath(),
+                    file.toPath(),
                     target,
                     StandardCopyOption.REPLACE_EXISTING
             );
 
-            Image avatar = new Image(
-                    target.toUri().toString(),
-                    AVATAR_SIZE,
-                    AVATAR_SIZE,
-                    true,
-                    true
-            );
-            avatarImage.setImage(avatar);
+            setAvatar(target);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadAvatarFromLocal() {
-        Path avatarPath = Path.of(AVATAR_DIR + "user_avatar.jpg");
+    private void loadAvatar() {
+        Path avatarPath = Path.of(
+                AVATAR_DIR + "avatar_" + currentUserId + ".jpg"
+        );
 
         if (Files.exists(avatarPath)) {
-            avatarImage.setImage(
-                    new Image(
-                            avatarPath.toUri().toString(),
-                            AVATAR_SIZE,
-                            AVATAR_SIZE,
-                            true,
-                            true
-                    )
-            );
+            setAvatar(avatarPath);
         } else {
             avatarImage.setImage(
                     new Image(
                             getClass()
-                                    .getResource("/Image/default-thumbnail.jpg")
+                                    .getResource(DEFAULT_AVATAR)
                                     .toExternalForm(),
                             AVATAR_SIZE,
                             AVATAR_SIZE,
@@ -99,5 +147,22 @@ public class ProfileController {
                     )
             );
         }
+    }
+
+    private void setAvatar(Path path) {
+        avatarImage.setImage(
+                new Image(
+                        path.toUri().toString(),
+                        AVATAR_SIZE,
+                        AVATAR_SIZE,
+                        true,
+                        true
+                )
+        );
+    }
+
+    @FXML
+    private void onHome() {
+        System.out.println("🏠 Back to Home");
     }
 }
