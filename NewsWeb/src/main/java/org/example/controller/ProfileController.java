@@ -37,6 +37,7 @@ public class ProfileController {
     private static final String AVATAR_DIR = "user-data/avatars/";
     private static final String DEFAULT_AVATAR = "/Image/default-thumbnail.jpg";
 
+    // Nên thay bằng biến trong .env để tránh lộ id của admin, cái này bn tự sửa nhé, t sợ động vào lại hỏng
     private final String currentUserId = "c505cc32-1ea9-47a2-b936-327aaf483dbc";
 
     @FXML
