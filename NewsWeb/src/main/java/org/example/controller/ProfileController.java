@@ -37,7 +37,7 @@ public class ProfileController {
     private static final String AVATAR_DIR = "user-data/avatars/";
     private static final String DEFAULT_AVATAR = "/Image/default-thumbnail.jpg";
 
-    private final String currentUserId = "1";
+    private final String currentUserId = "c505cc32-1ea9-47a2-b936-327aaf483dbc";
 
     @FXML
     public void initialize() {
