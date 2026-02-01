@@ -3,10 +3,7 @@ package org.example.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -37,8 +34,8 @@ public class ProfileController {
     private static final String AVATAR_DIR = "user-data/avatars/";
     private static final String DEFAULT_AVATAR = "/Image/default-thumbnail.jpg";
 
-    // Nên thay bằng biến trong .env để tránh lộ id của admin, cái này bn tự sửa nhé, t sợ động vào lại hỏng
-    private final String currentUserId = "c505cc32-1ea9-47a2-b936-327aaf483dbc";
+    private final String currentUserId =
+            "c505cc32-1ea9-47a2-b936-327aaf483db";
 
     @FXML
     public void initialize() {
@@ -64,18 +61,26 @@ public class ProfileController {
     }
 
     private void loadUserNews() {
-        List<NewsDTO> news = profileService.getNewsByUserId(currentUserId);
+        try {
+            List<NewsDTO> news =
+                    profileService.getNewsByUserId(currentUserId);
 
-        if (news == null || news.isEmpty()) {
+            if (news == null || news.isEmpty()) {
+                userPostsList.setPlaceholder(
+                        new Label("📰 Chưa có bài viết")
+                );
+                return;
+            }
+
+            ObservableList<NewsDTO> data =
+                    FXCollections.observableArrayList(news);
+            userPostsList.setItems(data);
+
+        } catch (RuntimeException e) {
             userPostsList.setPlaceholder(
-                    new Label("📰 Bạn chưa có bài viết nào")
+                    new Label("❌ Không thể tải bài viết")
             );
-            return;
         }
-
-        ObservableList<NewsDTO> data =
-                FXCollections.observableArrayList(news);
-        userPostsList.setItems(data);
     }
 
     private void setupListView() {
@@ -83,12 +88,7 @@ public class ProfileController {
             @Override
             protected void updateItem(NewsDTO item, boolean empty) {
                 super.updateItem(item, empty);
-
-                if (empty || item == null) {
-                    setText(null);
-                } else {
-                    setText(item.toString());
-                }
+                setText(empty || item == null ? null : item.toString());
             }
         });
     }
