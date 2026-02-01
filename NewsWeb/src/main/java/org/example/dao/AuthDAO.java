@@ -83,7 +83,7 @@ public class AuthDAO {
 
         String sql = """
         
-                INSERT INTO users (id, username, email, password, created_at, role, isVerity)
+                INSERT INTO user (id, username, email, password, created_at, role, isVerity)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         """;
 
@@ -381,7 +381,7 @@ public class AuthDAO {
 
     public boolean updateUserVerified(String userId) {
 
-        String sql = "UPDATE users SET is_verified = 1 WHERE id = ?";
+        String sql = "UPDATE user SET is_verified = 1 WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

@@ -17,7 +17,7 @@ public class UserDAO {
     }
 
     private boolean hasRole(String userId, String roleCode) {
-        String sql = "SELECT 1 FROM user WHERE id = ? AND role = ?";
+        String sql = "SELECT 1 FROM users WHERE id = ? AND role = ?";
 
         try (
                 Connection conn = DBConnection.getConnection();
