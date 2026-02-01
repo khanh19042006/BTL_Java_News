@@ -117,7 +117,7 @@ public class NewsDAO {
         SELECT
             id,
             headline,
-            category_code,
+            category,
             short_description,
             authors,
             date,
@@ -151,7 +151,7 @@ public class NewsDAO {
 
                     dto.setId(rs.getString("id"));
                     dto.setHeadline(rs.getString("headline"));
-                    dto.setCategory(rs.getString("category_code"));
+                    dto.setCategory(rs.getString("category"));
                     dto.setShort_description(rs.getString("short_description"));
                     dto.setAuthors(rs.getString("authors"));
                     dto.setDate(rs.getString("date"));
@@ -179,7 +179,7 @@ public class NewsDAO {
         SELECT
             id,
             headline,
-            category_code,
+            category,
             short_description,
             authors,
             date,
@@ -188,7 +188,7 @@ public class NewsDAO {
             thumbnail,
             author_id
         FROM news
-        WHERE category_code = ?
+        WHERE category = ?
         ORDER BY date DESC
         LIMIT ?
         """;
@@ -204,7 +204,7 @@ public class NewsDAO {
                     NewsDTO dto = new NewsDTO();
                     dto.setId(rs.getString("id"));
                     dto.setHeadline(rs.getString("headline"));
-                    dto.setCategory(rs.getString("category_code"));
+                    dto.setCategory(rs.getString("category"));
                     dto.setShort_description(rs.getString("short_description"));
                     dto.setAuthors(rs.getString("authors"));
                     dto.setDate(rs.getString("date"));
