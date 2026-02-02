@@ -13,7 +13,8 @@ public class CheckNullUtils {
 
         if (user == null) return true;
 
-        return isBlank(user.getUsername()) ||
+        return isBlank(user.getId()) ||
+                isBlank(user.getUsername()) ||
                 isBlank(user.getEmail()) ||
                 isBlank(user.getPassword()) ||
                 isBlank(user.getCreated_at()) ||
@@ -25,6 +26,7 @@ public class CheckNullUtils {
 
         if (user == null) return "User object is null";
 
+        if (isBlank(user.getId())) return "id";
         if (isBlank(user.getUsername())) return "username";
         if (isBlank(user.getEmail())) return "email";
         if (isBlank(user.getPassword())) return "password";
