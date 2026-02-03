@@ -24,7 +24,7 @@ public class CreateAdminAccount {
         try (Connection conn = DBConnection.getConnection()) {
 
             // Kiểm tra đã có admin chưa
-            String checkSql = "SELECT COUNT(*) FROM user WHERE role = ?";
+            String checkSql = "SELECT COUNT(*) FROM users WHERE role = ?";
             try (PreparedStatement checkPs = conn.prepareStatement(checkSql)) {
                 checkPs.setString(1, role);
                 ResultSet rs = checkPs.executeQuery();
@@ -37,7 +37,7 @@ public class CreateAdminAccount {
 
             // Nếu chưa có thì tạo mới
             String insertSql = """
-                INSERT INTO user (id, username, email, password, created_at, role, isVerity)
+                INSERT INTO users (id, username, email, password, created_at, role, isVerity)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
 
