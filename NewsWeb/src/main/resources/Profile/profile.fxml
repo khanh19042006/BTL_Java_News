@@ -19,7 +19,6 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.controller.ProfileController">
 
-   <!-- HEADER -->
    <top>
       <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
          <Label text="BÁO MỚI" styleClass="app-title"/>
@@ -28,14 +27,12 @@
       </HBox>
    </top>
 
-   <!-- CONTENT -->
    <center>
       <VBox spacing="20" alignment="TOP_CENTER">
          <padding>
             <Insets top="20" right="16" bottom="16" left="16"/>
          </padding>
 
-         <!-- PROFILE CARD -->
          <VBox fx:id="userInfoBox" spacing="15" styleClass="profile-card">
             <HBox alignment="CENTER_LEFT" spacing="15">
 
