@@ -19,6 +19,10 @@ import java.nio.file.*;
 
 import java.util.List;
 
+// search
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+
 public class ProfileController {
 
     @FXML private ImageView avatarImage;
@@ -26,6 +30,13 @@ public class ProfileController {
     @FXML private Label emailLabel;
     @FXML private Label roleLabel;
     @FXML private ListView<NewsDTO> userPostsList;
+
+    // bien luu danh sach goc
+    private ObservableList<NewsDTO> masterNewsList;
+    private FilteredList<NewsDTO> filteredNewsList;
+
+    @FXML private TextField searchField;
+
 
     private final ProfileService profileService = new ProfileServiceImpl();
 
@@ -43,6 +54,7 @@ public class ProfileController {
         loadUserInfo();
         loadAvatar();
         loadUserNews();
+        setupSearch();
     }
 
     private void loadUserInfo() {
@@ -71,10 +83,12 @@ public class ProfileController {
             return;
         }
 
-        userPostsList.setItems(
-                FXCollections.observableArrayList(news)
-        );
+        masterNewsList = FXCollections.observableArrayList(news);
+        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
+
+        userPostsList.setItems(filteredNewsList);
     }
+
 
     private void setupListView() {
         userPostsList.setCellFactory(list -> new ListCell<>() {
@@ -217,4 +231,20 @@ public class ProfileController {
                 )
         );
     }
+
+    private void setupSearch() {
+        searchField.textProperty().addListener((obs, oldText, newText) -> {
+            String keyword = newText == null ? "" : newText.toLowerCase().trim();
+
+            filteredNewsList.setPredicate(news -> {
+                if (keyword.isEmpty()) return true;
+
+                return (news.getHeadline() != null &&
+                        news.getHeadline().toLowerCase().contains(keyword))
+                        || (news.getShort_description() != null &&
+                        news.getShort_description().toLowerCase().contains(keyword));
+            });
+        });
+    }
+
 }
