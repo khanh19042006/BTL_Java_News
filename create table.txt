@@ -103,3 +103,14 @@ ADD COLUMN author_id CHAR(36);
 ALTER TABLE news
 ADD FULLTEXT ft_news_search (headline, short_description, content);
 
+-- 2/1/2026
+-- Thêm table history để lưu trữ lịch sử đọc báo
+CREATE TABLE history (
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
+    news_id VARCHAR(50) NOT NULL,
+    read_at VARCHAR(50) NOT NULL,
+
+    INDEX idx_user_time (user_id, read_at)
+);
+

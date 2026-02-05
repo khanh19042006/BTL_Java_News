@@ -83,7 +83,7 @@ public class AuthDAO {
 
         String sql = """
         
-                INSERT INTO users (id, username, email, password, created_at, role, isVerity)
+                INSERT INTO user (id, username, email, password, created_at, role, isVerity)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         """;
 
@@ -360,8 +360,42 @@ public class AuthDAO {
     }
 
 
-    public void veritySuccess(){
+    public boolean deleteToken(String userId) {
 
-        return;
+        String sql = "DELETE FROM token WHERE user_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userId);
+            int rows = ps.executeUpdate();
+
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
+
+    public boolean updateUserVerified(String userId) {
+
+        String sql = "UPDATE user SET is_verified = 1 WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userId);
+            int rows = ps.executeUpdate();
+
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 }
