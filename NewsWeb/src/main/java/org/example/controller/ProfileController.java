@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -25,6 +26,8 @@ import javafx.collections.transformation.FilteredList;
 
 public class ProfileController {
 
+    private static final Dotenv dotenv = Dotenv.load();
+
     @FXML private ImageView avatarImage;
     @FXML private Label usernameLabel;
     @FXML private Label emailLabel;
@@ -45,8 +48,7 @@ public class ProfileController {
     private static final String DEFAULT_AVATAR = "/Image/default-thumbnail.jpg";
 
     // hardcode admin
-    private final String currentUserId =
-            "c505cc32-1ea9-47a2-b936-327aaf483db";
+    private final String currentUserId = dotenv.get("ADMIN_ID");
 
     @FXML
     public void initialize() {
