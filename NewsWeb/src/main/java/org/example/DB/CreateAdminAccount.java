@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 
 public class CreateAdminAccount {
+    private final Dotenv dotenv = Dotenv.load();
 
     public void createAdminAccount() {
 
@@ -43,7 +44,7 @@ public class CreateAdminAccount {
 
             User admin = new User();
 
-            admin.setId("c505cc32-1ea9-47a2-b936-327aaf483db");
+            admin.setId(dotenv.get("ADMIN_ID"));
             admin.setUsername(username);
             admin.setEmail(email);
             admin.setPassword(PasswordUtils.hash(password));

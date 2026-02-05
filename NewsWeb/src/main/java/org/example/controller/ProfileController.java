@@ -78,17 +78,18 @@ public class ProfileController {
         List<NewsDTO> news =
                 profileService.getNewsByUserId(currentUserId);
 
-        if (news == null || news.isEmpty()) {
+        masterNewsList = FXCollections.observableArrayList(
+                news == null ? List.of() : news
+        );
+
+        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
+        userPostsList.setItems(filteredNewsList);
+
+        if (masterNewsList.isEmpty()) {
             userPostsList.setPlaceholder(
                     new Label("📰 Chưa có bài viết")
             );
-            return;
         }
-
-        masterNewsList = FXCollections.observableArrayList(news);
-        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
-
-        userPostsList.setItems(filteredNewsList);
     }
 
 
