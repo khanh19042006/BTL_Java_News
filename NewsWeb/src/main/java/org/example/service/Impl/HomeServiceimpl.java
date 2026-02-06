@@ -40,6 +40,9 @@ public class HomeServiceimpl implements HomeService {
     @Override
     public List<NewsDTO> getRecommendNews(String userId){
         List<NewsDTO> listHistoryNews = historyDAO.getHistoryNews(userId, limit);
+        // Không đăng nhập thì đề cử mặc định
+        if (userId == null)
+            return this.getHotNews();
         // Lịch sử đọc ít quá thì bỏ qua, không phân tích
         if (listHistoryNews.size() < limit)
             return this.getHotNews();
