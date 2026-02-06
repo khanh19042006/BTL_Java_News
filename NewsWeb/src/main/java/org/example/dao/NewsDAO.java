@@ -1,15 +1,17 @@
 package org.example.dao;
 
 import org.example.dto.NewsDTO;
+import org.example.utils.WeightRandom;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class NewsDAO {
+
+    private final HistoryDAO historyDAO = new HistoryDAO();
 
     // Lấy 10 bài báo mới nhất
     // Lấy các bài báo mới nhất
@@ -370,5 +372,72 @@ public class NewsDAO {
         return false;
     }
 
+    public List<NewsDTO> recommendNews(String userId, int limit) {
+
+        NewsDAO newsDAO = new NewsDAO();
+        List<NewsDTO> history = historyDAO.getHistoryNews(userId, 30);
+
+        List<NewsDTO> result = new ArrayList<>();
+        Set<String> selectedIds = new HashSet<>();
+
+        if (history.isEmpty()) {
+            return newsDAO.getNewNews(10);
+        }
+
+        // Tính trọng số category
+        Map<String, Integer> countMap = new HashMap<>();
+
+        for (NewsDTO news : history) {
+            countMap.put(
+                    news.getCategory(),
+                    countMap.getOrDefault(news.getCategory(), 0) + 1
+            );
+        }
+
+        int total = history.size();
+
+        Map<String, Double> weightMap = new HashMap<>();
+        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
+            weightMap.put(entry.getKey(), entry.getValue() * 1.0 / total);
+        }
+
+        //  Weighted random chọn 7 bài
+        Random random = new Random();
+        List<String> categories = new ArrayList<>(weightMap.keySet());
+
+        // Số lượng bài viết đề cử chiếm 70% (chưa tính các bài viết random)
+        int weightedCount = (int) Math.round(limit * 0.7);
+
+        for (int i = 0; i < weightedCount; i++) {
+
+            String chosenCategory = WeightRandom.weightedRandom(categories, weightMap, random);
+
+            List<NewsDTO> candidates =
+                    newsDAO.getNewsByCategory(chosenCategory, 20); // lấy 20 bài mới nhất
+
+            for (NewsDTO candidate : candidates) {
+                if (!selectedIds.contains(candidate.getId())) {
+                    result.add(candidate);
+                    selectedIds.add(candidate.getId());
+                    break;
+                }
+            }
+        }
+
+        // Thêm 3 bài random toàn bộ category
+        List<NewsDTO> newest = newsDAO.getNewNews(50);
+
+        Collections.shuffle(newest);
+
+        for (NewsDTO news : newest) {
+            if (result.size() >= limit) break;
+            if (!selectedIds.contains(news.getId())) {
+                result.add(news);
+                selectedIds.add(news.getId());
+            }
+        }
+
+        return result;
+    }
 
 }

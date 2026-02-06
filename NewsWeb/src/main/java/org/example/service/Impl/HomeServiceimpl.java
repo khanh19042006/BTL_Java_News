@@ -36,6 +36,11 @@ public class HomeServiceimpl implements HomeService {
     }
 
     @Override
+    public List<NewsDTO> getRecommendNews(String userId){
+        return newsDAO.recommendNews(userId, limit);
+    }
+
+    @Override
     public List<CategoryDTO> getCategory(){
         return categoryDAO.getCategory();
     }
