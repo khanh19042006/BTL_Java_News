@@ -1,6 +1,7 @@
 package org.example.service.Impl;
 
 import org.example.dao.CategoryDAO;
+import org.example.dao.HistoryDAO;
 import org.example.dao.NewsDAO;
 import org.example.dto.CategoryDTO;
 import org.example.dto.NewsDTO;
@@ -13,6 +14,7 @@ public class HomeServiceimpl implements HomeService {
     private final int limit = 10;
     private final NewsDAO newsDAO = new NewsDAO();
     private final CategoryDAO categoryDAO = new CategoryDAO();
+    private final HistoryDAO historyDAO = new HistoryDAO();
 
     @Override
     public List<NewsDTO> getNewNews(){
@@ -37,6 +39,10 @@ public class HomeServiceimpl implements HomeService {
 
     @Override
     public List<NewsDTO> getRecommendNews(String userId){
+        List<NewsDTO> listHistoryNews = historyDAO.getHistoryNews(userId, limit);
+        // Lịch sử đọc ít quá thì bỏ qua, không phân tích
+        if (listHistoryNews.size() < limit)
+            return this.getHotNews();
         return newsDAO.recommendNews(userId, limit);
     }
 
