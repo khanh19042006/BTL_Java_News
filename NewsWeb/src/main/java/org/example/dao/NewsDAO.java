@@ -337,4 +337,38 @@ public class NewsDAO {
         return null;
     }
 
+    public boolean updateNews(NewsDTO newsDTO) {
+
+        String sql = """
+        UPDATE news
+        SET headline = ?,
+            category = ?,
+            short_description = ?,
+            content = ?,
+            thumbnail = ?
+        WHERE id = ?
+    """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newsDTO.getHeadline());
+            ps.setString(2, newsDTO.getCategory());
+            ps.setString(3, newsDTO.getShort_description());
+            ps.setString(4, newsDTO.getContent());
+            ps.setString(5, newsDTO.getThumbnail());
+            ps.setString(6, newsDTO.getId());
+
+            int rowsAffected = ps.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+
 }
