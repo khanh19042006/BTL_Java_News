@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
 <BorderPane prefWidth="420"
             prefHeight="720"
             stylesheets="@css/news-detail.css"
-            xmlns="http://javafx.com/javafx/25"
+            xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.controller.NewsDetailController">
 
     <top>
-        <HBox alignment="CENTER_LEFT"
-              spacing="10"
-              styleClass="header"
-              BorderPane.alignment="CENTER">
-            <Button fx:id="backBtn"
-                    text="⬅"
+        <HBox spacing="10"
+              alignment="CENTER_LEFT"
+              styleClass="header">
+            <Button text="⬅"
                     styleClass="icon-button"/>
+
             <Label text="CHI TIẾT BÀI BÁO"
                    styleClass="app-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="editBtn"
+                    text="🖊"
+                    styleClass="icon-button"/>
+
+            <Button fx:id="saveBtn"
+                    text="✓"
+                    visible="false"
+                    managed="false"
+                    styleClass="icon-button"/>
+
+            <Button fx:id="cancelBtn"
+                    text="✖"
+                    visible="false"
+                    managed="false"
+                    styleClass="icon-button"/>
         </HBox>
     </top>
 
@@ -36,6 +49,9 @@
                 <VBox spacing="16"
                       alignment="TOP_CENTER"
                       styleClass="page-content">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
 
                     <VBox spacing="12"
                           styleClass="profile-card">
@@ -50,15 +66,28 @@
                                styleClass="detail-title"/>
 
                         <Label fx:id="metaLabel"
-                               text="Ngày, Thể loại"
+                               text="Ngày đăng · Thể loại"
                                styleClass="detail-meta"/>
 
                         <Label fx:id="contentLabel"
-                               text="Nội dung chi tiết ở đây"
+                               text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..."
                                wrapText="true"
                                styleClass="detail-content"/>
-                    </VBox>
 
+                        <TextField fx:id="titleField"
+                                   visible="false"
+                                   managed="false"
+                                   promptText="Nhập tiêu đề bài báo"
+                                   styleClass="edit-title"/>
+
+                        <TextArea fx:id="contentArea"
+                                  visible="false"
+                                  managed="false"
+                                  wrapText="true"
+                                  promptText="Nhập nội dung bài báo"
+                                  styleClass="edit-content"/>
+
+                    </VBox>
                 </VBox>
             </content>
         </ScrollPane>

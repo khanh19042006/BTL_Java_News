@@ -30,11 +30,11 @@
     -fx-background-color: #FF8533;
 }
 
-
 .page-content {
     -fx-padding: 16;
 }
-.detail-card {
+
+.profile-card {
     -fx-background-color: #FFFFFF;
     -fx-padding: 16;
     -fx-background-radius: 10;
@@ -60,7 +60,34 @@
     -fx-text-alignment: justify;
 }
 
-
 .detail-image {
     -fx-background-radius: 8;
+}
+
+.edit-title {
+    -fx-font-size: 16px;
+    -fx-padding: 8 10;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #DDDDDD;
+    -fx-border-width: 1;
+}
+
+.edit-title:focused {
+    -fx-border-color: #FF6600;
+    -fx-border-width: 1.5;
+}
+
+.edit-content {
+    -fx-font-size: 14px;
+    -fx-padding: 10;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #DDDDDD;
+    -fx-border-width: 1;
+}
+
+.edit-content:focused {
+    -fx-border-color: #FF6600;
+    -fx-border-width: 1.5;
 }
