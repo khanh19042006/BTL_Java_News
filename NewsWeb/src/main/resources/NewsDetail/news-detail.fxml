@@ -1,34 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<BorderPane prefWidth="420"
+            prefHeight="720"
+            stylesheets="@css/news-detail.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.NewsDetailController">
 
-<BorderPane prefHeight="720" prefWidth="420" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
-   <top>
-      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <Button mnemonicParsing="false" text="⬅" />
-            <Label text="CHI TIẾT BÀI BÁO" />
-            <Button mnemonicParsing="false" text="🖊" />
-            <Button mnemonicParsing="false" text="✓" />
-         </children>
-      </HBox>
-   </top>
-   <center>
-      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <VBox prefHeight="200.0" prefWidth="100.0" />
-               </children>
-            </AnchorPane>
-        </content>
-      </ScrollPane>
-   </center>
+    <top>
+        <HBox alignment="CENTER_LEFT"
+              spacing="10"
+              styleClass="header"
+              BorderPane.alignment="CENTER">
+            <Button fx:id="backBtn"
+                    text="⬅"
+                    styleClass="icon-button"/>
+            <Label text="CHI TIẾT BÀI BÁO"
+                   styleClass="app-title"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true"
+                    vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox spacing="16"
+                      alignment="TOP_CENTER"
+                      styleClass="page-content">
+
+                    <VBox spacing="12"
+                          styleClass="profile-card">
+
+                        <ImageView fx:id="thumbnailImage"
+                                   fitWidth="360"
+                                   preserveRatio="true"/>
+
+                        <Label fx:id="titleLabel"
+                               text="Tiêu đề bài báo"
+                               wrapText="true"
+                               styleClass="detail-title"/>
+
+                        <Label fx:id="metaLabel"
+                               text="Ngày, Thể loại"
+                               styleClass="detail-meta"/>
+
+                        <Label fx:id="contentLabel"
+                               text="Nội dung chi tiết ở đây"
+                               wrapText="true"
+                               styleClass="detail-content"/>
+                    </VBox>
+
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
 </BorderPane>

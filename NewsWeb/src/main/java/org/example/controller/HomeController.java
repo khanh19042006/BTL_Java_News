@@ -13,6 +13,9 @@ import org.example.dto.NewsDTO;
 import org.example.service.HomeService;
 import org.example.service.Impl.HomeServiceimpl;
 
+
+
+
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -23,11 +26,22 @@ public class HomeController implements Initializable {
     private ListView<NewsDTO> newsList;
 
     private final HomeService homeService = new HomeServiceimpl();
+    private String userId = null;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupListView();
-        loadNewNews();
+        loadRecommendNews();
+    }
+
+    @FXML
+    private void loadRecommendNews() {
+        newsList.getItems().clear();
+
+        List<NewsDTO> news = homeService.getRecommendNews(userId);
+        System.out.println("RECOMMEND size = " + news.size());
+
+        newsList.getItems().addAll(news);
     }
 
     @FXML
