@@ -16,7 +16,7 @@
         <HBox spacing="10"
               alignment="CENTER_LEFT"
               styleClass="header">
-            <Button text="⬅"
+            <Button text="⬅" fx:id="backBtn"
                     styleClass="icon-button"/>
 
             <Label text="CHI TIẾT BÀI BÁO"
