@@ -56,9 +56,17 @@
                     <VBox spacing="12"
                           styleClass="profile-card">
 
-                        <ImageView fx:id="thumbnailImage"
-                                   fitWidth="360"
-                                   preserveRatio="true"/>
+                        <StackPane>
+                            <ImageView fx:id="thumbnailImage"
+                                       fitWidth="360"
+                                       preserveRatio="true"/>
+                            <Button fx:id="editThumbnailBtn"
+                                    text="🖊"
+                                    visible="false"
+                                    managed="false"
+                                    onAction="#onEditThumbnail"
+                                    StackPane.alignment="BOTTOM_RIGHT"/>
+                        </StackPane>
 
                         <Label fx:id="titleLabel"
                                text="Tiêu đề bài báo"
@@ -66,8 +74,21 @@
                                styleClass="detail-title"/>
 
                         <Label fx:id="metaLabel"
-                               text="Ngày đăng · Thể loại"
+                               text="24/12/2006 · Công nghệ"
                                styleClass="detail-meta"/>
+
+                        <HBox spacing="10"
+                              visible="false"
+                              managed="false"
+                              fx:id="metaEditBox">
+
+                            <DatePicker fx:id="publishDatePicker"
+                                        prefWidth="160"/>
+
+                            <ComboBox fx:id="categoryBox"
+                                      prefWidth="160"
+                                      promptText="Chọn thể loại"/>
+                        </HBox>
 
                         <Label fx:id="contentLabel"
                                text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..."
