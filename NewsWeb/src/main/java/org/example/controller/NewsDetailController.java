@@ -93,6 +93,16 @@ public class NewsDetailController {
         saveBtn.setOnAction(e -> saveChanges());
         backBtn.setOnAction(e -> goBack());
         setEditMode(false);
+        // demo
+        NewsDTO mock = new NewsDTO();
+        mock.setId("1");
+        mock.setHeadline("Bài báo demo");
+        mock.setContent("Nội dung demo");
+        mock.setDate("2024-12-24");
+        mock.setCategory("TECH");
+
+        setNews(mock);
+
     }
 
 
