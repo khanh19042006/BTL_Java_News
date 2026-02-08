@@ -506,5 +506,54 @@ public class NewsDAO {
         return 0;
     }
 
+    public List<NewsDTO> getHotNewsByPage(int page, int pageSize) {
+        List<NewsDTO> newsList = new ArrayList<>();
+
+        String sql = """
+        SELECT id,
+               headline,
+               category,
+               short_description,
+               content,
+               thumbnail,
+               authors,
+               date,
+               views,
+               author_id
+        FROM news
+        ORDER BY views DESC, date DESC
+        LIMIT ? OFFSET ?
+    """;
+
+        int offset = (page - 1) * pageSize;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, pageSize);
+            ps.setInt(2, offset);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    NewsDTO news = new NewsDTO();
+                    news.setId(rs.getString("id"));
+                    news.setHeadline(rs.getString("headline"));
+                    news.setCategory(rs.getString("category"));
+                    news.setShort_description(rs.getString("short_description"));
+                    news.setContent(rs.getString("content"));
+                    news.setThumbnail(rs.getString("thumbnail"));
+                    news.setAuthors(rs.getString("authors"));
+                    news.setDate(rs.getString("date"));
+                    news.setViews(rs.getInt("views"));
+                    news.setAuthorId(rs.getString("author_id"));
+                    newsList.add(news);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return newsList;
+    }
 
 }

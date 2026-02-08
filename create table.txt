@@ -114,3 +114,14 @@ CREATE TABLE history (
     INDEX idx_user_time (user_id, read_at)
 );
 
+-- 08/02/2026
+-- Tạo bảng comment
+CREATE TABLE comment (
+    id VARCHAR(50) PRIMARY KEY,
+    content TEXT NOT NULL,
+    author_id VARCHAR(50) NOT NULL,
+    news_id VARCHAR(50) NOT NULL,
+    time_up VARCHAR(30) NOT NULL,
+    parent_id VARCHAR(50)
+);
+

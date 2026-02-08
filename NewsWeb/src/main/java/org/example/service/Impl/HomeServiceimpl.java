@@ -66,7 +66,12 @@ public class HomeServiceimpl implements HomeService {
         // Tính số trang có thể có
         if (totalNews % limit == 0) totalPage = totalNews / limit;
         else totalPage = (totalNews / limit) + 1;
-        
+
         return totalPage;
+    }
+
+    @Override
+    public List<NewsDTO> getHotNewsByPage(int page){
+        return newsDAO.getHotNewsByPage(page, limit);
     }
 }

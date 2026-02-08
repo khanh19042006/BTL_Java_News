@@ -1,20 +1,27 @@
-package org.example.entity;
+package org.example.dto;
 
-public class Commend {
+import java.util.UUID;
+
+public class CommentDTO {
+
     private String id;
     private String content;
     private String authorId;
     private String newsId;
     private String timeUp;
-    private int level;
+    private String parentId;
 
-    public Commend(String id, String content, String authorId, String newsId, String timeUp, int level) {
-        this.id = id;
+    public CommentDTO() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    public CommentDTO(String content, String authorId, String newsId, String timeUp, String parentId) {
+        this.id = UUID.randomUUID().toString();
         this.content = content;
         this.authorId = authorId;
         this.newsId = newsId;
         this.timeUp = timeUp;
-        this.level = level;
+        this.parentId = parentId;
     }
 
     public String getId() {
@@ -57,11 +64,16 @@ public class Commend {
         this.timeUp = timeUp;
     }
 
-    public int getLevel() {
-        return level;
+    public String getParentId() {
+        return parentId;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    // Helper
+    public boolean isParentComment() {
+        return parentId == null;
     }
 }
