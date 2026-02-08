@@ -53,4 +53,20 @@ public class HomeServiceimpl implements HomeService {
     public List<CategoryDTO> getCategory(){
         return categoryDAO.getCategory();
     }
+
+    @Override
+    public List<NewsDTO> getNewsNewByPage(int page){
+        return newsDAO.getNewsNewByPage(page, limit);
+    }
+
+    @Override
+    public int countTotalPageNews(){
+        int totalNews = newsDAO.countTotalNews();
+        int totalPage;
+        // Tính số trang có thể có
+        if (totalNews % limit == 0) totalPage = totalNews / limit;
+        else totalPage = (totalNews / limit) + 1;
+        
+        return totalPage;
+    }
 }

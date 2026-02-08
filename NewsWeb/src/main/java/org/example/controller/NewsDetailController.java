@@ -117,7 +117,7 @@ public class NewsDetailController {
         });
     }
 
-    // tang chủ / trang cá nhân sẽ gọi hàm này
+    // trang chủ / trang cá nhân sẽ gọi hàm này
     public void setFromProfile(boolean fromProfile) {
         this.fromProfile = fromProfile;
 
