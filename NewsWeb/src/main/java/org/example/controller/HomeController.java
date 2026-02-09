@@ -13,7 +13,12 @@ import org.example.dto.NewsDTO;
 import org.example.service.HomeService;
 import org.example.service.Impl.HomeServiceimpl;
 
-
+// bắt sự kiện chuyển sang trang detail
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.example.controller.NewsDetailController;
 
 
 import java.net.URL;
@@ -117,8 +122,35 @@ public class HomeController implements Initializable {
                 imageView.setImage(loadImage(news.getThumbnail()));
 
                 setGraphic(root);
+                // gắn click cho từng bài báo
+                root.setOnMouseClicked(e -> {
+                    if (news == null) return;
+                    openNewsDetail(news);
+                });
+
             }
         });
+    }
+
+    private void openNewsDetail(NewsDTO news) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/NewsDetail/news-detail.fxml")
+            );
+
+            Parent root = loader.load();
+
+            NewsDetailController controller = loader.getController();
+
+            // vào từ homepage.fxml chỉ xem, không chỉnh
+            controller.setFromProfile(false);
+            controller.setNews(news);
+
+            Stage stage = (Stage) newsList.getScene().getWindow();
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Image loadImage(String path) {

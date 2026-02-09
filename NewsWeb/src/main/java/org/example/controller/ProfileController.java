@@ -23,6 +23,12 @@ import java.util.List;
 // search
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+// bắt sự kiện chuyển sang trang detail
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.example.controller.NewsDetailController;
 
 public class ProfileController {
 
@@ -146,8 +152,39 @@ public class ProfileController {
                 imageView.setImage(loadImage(news.getThumbnail()));
 
                 setGraphic(root);
+
+                userPostsList.setOnMouseClicked(event -> {
+                    if (event.getClickCount() == 1) {
+                        NewsDTO selected = userPostsList.getSelectionModel().getSelectedItem();
+                        if (selected != null) {
+                            openNewsDetail(selected);
+                        }
+                    }
+                });
+
             }
         });
+    }
+
+    private void openNewsDetail(NewsDTO news) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    ProfileController.class.getResource("/NewsDetail/news-detail.fxml")
+            );
+
+            Parent root = loader.load();
+
+            NewsDetailController controller = loader.getController();
+            controller.setFromProfile(true);
+            controller.setNews(news);
+
+            Stage stage = (Stage) userPostsList.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Image loadImage(String path) {
