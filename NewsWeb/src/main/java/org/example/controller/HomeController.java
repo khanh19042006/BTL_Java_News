@@ -21,6 +21,10 @@ import javafx.stage.Stage;
 import org.example.controller.NewsDetailController;
 
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -31,21 +35,11 @@ public class HomeController implements Initializable {
 
     @FXML
     private TextField searchField;
+    // danh sách gốc
+    private ObservableList<NewsDTO> masterNewsList;
 
-    @FXML
-    private void onSearch() {
-        String keyword = searchField.getText();
-
-        // nếu chưa nhập gì → load lại list cũ
-        if (keyword == null || keyword.isBlank()) {
-            loadRecommendNews();
-            return;
-        }
-        // gọi service tìm kiếm
-        List<NewsDTO> result = homeService.getNewsByFind(keyword.trim());
-        newsList.getItems().clear();
-        newsList.getItems().addAll(result);
-    }
+    // danh sách đã lọc
+    private FilteredList<NewsDTO> filteredNewsList;
 
     @FXML
     private ListView<NewsDTO> newsList;
@@ -57,99 +51,125 @@ public class HomeController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setupListView();
         loadRecommendNews();
+        setupSearch();
     }
 
+    private void setupSearch() {
+        searchField.textProperty().addListener((obs, oldText, newText) -> {
+            String keyword = newText == null ? "" : newText.toLowerCase().trim();
+
+            filteredNewsList.setPredicate(news -> {
+                if (keyword.isEmpty()) return true;
+
+                return (news.getHeadline() != null &&
+                        news.getHeadline().toLowerCase().contains(keyword))
+                        || (news.getShort_description() != null &&
+                        news.getShort_description().toLowerCase().contains(keyword));
+            });
+        });
+    }
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
     @FXML
     private void loadRecommendNews() {
-        newsList.getItems().clear();
-
         List<NewsDTO> news = homeService.getRecommendNews(userId);
-        System.out.println("RECOMMEND size = " + news.size());
-
-        newsList.getItems().addAll(news);
+        // lưu toàn bộ dữ liệu gốc
+        masterNewsList = FXCollections.observableArrayList(
+                news == null ? List.of() : news
+        );
+        // lọc dữ liệu tren bộ nhớ
+        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
+        newsList.setItems(filteredNewsList);
+        if (masterNewsList.isEmpty()) {
+            newsList.setPlaceholder(new Label("📰 Không có bài viết"));
+        }
     }
 
     @FXML
     private void loadNewNews() {
-        newsList.getItems().clear();
         List<NewsDTO> news = homeService.getNewNews();
-        System.out.println("NEW size = " + news.size());
-        newsList.getItems().addAll(news);
+
+        masterNewsList = FXCollections.observableArrayList(
+                news == null ? List.of() : news
+        );
+
+        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
+        newsList.setItems(filteredNewsList);
     }
 
     @FXML
     private void loadHotNews() {
-        newsList.getItems().clear();
         List<NewsDTO> news = homeService.getHotNews();
-        System.out.println("HOT size = " + news.size());
-        newsList.getItems().addAll(news);
+
+        masterNewsList = FXCollections.observableArrayList(
+                news == null ? List.of() : news
+        );
+        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
+        newsList.setItems(filteredNewsList);
     }
 
+
     private void setupListView() {
+        newsList.setCellFactory(listView -> {
+            ListCell<NewsDTO> cell = new ListCell<>() {
+                private final ImageView imageView = new ImageView();
+                private final Label title = new Label();
+                private final Label description = new Label();
+                private final Label date = new Label();
+                private final VBox textBox = new VBox(6);
+                private final HBox root = new HBox(12);
 
-        newsList.setCellFactory(listView -> new ListCell<>() {
+                {
+                    imageView.setFitWidth(100);
+                    imageView.setFitHeight(70);
+                    imageView.setPreserveRatio(true);
 
-            private final ImageView imageView = new ImageView();
-            private final Label title = new Label();
-            private final Label description = new Label();
-            private final Label date = new Label();
+                    title.setWrapText(true);
+                    title.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
+                    description.setWrapText(true);
+                    description.setStyle("-fx-font-size: 12px;");
+                    date.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
 
-            private final VBox textBox = new VBox(6);
-            private final HBox root = new HBox(12);
+                    textBox.getChildren().addAll(title, description, date);
+                    textBox.setPrefWidth(260);
 
-            {
-                imageView.setFitWidth(100);
-                imageView.setFitHeight(70);
-                imageView.setPreserveRatio(true);
-
-                title.setWrapText(true);
-                title.setStyle("-fx-font-size: 15px; -fx-font-weight: bold;");
-
-                description.setWrapText(true);
-                description.setStyle("-fx-font-size: 12px;");
-
-                date.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
-
-                textBox.getChildren().addAll(title, description, date);
-                textBox.setPrefWidth(260);
-
-                root.getChildren().addAll(imageView, textBox);
-                root.setStyle("""
-                        -fx-padding: 12;
-                        -fx-background-color: white;
-                        -fx-background-radius: 10;
-                        -fx-border-radius: 10;
-                        -fx-border-color: #E0E0E0;
-                        """);
-            }
-
-            @Override
-            protected void updateItem(NewsDTO news, boolean empty) {
-                super.updateItem(news, empty);
-
-                if (empty || news == null) {
-                    setGraphic(null);
-                    return;
+                    root.getChildren().addAll(imageView, textBox);
+                    root.setStyle("""
+                -fx-padding: 12;
+                -fx-background-color: white;
+                -fx-background-radius: 10;
+                -fx-border-radius: 10;
+                -fx-border-color: #E0E0E0;
+            """);
+                    setGraphic(root);
                 }
 
-                title.setText(news.getHeadline());
-                description.setText(news.getShort_description());
-                date.setText("🕒 " + news.getDate());
-                imageView.setImage(loadImage(news.getThumbnail()));
+                @Override
+                protected void updateItem(NewsDTO news, boolean empty) {
+                    super.updateItem(news, empty);
+                    if (empty || news == null) {
+                        setGraphic(null);
+                        return;
+                    }
+                    title.setText(news.getHeadline());
+                    description.setText(news.getShort_description());
+                    date.setText("🕒 " + news.getDate());
+                    imageView.setImage(loadImage(news.getThumbnail()));
+                    setGraphic(root);
+                }
+            };
 
-                setGraphic(root);
-                // gắn click cho từng bài báo
-                root.setOnMouseClicked(e -> {
-                    if (news == null) return;
-                    openNewsDetail(news);
-                });
-
-            }
+            // click ở cell
+            cell.setOnMouseClicked(e -> {
+                if (!cell.isEmpty()) {
+                    openNewsDetail(cell.getItem());
+                }
+            });
+            return cell;
         });
+
     }
 
     private void openNewsDetail(NewsDTO news) {

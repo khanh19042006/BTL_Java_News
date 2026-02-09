@@ -19,9 +19,9 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <TextField fx:id="searchField" promptText="Nhập nội dung tìm kiếm" styleClass="search-field" onAction="#onSearch"/>
+            <TextField fx:id="searchField" promptText="Nhập nội dung tìm kiếm" styleClass="search-field"/>
 
-            <Button text="🔍" styleClass="icon-button" onAction="#onSearch"/>
+            <Button text="🔍" styleClass="icon-button"/>
 
             <Button text="👤" styleClass="icon-button"/>
          </HBox>
