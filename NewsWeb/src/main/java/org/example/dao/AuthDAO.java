@@ -114,7 +114,7 @@ public class AuthDAO {
     }
 
     public boolean isCheckVerity(String username) {
-        String sql = "SELECT isVerity FROM user WHERE username = ?";
+        String sql = "SELECT isVerity FROM users WHERE username = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -136,7 +136,7 @@ public class AuthDAO {
 
     public String getUserIdByUsername(String username) {
 
-        String sql = "SELECT id FROM user WHERE username = ?";
+        String sql = "SELECT id FROM users WHERE username = ?";
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -187,7 +187,7 @@ public class AuthDAO {
 
     public User getUserbyUserId(String userId) {
 
-        String sql = "SELECT * FROM user WHERE id = ?";
+        String sql = "SELECT * FROM users WHERE id = ?";
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -360,8 +360,42 @@ public class AuthDAO {
     }
 
 
-    public void veritySuccess(){
+    public boolean deleteToken(String userId) {
 
-        return;
+        String sql = "DELETE FROM token WHERE user_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userId);
+            int rows = ps.executeUpdate();
+
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
+
+    public boolean updateUserVerified(String userId) {
+
+        String sql = "UPDATE users SET is_verified = 1 WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userId);
+            int rows = ps.executeUpdate();
+
+            return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 }

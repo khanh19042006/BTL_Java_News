@@ -8,6 +8,7 @@ import java.sql.Connection;
 public class CheckImport {
 
     private static final Dotenv dotenv = Dotenv.load();
+    private final CreateAdminAccount createAdminAccount = new CreateAdminAccount();
 
     public void importNews() {
         try (Connection conn = DBConnection.getConnection()) {
@@ -33,6 +34,7 @@ public class CheckImport {
     public void checkImport() {
         importNews();
         importCategory();
+        this.createAdminAccount.createAdminAccount();
     }
 
 }

@@ -1,35 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
+<BorderPane prefWidth="420"
+            prefHeight="720"
+            stylesheets="@css/profile.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.ProfileController">
 
-<BorderPane prefHeight="720" prefWidth="420" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.HomeController">
    <top>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label text="PROFILE" />
-            <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
-                  <VBox prefHeight="150.0" prefWidth="239.0">
-                     <children>
-                        <Label text="Username:" />
-                        <Label text="Gmail:" />
-                        <Label text="Trạng Thái: " />
-                     </children>
-                  </VBox>
-               </children>
-            </HBox>
-            <Label text="Bài viết của bạn:" />
-         </children>
-      </VBox>
+      <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
+         <Label text="BÁO MỚI" styleClass="app-title"/>
+         <Region HBox.hgrow="ALWAYS"/>
+         <Button fx:id="homeBtn" text="🏠" styleClass="icon-button"/>
+      </HBox>
    </top>
+
    <center>
-      <ListView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <VBox spacing="20" alignment="TOP_CENTER">
+         <padding>
+            <Insets top="20" right="16" bottom="16" left="16"/>
+         </padding>
+
+         <VBox fx:id="userInfoBox" spacing="15" styleClass="profile-card">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+
+               <StackPane prefWidth="80" prefHeight="80">
+                  <ImageView fx:id="avatarImage"
+                             fitWidth="80"
+                             fitHeight="80"
+                             preserveRatio="true"/>
+                  <Button fx:id="editAvatarBtn"
+                          text="🖊"
+                          onAction="#onEditAvatar"
+                          styleClass="edit-avatar-button"
+                          StackPane.alignment="BOTTOM_RIGHT"/>
+               </StackPane>
+
+               <VBox spacing="6">
+                  <Label fx:id="usernameLabel"
+                         text="Username"
+                         styleClass="profile-name"/>
+                  <Label fx:id="emailLabel"
+                         text="email@gmail.com"
+                         styleClass="profile-email"/>
+                  <Label fx:id="roleLabel"
+                         text="USER"
+                         styleClass="role-badge"/>
+               </VBox>
+            </HBox>
+         </VBox>
+
+         <Label text="Bài viết của bạn" styleClass="section-title"/>
+
+         <TextField fx:id="searchField"
+                    promptText="🔍 Tìm kiếm bài viết..."
+                    styleClass="search-field"/>
+
+         <ListView fx:id="userPostsList"
+                   styleClass="news-list"
+                   VBox.vgrow="ALWAYS"/>
+      </VBox>
    </center>
+
 </BorderPane>
