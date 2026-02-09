@@ -13,7 +13,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     private final UserDAO userDao = new UserDAO();
     private final NewsDAO newsDAO = new NewsDAO();
-    private final int limit = 10;
+    private final int limit = 30;
 
     @Override
     public List<NewsDTO> getNewsByUserId(String userId) {
