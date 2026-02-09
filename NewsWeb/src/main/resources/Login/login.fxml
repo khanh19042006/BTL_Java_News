@@ -47,6 +47,7 @@
                     <Button
                             fx:id="togglePasswordBtn"
                             text="👁"
+                            onAction="#togglePasswordVisibility"
                             styleClass="eye-button"
                             StackPane.alignment="CENTER_RIGHT"/>
                 </StackPane>

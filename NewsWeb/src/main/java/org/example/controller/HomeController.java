@@ -34,6 +34,10 @@ public class HomeController implements Initializable {
         loadRecommendNews();
     }
 
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     @FXML
     private void loadRecommendNews() {
         newsList.getItems().clear();
