@@ -11,38 +11,33 @@
         xmlns="http://javafx.com/javafx/17"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="org.example.controller.HomeController">
+
    <top>
       <VBox>
          <HBox styleClass="header">
             <Label text="BÁO MỚI" styleClass="app-title"/>
+
             <Region HBox.hgrow="ALWAYS"/>
-            <TextField
-                    fx:id="searchField"
-                    promptText="Nhập nội dung tìm kiếm"
-                    styleClass="search-field"/>
-            <Button text="🔍" styleClass="icon-button"/>
+
+            <TextField fx:id="searchField" promptText="Nhập nội dung tìm kiếm" styleClass="search-field" onAction="#onSearch"/>
+
+            <Button text="🔍" styleClass="icon-button" onAction="#onSearch"/>
+
             <Button text="👤" styleClass="icon-button"/>
          </HBox>
-         <HBox styleClass="menu-bar">
-            <Button
-                    fx:id="hotBtn"
-                    text="NÓNG"
-                    styleClass="tab-button"
-                    onAction="#loadHotNews"/>
 
-            <Button
-                    fx:id="newBtn"
-                    text="MỚI"
-                    styleClass="tab-button"
-                    onAction="#loadNewNews"/>
+         <HBox styleClass="menu-bar">
+            <Button fx:id="hotBtn" text="NÓNG" styleClass="tab-button" onAction="#loadHotNews"/>
+
+            <Button fx:id="newBtn" text="MỚI" styleClass="tab-button" onAction="#loadNewNews"/>
+
             <Button text="VIDEO" styleClass="tab-button"/>
             <Button text="CHỦ ĐỀ" styleClass="tab-button"/>
          </HBox>
       </VBox>
    </top>
+
    <center>
-      <ListView
-              fx:id="newsList"
-              styleClass="news-list"/>
+      <ListView fx:id="newsList" styleClass="news-list"/>
    </center>
 </BorderPane>

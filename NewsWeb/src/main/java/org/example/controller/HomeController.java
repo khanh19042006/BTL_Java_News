@@ -25,7 +25,27 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.scene.control.TextField;
+
 public class HomeController implements Initializable {
+
+    @FXML
+    private TextField searchField;
+
+    @FXML
+    private void onSearch() {
+        String keyword = searchField.getText();
+
+        // nếu chưa nhập gì → load lại list cũ
+        if (keyword == null || keyword.isBlank()) {
+            loadRecommendNews();
+            return;
+        }
+        // gọi service tìm kiếm
+        List<NewsDTO> result = homeService.getNewsByFind(keyword.trim());
+        newsList.getItems().clear();
+        newsList.getItems().addAll(result);
+    }
 
     @FXML
     private ListView<NewsDTO> newsList;
