@@ -24,6 +24,11 @@ import org.example.dto.CategoryDTO;
 import org.example.dto.NewsDTO;
 import org.example.dao.NewsDAO;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 import javafx.scene.control.ListCell;
 
 import java.time.LocalDate;
@@ -93,16 +98,6 @@ public class NewsDetailController {
         saveBtn.setOnAction(e -> saveChanges());
         backBtn.setOnAction(e -> goBack());
         setEditMode(false);
-        // demo
-        NewsDTO mock = new NewsDTO();
-        mock.setId("1");
-        mock.setHeadline("Bài báo demo");
-        mock.setContent("Nội dung demo");
-        mock.setDate("2024-12-24");
-        mock.setCategory("TECH");
-
-        setNews(mock);
-
     }
 
 
@@ -239,14 +234,31 @@ public class NewsDetailController {
 
     // quay lại trang trước
     private void goBack() {
-        if (fromProfile) {
-            System.out.println("Quay về trang cá nhân");
-            // load profile.fxml
-        } else {
-            System.out.println("Quay về trang chủ");
-            // load homepage.fxml
+        try {
+            FXMLLoader loader;
+            Parent root;
+
+            if (fromProfile) {
+                loader = new FXMLLoader(
+                        getClass().getResource("/Profile/profile.fxml")
+                );
+            } else {
+                loader = new FXMLLoader(
+                        getClass().getResource("/HomePage/homePage.fxml")
+                );
+            }
+
+            root = loader.load();
+
+            Stage stage = (Stage) backBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 
 
     private String newsId;
