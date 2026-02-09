@@ -73,6 +73,14 @@
             <version>2.0.1</version>
         </dependency>
 
+<!--        Hiển thị webview-->
+<!--        <dependency>-->
+<!--            <groupId>org.openjfx</groupId>-->
+<!--            <artifactId>javafx-web</artifactId>-->
+<!--            <version>17</version>-->
+<!--        </dependency>-->
+
+
 
     </dependencies>
 

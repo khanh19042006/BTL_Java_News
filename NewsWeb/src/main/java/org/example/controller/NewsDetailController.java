@@ -32,6 +32,9 @@ import javafx.stage.Stage;
 import javafx.scene.control.ListCell;
 
 import java.time.LocalDate;
+//import javafx.scene.web.WebView;
+//import javafx.scene.web.WebEngine;
+
 
 public class NewsDetailController {
 
@@ -55,6 +58,9 @@ public class NewsDetailController {
 
     @FXML
     private Label contentLabel;
+//    @FXML
+//    private WebView contentWebView;
+
 
     @FXML
     private TextField titleField;
@@ -145,6 +151,10 @@ public class NewsDetailController {
         // hiển thị dữ liệu lên UI
         titleLabel.setText(news.getHeadline());
         contentLabel.setText(news.getContent());
+//        contentWebView.getEngine()
+//                .loadContent(wrap(news.getContent()));
+
+
 
         metaLabel.setText(
                 news.getDate() + " - " + news.getCategory()
@@ -205,6 +215,9 @@ public class NewsDetailController {
         titleLabel.setManaged(!editing);
         contentLabel.setVisible(!editing);
         contentLabel.setManaged(!editing);
+//        contentWebView.setVisible(!editing);
+//        contentWebView.setManaged(!editing);
+
 
         titleField.setVisible(editing);
         titleField.setManaged(editing);
@@ -325,11 +338,42 @@ public class NewsDetailController {
         // cập nhật lại UI
         titleLabel.setText(news.getHeadline());
         contentLabel.setText(news.getContent());
+//        contentWebView.getEngine()
+//                .loadContent(wrap(news.getContent()));
+
         metaLabel.setText(
                 news.getDate() + " - " + categoryBox.getValue().getName()
         );
 
         setEditMode(false);
     }
+
+    // Hiển thị html
+//    private String wrap(String content) {
+//        return """
+//        <html>
+//        <head>
+//        <style>
+//            body {
+//                font-family: Arial;
+//                padding: 10px;
+//            }
+//            img {
+//                max-width: 100%;
+//                height: auto;
+//            }
+//            iframe {
+//                width: 100%;
+//                height: 400px;
+//            }
+//        </style>
+//        </head>
+//        <body>
+//        """ + (content == null ? "" : content) + """
+//        </body>
+//        </html>
+//        """;
+//    }
+
 
 }
