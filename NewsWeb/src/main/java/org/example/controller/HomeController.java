@@ -49,67 +49,53 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // filter luôn tồn tại
+        masterNewsList = FXCollections.observableArrayList();
+        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
+        newsList.setItems(filteredNewsList);
+        newsList.setPlaceholder(new Label("Không có bài viết nào!"));
         setupListView();
-        loadRecommendNews();
         setupSearch();
+        loadRecommendNews();
     }
 
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldText, newText) -> {
-            String keyword = newText == null ? "" : newText.toLowerCase().trim();
-
+            String keyword = newText == null ? "" : newText.trim().toLowerCase();
             filteredNewsList.setPredicate(news -> {
                 if (keyword.isEmpty()) return true;
-
-                return (news.getHeadline() != null &&
-                        news.getHeadline().toLowerCase().contains(keyword))
-                        || (news.getShort_description() != null &&
-                        news.getShort_description().toLowerCase().contains(keyword));
+                return containsIgnoreCase(news.getHeadline(), keyword)
+                        || containsIgnoreCase(news.getShort_description(), keyword);
             });
         });
     }
+
+    private boolean containsIgnoreCase(String text, String keyword) {
+        return text != null && text.toLowerCase().contains(keyword);
+    }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
     @FXML
     private void loadRecommendNews() {
-        List<NewsDTO> news = homeService.getRecommendNews(userId);
-        // lưu toàn bộ dữ liệu gốc
-        masterNewsList = FXCollections.observableArrayList(
-                news == null ? List.of() : news
-        );
-        // lọc dữ liệu tren bộ nhớ
-        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
-        newsList.setItems(filteredNewsList);
-        if (masterNewsList.isEmpty()) {
-            newsList.setPlaceholder(new Label("📰 Không có bài viết"));
-        }
+        updateNewsList(homeService.getRecommendNews(userId));
     }
 
     @FXML
     private void loadNewNews() {
-        List<NewsDTO> news = homeService.getNewNews();
-
-        masterNewsList = FXCollections.observableArrayList(
-                news == null ? List.of() : news
-        );
-
-        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
-        newsList.setItems(filteredNewsList);
+        updateNewsList(homeService.getNewNews());
     }
 
     @FXML
     private void loadHotNews() {
-        List<NewsDTO> news = homeService.getHotNews();
-
-        masterNewsList = FXCollections.observableArrayList(
-                news == null ? List.of() : news
-        );
-        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
-        newsList.setItems(filteredNewsList);
+        updateNewsList(homeService.getHotNews());
     }
-
+    // đổ dữ liệu lên UI
+    private void updateNewsList(List<NewsDTO> news) {
+        masterNewsList.setAll(news == null ? List.of() : news);
+    }
 
     private void setupListView() {
         newsList.setCellFactory(listView -> {
