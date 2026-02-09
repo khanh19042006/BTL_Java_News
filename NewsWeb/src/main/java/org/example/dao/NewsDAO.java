@@ -556,4 +556,29 @@ public class NewsDAO {
         return newsList;
     }
 
+    // Tăng view thêm 1
+    public boolean incrementViewCount(String newsId) {
+
+        String sql = """
+        UPDATE news
+        SET views = views + 1
+        WHERE id = ?
+    """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newsId);
+
+            int rowsAffected = ps.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 }
