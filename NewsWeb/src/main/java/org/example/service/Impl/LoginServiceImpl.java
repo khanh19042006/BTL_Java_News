@@ -4,6 +4,9 @@ import org.example.dao.AuthDAO;
 import org.example.service.LoginService;
 import org.example.utils.EmailUtils;
 import org.example.utils.PasswordUtils;
+import org.example.utils.RememberToken;
+
+import java.util.UUID;
 
 public class LoginServiceImpl implements LoginService {
 
@@ -63,5 +66,45 @@ public class LoginServiceImpl implements LoginService {
         // Đổi mật khẩu trong db
         if (!authDAO.changePassword(userId, newPassword1)) return false;
         return true;
+    }
+
+    @Override
+    public void rememberAuth(String username){
+        String userId = authDAO.getUserIdByUsername(username);
+        // Kiểm tra username tồn tại
+        if (userId == null) return;
+
+        // Lưu vào db
+        String tokenId = UUID.randomUUID().toString();
+        if (!authDAO.saveRememberToken(userId, tokenId)) return;
+
+        // Lưu vào file local
+        RememberToken.saveTokenToLocal(tokenId);
+        return;
+    }
+
+    @Override
+    public boolean checkTokenTime(String tokenId){
+        boolean checkTime = authDAO.isRememberTokenExpired(tokenId);
+        // Đã quá hạn
+        if (checkTime) {
+            authDAO.deleteRememberToken(tokenId);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean checkAutoLogin(String username){
+        String userId = authDAO.getUserIdByUsername(username);
+        String tokenId = RememberToken.getTokenFromLocal();
+        String userIdLocal = authDAO.getUserIdByRememberToken(tokenId);
+
+        // Đã quá hạn tự động đăng nhập
+        if (!checkTokenTime(tokenId)) return false;
+
+        // Kiểm tra tokenId local và tokenId trong db trùng nhauu
+        if (userIdLocal.equalsIgnoreCase(userId)) return true;
+        return false;
     }
 }
