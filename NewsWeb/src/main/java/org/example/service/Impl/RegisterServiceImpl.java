@@ -61,7 +61,8 @@ public class RegisterServiceImpl implements RegisterService {
     }
 
     @Override
-    public void sendOtp(String toEmail, String userId){
+    public void sendOtp(String toEmail){
+        String userId = authDAO.getUserIdByEmail(toEmail);
         String otp = this.createOtp(userId);
         EmailUtils.sendOTP(toEmail, otp);
         return;

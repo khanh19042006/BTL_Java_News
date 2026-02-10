@@ -32,8 +32,6 @@ import javafx.stage.Stage;
 import javafx.scene.control.ListCell;
 
 import java.time.LocalDate;
-//import javafx.scene.web.WebView;
-//import javafx.scene.web.WebEngine;
 
 
 public class NewsDetailController {
@@ -55,8 +53,6 @@ public class NewsDetailController {
 
     @FXML
     private Label contentLabel;
-//    @FXML
-//    private WebView contentWebView;
 
 
     @FXML
@@ -165,8 +161,6 @@ public class NewsDetailController {
         // hiển thị dữ liệu lên UI
         titleLabel.setText(news.getHeadline());
         contentLabel.setText(news.getContent());
-//        contentWebView.getEngine()
-//                .loadContent(wrap(news.getContent()));
 
 
         publishDatePicker.setValue(
@@ -224,8 +218,6 @@ public class NewsDetailController {
         titleLabel.setManaged(!editing);
         contentLabel.setVisible(!editing);
         contentLabel.setManaged(!editing);
-//        contentWebView.setVisible(!editing);
-//        contentWebView.setManaged(!editing);
 
 
         titleField.setVisible(editing);
@@ -349,8 +341,6 @@ public class NewsDetailController {
         // cập nhật lại UI
         titleLabel.setText(news.getHeadline());
         contentLabel.setText(news.getContent());
-//        contentWebView.getEngine()
-//                .loadContent(wrap(news.getContent()));
 
 
         setEditMode(false);
