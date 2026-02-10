@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<!--<?import javafx.scene.web.WebView?>-->
 
 <BorderPane prefWidth="420"
             prefHeight="720"
@@ -99,10 +98,6 @@
                                text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..."
                                wrapText="true"
                                styleClass="detail-content"/>
-<!--                        <WebView fx:id="contentWebView"-->
-<!--                                 prefHeight="400"-->
-<!--                                 visible="true"-->
-<!--                                 managed="true"/>-->
 
 
                         <TextField fx:id="titleField"
