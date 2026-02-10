@@ -58,6 +58,8 @@ public class HomeController implements Initializable {
         setupSearch();
         loadRecommendNews();
     }
+    // lưu scene gốc của home
+
 
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldText, newText) -> {
@@ -78,19 +80,35 @@ public class HomeController implements Initializable {
         this.userId = userId;
     }
 
+    // biến nhớ trạng thái home đang ở chế độ nào
+    public enum HomeMode {
+        RECOMMEND, NEW, HOT
+    }
+    private HomeMode currentMode = HomeMode.RECOMMEND;
     @FXML
     private void loadRecommendNews() {
+        currentMode = HomeMode.RECOMMEND;
         updateNewsList(homeService.getRecommendNews(userId));
     }
 
     @FXML
     private void loadNewNews() {
+        currentMode = HomeMode.NEW;
         updateNewsList(homeService.getNewNews());
     }
 
     @FXML
     private void loadHotNews() {
+        currentMode = HomeMode.HOT;
         updateNewsList(homeService.getHotNews());
+    }
+
+    public void reloadNews() {
+        switch (currentMode) {
+            case NEW -> loadNewNews();
+            case HOT -> loadHotNews();
+            default -> loadRecommendNews();
+        }
     }
     // đổ dữ liệu lên UI
     private void updateNewsList(List<NewsDTO> news) {
@@ -168,17 +186,15 @@ public class HomeController implements Initializable {
 
     private void openNewsDetail(NewsDTO news) {
         try {
-
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/NewsDetail/news-detail.fxml")
             );
 
             Parent root = loader.load();
-
             NewsDetailController controller = loader.getController();
 
-            // vào từ homepage.fxml chỉ xem, không chỉnh
             controller.setFromProfile(false);
+            controller.setHomeController(this);
             controller.setNews(news);
 
             Stage stage = (Stage) newsList.getScene().getWindow();

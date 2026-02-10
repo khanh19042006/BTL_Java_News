@@ -74,6 +74,8 @@ public class NewsDetailController {
     // thể loại được lấy từ db
     private final CategoryDAO categoryDAO = new CategoryDAO();
 
+    @FXML
+    private HBox metaEditBox;
 
     // chỉnh sửa ảnh
     @FXML private ImageView thumbnailImage;
@@ -82,6 +84,14 @@ public class NewsDetailController {
     // biến lưu ảnh
     private static final String NEWS_IMAGE_DIR = "user-data/news/";
 
+    private HomeController homeController;
+    private ProfileController profileController;
+    public void setHomeController(HomeController c) {
+        this.homeController = c;
+    }
+    public void setProfileController(ProfileController c) {
+        this.profileController = c;
+    }
 
     // true  -> vào từ trang cá nhân (được sửa)
     // false -> vào từ trang chủ (chỉ xem)
@@ -143,7 +153,6 @@ public class NewsDetailController {
     public void onOpenNews() {
         if (viewed) return;
         newsDAO.incrementViewCount(news.getId());
-        news.setViews(news.getViews() + 1);
         viewed = true;
     }
 
@@ -224,6 +233,10 @@ public class NewsDetailController {
         contentArea.setVisible(editing);
         contentArea.setManaged(editing);
 
+        // meta (ngày + thể loại)
+        metaEditBox.setVisible(editing);
+        metaEditBox.setManaged(editing);
+
         // nút
         editBtn.setVisible(!editing && fromProfile);
         editBtn.setManaged(!editing && fromProfile);
@@ -241,6 +254,8 @@ public class NewsDetailController {
     // quay lại trang trước
     private void goBack() {
         try {
+            Stage stage = (Stage) backBtn.getScene().getWindow();
+
             FXMLLoader loader;
             Parent root;
 
@@ -248,23 +263,26 @@ public class NewsDetailController {
                 loader = new FXMLLoader(
                         getClass().getResource("/Profile/profile.fxml")
                 );
+                root = loader.load();
+
+                ProfileController controller = loader.getController();
+                controller.reloadUserNews();
             } else {
                 loader = new FXMLLoader(
                         getClass().getResource("/HomePage/homePage.fxml")
                 );
+                root = loader.load();
+
+                HomeController controller = loader.getController();
+                controller.reloadNews();
             }
 
-            root = loader.load();
-
-            Stage stage = (Stage) backBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.show();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
 
     private String newsId;

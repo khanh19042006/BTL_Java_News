@@ -41,8 +41,9 @@ public class ProfileController {
     @FXML private ListView<NewsDTO> userPostsList;
 
     // bien luu danh sach goc
-    private ObservableList<NewsDTO> masterNewsList;
-    private FilteredList<NewsDTO> filteredNewsList;
+    private ObservableList<NewsDTO> masterNewsList = FXCollections.observableArrayList();
+    private FilteredList<NewsDTO> filteredNewsList =
+            new FilteredList<>(masterNewsList, p -> true);
 
     @FXML private TextField searchField;
 
@@ -58,11 +59,16 @@ public class ProfileController {
 
     @FXML
     public void initialize() {
+        userPostsList.setItems(filteredNewsList);
+        userPostsList.setPlaceholder(new Label("📰 Chưa có bài viết"));
         setupListView();
         loadUserInfo();
         loadAvatar();
-        loadUserNews();
         setupSearch();
+        loadUserNews();
+    }
+    public void reloadUserNews() {
+        loadUserNews();
     }
 
     private void loadUserInfo() {
@@ -84,31 +90,21 @@ public class ProfileController {
         List<NewsDTO> news =
                 profileService.getNewsByUserId(currentUserId);
 
-        masterNewsList = FXCollections.observableArrayList(
-                news == null ? List.of() : news
-        );
-
-        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
-        userPostsList.setItems(filteredNewsList);
-
-        if (masterNewsList.isEmpty()) {
-            userPostsList.setPlaceholder(
-                    new Label("📰 Chưa có bài viết")
-            );
-        }
+        masterNewsList.setAll(news == null ? List.of() : news);
     }
 
-
     private void setupListView() {
-        userPostsList.setCellFactory(list -> new ListCell<>() {
+        userPostsList.setCellFactory(list -> new ListCell<NewsDTO>() {
 
             private final ImageView imageView = new ImageView();
             private final Label title = new Label();
             private final Label description = new Label();
             private final Label date = new Label();
+            private final Label views = new Label();
 
             private final VBox textBox = new VBox(6);
             private final HBox root = new HBox(12);
+            private final HBox metaBox = new HBox(10);
 
             {
                 imageView.setFitWidth(90);
@@ -122,18 +118,23 @@ public class ProfileController {
                 description.setStyle("-fx-font-size: 12px;");
 
                 date.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
+                views.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
 
-                textBox.getChildren().addAll(title, description, date);
+                metaBox.getChildren().addAll(date, views);
+
+                textBox.getChildren().addAll(title, description, metaBox);
                 textBox.setPrefWidth(260);
 
                 root.getChildren().addAll(imageView, textBox);
                 root.setStyle("""
-                        -fx-padding: 10;
-                        -fx-background-color: white;
-                        -fx-background-radius: 8;
-                        -fx-border-radius: 8;
-                        -fx-border-color: #E0E0E0;
-                        """);
+                    -fx-padding: 10;
+                    -fx-background-color: white;
+                    -fx-background-radius: 8;
+                    -fx-border-radius: 8;
+                    -fx-border-color: #E0E0E0;
+                    """);
+
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             }
 
             @Override
@@ -148,11 +149,10 @@ public class ProfileController {
                 title.setText(news.getHeadline());
                 description.setText(news.getShort_description());
                 date.setText("🕒 " + news.getDate());
-
+                views.setText("👁 " + news.getViews());
                 imageView.setImage(loadImage(news.getThumbnail()));
 
                 setGraphic(root);
-
             }
         });
         userPostsList.setOnMouseClicked(event -> {
@@ -168,17 +168,18 @@ public class ProfileController {
     private void openNewsDetail(NewsDTO news) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    ProfileController.class.getResource("/NewsDetail/news-detail.fxml")
+                    getClass().getResource("/NewsDetail/news-detail.fxml")
             );
 
-            Parent root = loader.load();
-
+            Parent detailRoot = loader.load();
             NewsDetailController controller = loader.getController();
+
             controller.setFromProfile(true);
             controller.setNews(news);
+            controller.setProfileController(this);
 
             Stage stage = (Stage) userPostsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.setScene(new Scene(detailRoot));
             stage.show();
 
         } catch (IOException e) {
