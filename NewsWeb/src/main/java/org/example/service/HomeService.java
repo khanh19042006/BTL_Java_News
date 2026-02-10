@@ -15,4 +15,5 @@ public interface HomeService {
     public List<NewsDTO> getNewsNewByPage(int page);            // Lấy 10 bài viết mới nhất theo số trang
     public int countTotalPageNews();                            // Xem có tổng cộng bao nhiêu trang
     public List<NewsDTO> getHotNewsByPage(int page);            // Lấy 10 bài viết hot nhất theo số trang
+    public boolean incrementViewCount(String newsId);           // Tăng view thêm 1
 }

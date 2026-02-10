@@ -74,4 +74,9 @@ public class HomeServiceimpl implements HomeService {
     public List<NewsDTO> getHotNewsByPage(int page){
         return newsDAO.getHotNewsByPage(page, limit);
     }
+
+    @Override
+    public boolean incrementViewCount(String newsId){
+        return newsDAO.incrementViewCount(newsId);
+    }
 }

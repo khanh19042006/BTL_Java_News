@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.web.WebView?>
+<!--<?import javafx.scene.web.WebView?>-->
 
 <BorderPane prefWidth="420"
             prefHeight="720"
