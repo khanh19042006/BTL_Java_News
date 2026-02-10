@@ -74,9 +74,13 @@
                                wrapText="true"
                                styleClass="detail-title"/>
 
-                        <Label fx:id="metaLabel"
-                               text="24/12/2006 · Công nghệ"
-                               styleClass="detail-meta"/>
+                        <HBox spacing="12" styleClass="detail-meta">
+                            <Label fx:id="dateLabel" text="24/12/2006"/>
+                            <Label text="·"/>
+                            <Label fx:id="categoryLabel" text="Công nghệ"/>
+                            <Label text="·"/>
+                            <Label fx:id="viewsLabel" text="👁 0"/>
+                        </HBox>
 
                         <HBox spacing="10"
                               visible="false"

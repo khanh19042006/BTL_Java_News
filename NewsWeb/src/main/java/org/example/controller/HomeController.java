@@ -153,25 +153,21 @@ public class HomeController implements Initializable {
                 }
             };
 
-            // click ở cell
-            cell.setOnMouseClicked(e -> {
-                if (!cell.isEmpty()) {
-                    openNewsDetail(cell.getItem());
-                }
-            });
             return cell;
         });
-
+        newsList.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                NewsDTO selected =
+                        newsList.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    openNewsDetail(selected);
+                }
+            }
+        });
     }
 
     private void openNewsDetail(NewsDTO news) {
         try {
-            // tăng view trong DB
-            homeService.incrementViewCount(news.getId());
-
-            // tăng view trong UI
-            news.setViews(news.getViews() + 1);
-            newsList.refresh();
 
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/NewsDetail/news-detail.fxml")

@@ -54,9 +54,6 @@ public class NewsDetailController {
     private Label titleLabel;
 
     @FXML
-    private Label metaLabel;
-
-    @FXML
     private Label contentLabel;
 //    @FXML
 //    private WebView contentWebView;
@@ -67,10 +64,6 @@ public class NewsDetailController {
 
     @FXML
     private TextArea contentArea;
-
-    // chỉnh sửa ngày tháng và thể loại
-    @FXML
-    private HBox metaEditBox;
 
     @FXML
     private DatePicker publishDatePicker;
@@ -145,8 +138,20 @@ public class NewsDetailController {
     // dao thao tác với bảng news
     private final NewsDAO newsDAO = new NewsDAO();
 
+    // tăng view chỉ khi mở
+    private boolean viewed = false;
+    public void onOpenNews() {
+        if (viewed) return;
+        newsDAO.incrementViewCount(news.getId());
+        news.setViews(news.getViews() + 1);
+        viewed = true;
+    }
+
+
     public void setNews(NewsDTO news) {
         this.news = news;
+        // tăng view
+        onOpenNews();
 
         // hiển thị dữ liệu lên UI
         titleLabel.setText(news.getHeadline());
@@ -154,11 +159,6 @@ public class NewsDetailController {
 //        contentWebView.getEngine()
 //                .loadContent(wrap(news.getContent()));
 
-
-
-        metaLabel.setText(
-                news.getDate() + " - " + news.getCategory()
-        );
 
         publishDatePicker.setValue(
                 LocalDate.parse(news.getDate())
@@ -223,13 +223,6 @@ public class NewsDetailController {
         titleField.setManaged(editing);
         contentArea.setVisible(editing);
         contentArea.setManaged(editing);
-
-        // ngày, thể loại
-        metaLabel.setVisible(!editing);
-        metaLabel.setManaged(!editing);
-
-        metaEditBox.setVisible(editing);
-        metaEditBox.setManaged(editing);
 
         // nút
         editBtn.setVisible(!editing && fromProfile);
@@ -341,9 +334,6 @@ public class NewsDetailController {
 //        contentWebView.getEngine()
 //                .loadContent(wrap(news.getContent()));
 
-        metaLabel.setText(
-                news.getDate() + " - " + categoryBox.getValue().getName()
-        );
 
         setEditMode(false);
     }

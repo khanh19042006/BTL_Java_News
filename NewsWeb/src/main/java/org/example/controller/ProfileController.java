@@ -153,15 +153,14 @@ public class ProfileController {
 
                 setGraphic(root);
 
-                userPostsList.setOnMouseClicked(event -> {
-                    if (event.getClickCount() == 1) {
-                        NewsDTO selected = userPostsList.getSelectionModel().getSelectedItem();
-                        if (selected != null) {
-                            openNewsDetail(selected);
-                        }
-                    }
-                });
-
+            }
+        });
+        userPostsList.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                NewsDTO selected = userPostsList.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    openNewsDetail(selected);
+                }
             }
         });
     }
