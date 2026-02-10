@@ -113,13 +113,13 @@ public class AuthDAO {
         return user.getId();
     }
 
-    public boolean isCheckVerity(String username) {
-        String sql = "SELECT isVerity FROM users WHERE username = ?";
+    public boolean isCheckVerity(String userId) {
+        String sql = "SELECT isVerity FROM users WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, username);
+            ps.setString(1, userId);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -390,6 +390,49 @@ public class AuthDAO {
             int rows = ps.executeUpdate();
 
             return rows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public String getUserIdByEmail(String email) {
+
+        String sql = "SELECT id FROM users WHERE email = ? LIMIT 1";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("id");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // không tìm thấy
+    }
+
+    public boolean changePassword(String userId, String newPassword) {
+
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newPassword);
+            ps.setString(2, userId);
+
+            int rows = ps.executeUpdate();
+
+            return rows > 0; // true nếu update thành công
 
         } catch (SQLException e) {
             e.printStackTrace();
