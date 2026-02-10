@@ -106,6 +106,7 @@ public class HomeController implements Initializable {
                 private final Label date = new Label();
                 private final VBox textBox = new VBox(6);
                 private final HBox root = new HBox(12);
+                private final Label views = new Label();
 
                 {
                     imageView.setFitWidth(100);
@@ -118,8 +119,12 @@ public class HomeController implements Initializable {
                     description.setStyle("-fx-font-size: 12px;");
                     date.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
 
-                    textBox.getChildren().addAll(title, description, date);
+                    HBox metaBox = new HBox(10, date, views);
+                    textBox.getChildren().addAll(title, description, metaBox);
+
                     textBox.setPrefWidth(260);
+
+                    views.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
 
                     root.getChildren().addAll(imageView, textBox);
                     root.setStyle("""
@@ -142,6 +147,7 @@ public class HomeController implements Initializable {
                     title.setText(news.getHeadline());
                     description.setText(news.getShort_description());
                     date.setText("🕒 " + news.getDate());
+                    views.setText("👁 " + news.getViews());
                     imageView.setImage(loadImage(news.getThumbnail()));
                     setGraphic(root);
                 }
@@ -160,6 +166,13 @@ public class HomeController implements Initializable {
 
     private void openNewsDetail(NewsDTO news) {
         try {
+            // tăng view trong DB
+            homeService.incrementViewCount(news.getId());
+
+            // tăng view trong UI
+            news.setViews(news.getViews() + 1);
+            newsList.refresh();
+
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/NewsDetail/news-detail.fxml")
             );
