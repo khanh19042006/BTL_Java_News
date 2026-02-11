@@ -58,6 +58,8 @@ public class HomeController implements Initializable {
         setupSearch();
         loadRecommendNews();
     }
+    // lưu scene gốc của home
+
 
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldText, newText) -> {
@@ -78,19 +80,35 @@ public class HomeController implements Initializable {
         this.userId = userId;
     }
 
+    // biến nhớ trạng thái home đang ở chế độ nào
+    public enum HomeMode {
+        RECOMMEND, NEW, HOT
+    }
+    private HomeMode currentMode = HomeMode.RECOMMEND;
     @FXML
     private void loadRecommendNews() {
+        currentMode = HomeMode.RECOMMEND;
         updateNewsList(homeService.getRecommendNews(userId));
     }
 
     @FXML
     private void loadNewNews() {
+        currentMode = HomeMode.NEW;
         updateNewsList(homeService.getNewNews());
     }
 
     @FXML
     private void loadHotNews() {
+        currentMode = HomeMode.HOT;
         updateNewsList(homeService.getHotNews());
+    }
+
+    public void reloadNews() {
+        switch (currentMode) {
+            case NEW -> loadNewNews();
+            case HOT -> loadHotNews();
+            default -> loadRecommendNews();
+        }
     }
     // đổ dữ liệu lên UI
     private void updateNewsList(List<NewsDTO> news) {
@@ -153,37 +171,30 @@ public class HomeController implements Initializable {
                 }
             };
 
-            // click ở cell
-            cell.setOnMouseClicked(e -> {
-                if (!cell.isEmpty()) {
-                    openNewsDetail(cell.getItem());
-                }
-            });
             return cell;
         });
-
+        newsList.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                NewsDTO selected =
+                        newsList.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    openNewsDetail(selected);
+                }
+            }
+        });
     }
 
     private void openNewsDetail(NewsDTO news) {
         try {
-            // tăng view trong DB
-            homeService.incrementViewCount(news.getId());
-
-            // tăng view trong UI
-            news.setViews(news.getViews() + 1);
-            newsList.refresh();
-
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/NewsDetail/news-detail.fxml")
             );
-
             Parent root = loader.load();
-
             NewsDetailController controller = loader.getController();
-
-            // vào từ homepage.fxml chỉ xem, không chỉnh
             controller.setFromProfile(false);
-            controller.setNews(news);
+            controller.setHomeController(this);
+            // ✅ truyền ID
+            controller.setNewsId(news.getId());
 
             Stage stage = (Stage) newsList.getScene().getWindow();
             stage.setScene(new Scene(root));

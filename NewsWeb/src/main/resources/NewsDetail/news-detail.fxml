@@ -4,7 +4,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<!--<?import javafx.scene.web.WebView?>-->
 
 <BorderPane prefWidth="420"
             prefHeight="720"
@@ -68,37 +67,30 @@
                                     onAction="#onEditThumbnail"
                                     StackPane.alignment="BOTTOM_RIGHT"/>
                         </StackPane>
-
+                        <HBox fx:id="metaViewBox"
+                              spacing="8"
+                              alignment="CENTER_LEFT">
+                            <Label fx:id="dateLabel" />
+                            <Label text="•"/>
+                            <Label fx:id="categoryLabel" />
+                        </HBox>
+                        <HBox fx:id="metaEditBox" spacing="8" alignment="CENTER_LEFT" visible="false" managed="false">
+                            <ComboBox fx:id="categoryBox" promptText="Chọn thể loại"/>
+                        </HBox>
                         <Label fx:id="titleLabel"
                                text="Tiêu đề bài báo"
                                wrapText="true"
                                styleClass="detail-title"/>
 
-                        <Label fx:id="metaLabel"
-                               text="24/12/2006 · Công nghệ"
-                               styleClass="detail-meta"/>
-
-                        <HBox spacing="10"
-                              visible="false"
-                              managed="false"
-                              fx:id="metaEditBox">
-
-                            <DatePicker fx:id="publishDatePicker"
-                                        prefWidth="160"/>
-
-                            <ComboBox fx:id="categoryBox"
-                                      prefWidth="160"
-                                      promptText="Chọn thể loại"/>
-                        </HBox>
+                        <Label fx:id="shortDescLabel"
+                               text="Tóm tắt bài báo"
+                               wrapText="true"
+                               styleClass="detail-summary"/>
 
                         <Label fx:id="contentLabel"
                                text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..."
                                wrapText="true"
                                styleClass="detail-content"/>
-<!--                        <WebView fx:id="contentWebView"-->
-<!--                                 prefHeight="400"-->
-<!--                                 visible="true"-->
-<!--                                 managed="true"/>-->
 
 
                         <TextField fx:id="titleField"
@@ -107,12 +99,20 @@
                                    promptText="Nhập tiêu đề bài báo"
                                    styleClass="edit-title"/>
 
+                        <TextArea fx:id="shortDescArea"
+                                  visible="false"
+                                  managed="false"
+                                  wrapText="true"
+                                  promptText="Nhập tóm tắt bài báo"
+                                  styleClass="edit-summary"/>
+
                         <TextArea fx:id="contentArea"
                                   visible="false"
                                   managed="false"
                                   wrapText="true"
                                   promptText="Nhập nội dung bài báo"
                                   styleClass="edit-content"/>
+
 
                     </VBox>
                 </VBox>
