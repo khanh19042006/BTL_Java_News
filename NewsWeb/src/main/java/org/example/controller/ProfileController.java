@@ -175,7 +175,7 @@ public class ProfileController {
             NewsDetailController controller = loader.getController();
 
             controller.setFromProfile(true);
-            controller.setNews(news);
+            controller.setNewsId(news.getId());
             controller.setProfileController(this);
 
             Stage stage = (Stage) userPostsList.getScene().getWindow();

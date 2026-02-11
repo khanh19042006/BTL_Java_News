@@ -67,30 +67,25 @@
                                     onAction="#onEditThumbnail"
                                     StackPane.alignment="BOTTOM_RIGHT"/>
                         </StackPane>
-
+                        <HBox fx:id="metaViewBox"
+                              spacing="8"
+                              alignment="CENTER_LEFT">
+                            <Label fx:id="dateLabel" />
+                            <Label text="•"/>
+                            <Label fx:id="categoryLabel" />
+                        </HBox>
+                        <HBox fx:id="metaEditBox" spacing="8" alignment="CENTER_LEFT" visible="false" managed="false">
+                            <ComboBox fx:id="categoryBox" promptText="Chọn thể loại"/>
+                        </HBox>
                         <Label fx:id="titleLabel"
                                text="Tiêu đề bài báo"
                                wrapText="true"
                                styleClass="detail-title"/>
 
-                        <HBox spacing="12" styleClass="detail-meta">
-                            <Label fx:id="dateLabel" text="24/12/2006"/>
-                            <Label text="·"/>
-                            <Label fx:id="categoryLabel" text="Công nghệ"/>
-                        </HBox>
-
-                        <HBox spacing="10"
-                              visible="false"
-                              managed="false"
-                              fx:id="metaEditBox">
-
-                            <DatePicker fx:id="publishDatePicker"
-                                        prefWidth="160"/>
-
-                            <ComboBox fx:id="categoryBox"
-                                      prefWidth="160"
-                                      promptText="Chọn thể loại"/>
-                        </HBox>
+                        <Label fx:id="shortDescLabel"
+                               text="Tóm tắt bài báo"
+                               wrapText="true"
+                               styleClass="detail-summary"/>
 
                         <Label fx:id="contentLabel"
                                text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..."
@@ -110,6 +105,13 @@
                                   wrapText="true"
                                   promptText="Nhập nội dung bài báo"
                                   styleClass="edit-content"/>
+
+                        <TextArea fx:id="shortDescArea"
+                                  visible="false"
+                                  managed="false"
+                                  wrapText="true"
+                                  promptText="Nhập tóm tắt bài báo"
+                                  styleClass="edit-summary"/>
 
                     </VBox>
                 </VBox>

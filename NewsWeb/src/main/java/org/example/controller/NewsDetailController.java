@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import javafx.scene.layout.HBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.ComboBox;
 
 import org.example.dao.CategoryDAO;
@@ -50,6 +49,10 @@ public class NewsDetailController {
 
     @FXML
     private Label titleLabel;
+    @FXML
+    private HBox metaViewBox;
+    @FXML private Label dateLabel;
+    @FXML private Label categoryLabel;
 
     @FXML
     private Label contentLabel;
@@ -62,10 +65,15 @@ public class NewsDetailController {
     private TextArea contentArea;
 
     @FXML
-    private DatePicker publishDatePicker;
+    private ComboBox<CategoryDTO> categoryBox;
+
+    //tóm tắt
+    @FXML
+    private Label shortDescLabel;
 
     @FXML
-    private ComboBox<CategoryDTO> categoryBox;
+    private TextArea shortDescArea;
+
 
     // thể loại được lấy từ db
     private final CategoryDAO categoryDAO = new CategoryDAO();
@@ -107,7 +115,7 @@ public class NewsDetailController {
 
 
     private void loadCategories() {
-        // lấy dữ liệu từ db
+        //load dữ liệu từ db
         categoryBox.getItems().setAll(categoryDAO.getCategory());
 
         categoryBox.setCellFactory(cb -> new ListCell<>() {
@@ -161,17 +169,32 @@ public class NewsDetailController {
         // hiển thị dữ liệu lên UI
         titleLabel.setText(news.getHeadline());
         contentLabel.setText(news.getContent());
+        //tóm tắt
+        shortDescLabel.setText(news.getShort_description());
+        shortDescArea.setText(news.getShort_description());
 
 
-        publishDatePicker.setValue(
-                LocalDate.parse(news.getDate())
-        );
+        // date
+        dateLabel.setText(news.getDate());
 
-        categoryBox.getItems().stream()
-                .filter(c -> c.getCode().equals(news.getCategory()))
-                .findFirst()
-                .ifPresent(categoryBox::setValue);
 
+        // category
+        String categoryCode = news.getCategory();
+
+        if (categoryCode == null || categoryCode.isBlank()) {
+            categoryLabel.setText("Chưa phân loại");
+        } else {
+            categoryBox.getItems().stream()
+                    .filter(c -> c.getCode().equals(categoryCode))
+                    .findFirst()
+                    .ifPresentOrElse(
+                            c -> {
+                                categoryBox.setValue(c);
+                                categoryLabel.setText(c.getName());
+                            },
+                            () -> categoryLabel.setText("Chưa phân loại")
+                    );
+        }
 
         // load ảnh
         Path imagePath = Path.of(NEWS_IMAGE_DIR + news.getId() + ".jpg");
@@ -192,11 +215,7 @@ public class NewsDetailController {
 
         titleField.setText(news.getHeadline());
         contentArea.setText(news.getContent());
-
-         // convert String → LocalDate
-        publishDatePicker.setValue(
-                LocalDate.parse(news.getDate())
-        );
+        shortDescArea.setText(news.getShort_description());
 
         // set category theo code
         categoryBox.getItems().stream()
@@ -210,6 +229,17 @@ public class NewsDetailController {
 
     // hủy chỉnh
     private void switchToViewMode() {
+        if (news != null) {
+            titleLabel.setText(news.getHeadline());
+            contentLabel.setText(news.getContent());
+            shortDescLabel.setText(news.getShort_description());
+            dateLabel.setText(news.getDate());
+
+            categoryBox.getItems().stream()
+                    .filter(c -> c.getCode().equals(news.getCategory()))
+                    .findFirst()
+                    .ifPresent(c -> categoryLabel.setText(c.getName()));
+        }
         setEditMode(false);
     }
 
@@ -219,13 +249,22 @@ public class NewsDetailController {
         contentLabel.setVisible(!editing);
         contentLabel.setManaged(!editing);
 
+        //tóm tắt
+        shortDescLabel.setVisible(!editing);
+        shortDescLabel.setManaged(!editing);
+        shortDescArea.setVisible(editing);
+        shortDescArea.setManaged(editing);
+
 
         titleField.setVisible(editing);
         titleField.setManaged(editing);
         contentArea.setVisible(editing);
         contentArea.setManaged(editing);
 
-        // meta (ngày + thể loại)
+        // meta VIEW (label ngày + thể loại)
+        metaViewBox.setVisible(!editing);
+        metaViewBox.setManaged(!editing);
+        // meta EDIT (DatePicker + ComboBox)
         metaEditBox.setVisible(editing);
         metaEditBox.setManaged(editing);
 
@@ -280,7 +319,12 @@ public class NewsDetailController {
     private String newsId;
     public void setNewsId(String newsId) {
         this.newsId = newsId;
+
+        // load lại news mới nhất từ db
+        NewsDTO freshNews = newsDAO.getNewsById(newsId);
+        setNews(freshNews);
     }
+
 
     @FXML
     private void onEditThumbnail() {
@@ -321,18 +365,16 @@ public class NewsDetailController {
     }
 
     // lưu thay đổi
-    // lưu thay đổi
     private void saveChanges() {
         if (news == null) return;
 
         if (titleField.getText().isBlank()) return;
-        if (publishDatePicker.getValue() == null) return;
         if (categoryBox.getValue() == null) return;
 
         // cập nhật dữ liệu vào DTO
         news.setHeadline(titleField.getText());
         news.setContent(contentArea.getText());
-        news.setDate(publishDatePicker.getValue().toString());
+        news.setShort_description(shortDescArea.getText());
         news.setCategory(categoryBox.getValue().getCode());
 
         // cập nhật DB
@@ -341,6 +383,13 @@ public class NewsDetailController {
         // cập nhật lại UI
         titleLabel.setText(news.getHeadline());
         contentLabel.setText(news.getContent());
+        shortDescLabel.setText(news.getShort_description());
+
+        // cập nhật ngày
+        dateLabel.setText(news.getDate());
+
+        // cập nhật tên thể loại
+        categoryLabel.setText(categoryBox.getValue().getName());
 
 
         setEditMode(false);

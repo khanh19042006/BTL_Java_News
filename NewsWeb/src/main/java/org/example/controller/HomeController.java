@@ -189,13 +189,12 @@ public class HomeController implements Initializable {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/NewsDetail/news-detail.fxml")
             );
-
             Parent root = loader.load();
             NewsDetailController controller = loader.getController();
-
             controller.setFromProfile(false);
             controller.setHomeController(this);
-            controller.setNews(news);
+            // ✅ truyền ID
+            controller.setNewsId(news.getId());
 
             Stage stage = (Stage) newsList.getScene().getWindow();
             stage.setScene(new Scene(root));
