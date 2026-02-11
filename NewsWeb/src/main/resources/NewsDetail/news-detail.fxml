@@ -99,6 +99,13 @@
                                    promptText="Nhập tiêu đề bài báo"
                                    styleClass="edit-title"/>
 
+                        <TextArea fx:id="shortDescArea"
+                                  visible="false"
+                                  managed="false"
+                                  wrapText="true"
+                                  promptText="Nhập tóm tắt bài báo"
+                                  styleClass="edit-summary"/>
+
                         <TextArea fx:id="contentArea"
                                   visible="false"
                                   managed="false"
@@ -106,12 +113,6 @@
                                   promptText="Nhập nội dung bài báo"
                                   styleClass="edit-content"/>
 
-                        <TextArea fx:id="shortDescArea"
-                                  visible="false"
-                                  managed="false"
-                                  wrapText="true"
-                                  promptText="Nhập tóm tắt bài báo"
-                                  styleClass="edit-summary"/>
 
                     </VBox>
                 </VBox>
