@@ -91,3 +91,23 @@
     -fx-border-color: #FF6600;
     -fx-border-width: 1.5;
 }
+
+.detail-summary {
+    -fx-font-size: 13px;
+    -fx-text-fill: #555555;
+    -fx-font-style: italic;
+    -fx-line-spacing: 3px;
+}
+.edit-summary {
+    -fx-font-size: 13px;
+    -fx-padding: 8 10;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #DDDDDD;
+    -fx-border-width: 1;
+}
+
+.edit-summary:focused {
+    -fx-border-color: #FF6600;
+    -fx-border-width: 1.5;
+}

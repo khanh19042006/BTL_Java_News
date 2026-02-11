@@ -133,3 +133,11 @@ ADD FULLTEXT ft_news_headline (headline);
 
 -- Tăng độ lưu trữ cho content
 ALTER TABLE news MODIFY content MEDIUMTEXT;
+
+-- 10/02/2026
+CREATE TABLE remember_token (
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
+    created_at BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

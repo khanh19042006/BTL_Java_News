@@ -113,13 +113,13 @@ public class AuthDAO {
         return user.getId();
     }
 
-    public boolean isCheckVerity(String username) {
-        String sql = "SELECT isVerity FROM users WHERE username = ?";
+    public boolean isCheckVerity(String userId) {
+        String sql = "SELECT isVerity FROM users WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, username);
+            ps.setString(1, userId);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
@@ -396,6 +396,152 @@ public class AuthDAO {
         }
 
         return false;
+    }
+
+    public String getUserIdByEmail(String email) {
+
+        String sql = "SELECT id FROM users WHERE email = ? LIMIT 1";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("id");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // không tìm thấy
+    }
+
+    public boolean changePassword(String userId, String newPassword) {
+
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, newPassword);
+            ps.setString(2, userId);
+
+            int rows = ps.executeUpdate();
+
+            return rows > 0; // true nếu update thành công
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean saveRememberToken(String userId, String tokenId) {
+
+        String sql = """
+        INSERT INTO remember_token (id, user_id, created_at)
+        VALUES (?, ?, ?)
+    """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, tokenId);
+            ps.setString(2, userId);
+            ps.setLong(3, System.currentTimeMillis());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public String getUserIdByRememberToken(String tokenId) {
+
+        String sql = """
+        SELECT user_id
+        FROM remember_token
+        WHERE id = ?
+        LIMIT 1
+    """;
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, tokenId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("user_id");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean deleteRememberToken(String tokenId) {
+
+        String sql = "DELETE FROM remember_token WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, tokenId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public boolean isRememberTokenExpired(String tokenId) {
+
+        String sql = "SELECT created_at FROM remember_token WHERE id = ?";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, tokenId);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                long createdAt = rs.getLong("created_at");
+
+                long now = System.currentTimeMillis();
+                long sevenDays = 7L * 24 * 60 * 60 * 1000; // 7 ngày
+
+                return (now - createdAt) > sevenDays;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try { if (rs != null) rs.close(); } catch (Exception e) {}
+            try { if (ps != null) ps.close(); } catch (Exception e) {}
+            try { if (conn != null) conn.close(); } catch (Exception e) {}
+        }
+
+        // nếu không tìm thấy token → coi như hết hạn
+        return true;
     }
 
 }
