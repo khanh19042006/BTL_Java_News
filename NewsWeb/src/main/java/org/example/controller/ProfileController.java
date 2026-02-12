@@ -67,6 +67,9 @@ public class ProfileController {
     // hardcode admin
 //    private final String currentUserId = dotenv.get("ADMIN_ID");
     private String currentUserId;
+    public String getCurrentUserId() {
+        return currentUserId;
+    }
     public void setUserId(String userId) {
         this.currentUserId = userId;
 

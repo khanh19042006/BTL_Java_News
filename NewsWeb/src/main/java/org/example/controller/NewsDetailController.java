@@ -296,7 +296,10 @@ public class NewsDetailController {
                 root = loader.load();
 
                 ProfileController controller = loader.getController();
-                controller.reloadUserNews();
+                // truyền lại userId
+                if (profileController != null) {
+                    controller.setUserId(profileController.getCurrentUserId());
+                }
             } else {
                 loader = new FXMLLoader(
                         getClass().getResource("/HomePage/homePage.fxml")
