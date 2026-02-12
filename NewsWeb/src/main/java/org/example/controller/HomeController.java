@@ -74,14 +74,22 @@ public class HomeController implements Initializable {
             if (userMenu.isShowing()) {
                 userMenu.hide();
             } else {
-                userMenu.show(userBtn, Side.BOTTOM, 0, 5);
+                userMenu.show(userBtn, Side.BOTTOM, -120, 5);
             }
         });
+
+
     }
 
     // hàm menu
     private void setupUserMenu() {
-        userMenu = new ContextMenu();
+
+        if (userMenu == null) {
+            userMenu = new ContextMenu();
+        } else {
+            userMenu.getItems().clear();
+        }
+        userMenu.setAutoHide(true);
 
         boolean isLoggedIn = userId != null; // SessionManager.isLoggedIn()
 
@@ -108,11 +116,39 @@ public class HomeController implements Initializable {
     }
     // các hành động
     private void openProfile() {
-        System.out.println("Mở trang cá nhân");
-        // FXMLLoader -> profile.fxml
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Profile/profile.fxml")
+            );
+            Parent root = loader.load();
+
+            ProfileController controller = loader.getController();
+            controller.setUserId(userId); // truyền userId
+
+            Stage stage = (Stage) userBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private void openLogin() {
-        System.out.println("Mở trang đăng nhập");
+        try {
+            // lớp đọc file fxml
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Login/login.fxml")
+            );
+
+            Parent root = loader.load();
+
+            // lấy cửa sổ hiện tại
+            Stage stage = (Stage) userBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Đăng nhập");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private void openRegister() {
         System.out.println("Mở trang đăng ký");
@@ -141,6 +177,7 @@ public class HomeController implements Initializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+        setupUserMenu();
     }
 
     // biến nhớ trạng thái home đang ở chế độ nào
