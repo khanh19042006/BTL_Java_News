@@ -51,7 +51,6 @@ public class LoginController {
 
                 // Lấy controller
                 HomeController homeController = loader.getController();
-                String userId =
                 homeController.setUserId(loginService.getUserIdByUsername(username));
 
                 Stage stage = (Stage) usernameField.getScene().getWindow();
