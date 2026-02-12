@@ -18,7 +18,6 @@ import java.nio.file.StandardCopyOption;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.ComboBox;
 
-import org.example.dao.CategoryDAO;
 import org.example.dto.CategoryDTO;
 import org.example.dto.NewsDTO;
 import org.example.dao.NewsDAO;
@@ -29,8 +28,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import javafx.scene.control.ListCell;
-
-import java.time.LocalDate;
+import org.example.service.HomeService;
+import org.example.service.Impl.HomeServiceimpl;
 
 
 public class NewsDetailController {
@@ -76,7 +75,7 @@ public class NewsDetailController {
 
 
     // thể loại được lấy từ db
-    private final CategoryDAO categoryDAO = new CategoryDAO();
+    private final HomeService homeService = new HomeServiceimpl();
 
     @FXML
     private HBox metaEditBox;
@@ -116,7 +115,7 @@ public class NewsDetailController {
 
     private void loadCategories() {
         //load dữ liệu từ db
-        categoryBox.getItems().setAll(categoryDAO.getCategory());
+        categoryBox.getItems().setAll(homeService.getCategory());
 
         categoryBox.setCellFactory(cb -> new ListCell<>() {
             @Override
@@ -394,33 +393,5 @@ public class NewsDetailController {
 
         setEditMode(false);
     }
-
-    // Hiển thị html
-//    private String wrap(String content) {
-//        return """
-//        <html>
-//        <head>
-//        <style>
-//            body {
-//                font-family: Arial;
-//                padding: 10px;
-//            }
-//            img {
-//                max-width: 100%;
-//                height: auto;
-//            }
-//            iframe {
-//                width: 100%;
-//                height: 400px;
-//            }
-//        </style>
-//        </head>
-//        <body>
-//        """ + (content == null ? "" : content) + """
-//        </body>
-//        </html>
-//        """;
-//    }
-
 
 }

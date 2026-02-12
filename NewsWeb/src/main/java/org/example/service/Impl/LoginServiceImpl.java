@@ -6,6 +6,7 @@ import org.example.utils.EmailUtils;
 import org.example.utils.PasswordUtils;
 import org.example.utils.RememberToken;
 
+
 import java.util.UUID;
 
 public class LoginServiceImpl implements LoginService {
@@ -100,11 +101,17 @@ public class LoginServiceImpl implements LoginService {
         String tokenId = RememberToken.getTokenFromLocal();
         String userIdLocal = authDAO.getUserIdByRememberToken(tokenId);
 
+        if (tokenId == null) return false;
         // Đã quá hạn tự động đăng nhập
         if (!checkTokenTime(tokenId)) return false;
 
         // Kiểm tra tokenId local và tokenId trong db trùng nhauu
         if (userIdLocal.equalsIgnoreCase(userId)) return true;
         return false;
+    }
+
+    @Override
+    public String getUserIdByUsername(String username){
+        return authDAO.getUserIdByUsername(username);
     }
 }
