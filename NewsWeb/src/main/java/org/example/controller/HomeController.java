@@ -20,6 +20,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.controller.NewsDetailController;
 
+// sử dụng nemu
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.geometry.Side;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,6 +37,11 @@ import java.util.ResourceBundle;
 import javafx.scene.control.TextField;
 
 public class HomeController implements Initializable {
+
+    // tạo menu
+    @FXML
+    private Button userBtn;
+    private ContextMenu userMenu;
 
     @FXML
     private TextField searchField;
@@ -57,8 +67,61 @@ public class HomeController implements Initializable {
         setupListView();
         setupSearch();
         loadRecommendNews();
+        // tạo hành động cho nút
+        setupUserMenu();
+
+        userBtn.setOnAction(e -> {
+            if (userMenu.isShowing()) {
+                userMenu.hide();
+            } else {
+                userMenu.show(userBtn, Side.BOTTOM, 0, 5);
+            }
+        });
     }
-    // lưu scene gốc của home
+
+    // hàm menu
+    private void setupUserMenu() {
+        userMenu = new ContextMenu();
+
+        boolean isLoggedIn = userId != null; // SessionManager.isLoggedIn()
+
+        if (isLoggedIn) {
+            MenuItem profileItem = new MenuItem("Trang cá nhân");
+            MenuItem logoutItem = new MenuItem("Đăng xuất");
+
+            profileItem.setOnAction(e -> openProfile());
+            logoutItem.setOnAction(e -> logout());
+
+            userMenu.getItems().addAll(profileItem, logoutItem);
+        } else {
+            MenuItem profileItem = new MenuItem("Trang cá nhân");
+            profileItem.setDisable(true);
+
+            MenuItem loginItem = new MenuItem("Đăng nhập");
+            MenuItem registerItem = new MenuItem("Đăng ký");
+
+            loginItem.setOnAction(e -> openLogin());
+            registerItem.setOnAction(e -> openRegister());
+
+            userMenu.getItems().addAll(profileItem, loginItem, registerItem);
+        }
+    }
+    // các hành động
+    private void openProfile() {
+        System.out.println("Mở trang cá nhân");
+        // FXMLLoader -> profile.fxml
+    }
+    private void openLogin() {
+        System.out.println("Mở trang đăng nhập");
+    }
+    private void openRegister() {
+        System.out.println("Mở trang đăng ký");
+    }
+    private void logout() {
+        userId = null;
+        setupUserMenu(); // refresh menu sau khi logout
+        System.out.println("Đã đăng xuất");
+    }
 
 
     private void setupSearch() {
