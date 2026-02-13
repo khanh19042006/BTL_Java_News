@@ -12,6 +12,7 @@ import org.example.service.Impl.LoginServiceImpl;
 
 import java.io.IOException;
 import javafx.scene.control.Label;
+import org.example.service.LoginService;
 
 
 public class LoginController {
@@ -50,7 +51,7 @@ public class LoginController {
 
                 // Lấy controller
                 HomeController homeController = loader.getController();
-                homeController.setUserId(username);
+                homeController.setUserId(loginService.getUserIdByUsername(username));
 
                 Stage stage = (Stage) usernameField.getScene().getWindow();
                 stage.setScene(new Scene(root));

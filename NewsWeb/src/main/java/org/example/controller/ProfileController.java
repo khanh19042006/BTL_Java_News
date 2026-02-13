@@ -20,6 +20,11 @@ import java.nio.file.*;
 
 import java.util.List;
 
+// profile menu
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.geometry.Side;
+
 // search
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -28,7 +33,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.controller.NewsDetailController;
 
 public class ProfileController {
 
@@ -47,6 +51,12 @@ public class ProfileController {
 
     @FXML private TextField searchField;
 
+    // nút
+    @FXML
+    private Button homeBtn;
+    private ContextMenu homeMenu;
+
+
 
     private final ProfileService profileService = new ProfileServiceImpl();
 
@@ -55,18 +65,88 @@ public class ProfileController {
     private static final String DEFAULT_AVATAR = "/Image/default-thumbnail.jpg";
 
     // hardcode admin
-    private final String currentUserId = dotenv.get("ADMIN_ID");
+//    private final String currentUserId = dotenv.get("ADMIN_ID");
+    private String currentUserId;
+    public String getCurrentUserId() {
+        return currentUserId;
+    }
+    public void setUserId(String userId) {
+        this.currentUserId = userId;
+
+        loadUserInfo();
+        loadUserNews();
+        loadAvatar();
+    }
 
     @FXML
     public void initialize() {
         userPostsList.setItems(filteredNewsList);
         userPostsList.setPlaceholder(new Label("📰 Chưa có bài viết"));
         setupListView();
-        loadUserInfo();
-        loadAvatar();
         setupSearch();
-        loadUserNews();
+        setupHomeMenu();
     }
+
+    private void setupHomeMenu() {
+
+        homeMenu = new ContextMenu();
+
+        MenuItem homeItem = new MenuItem("Trang chủ");
+        MenuItem logoutItem = new MenuItem("Đăng xuất");
+
+        homeItem.setOnAction(e -> goHome());
+        logoutItem.setOnAction(e -> handleLogout());
+
+        homeMenu.getItems().addAll(homeItem, logoutItem);
+
+        homeBtn.setOnAction(e -> {
+            if (homeMenu.isShowing()) {
+                homeMenu.hide();
+            } else {
+                homeMenu.show(homeBtn, Side.BOTTOM, -80, 5);
+            }
+        });
+    }
+
+    private void goHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Homepage/homepage.fxml")
+            );
+
+            Parent root = loader.load();
+
+            HomeController homeController = loader.getController();
+            homeController.setUserId(currentUserId); // giữ đăng nhập
+
+            Stage stage = (Stage) homeBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Trang chủ");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleLogout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Homepage/homepage.fxml")
+            );
+
+            Parent root = loader.load();
+            // Không set userId → coi như logout
+
+            Stage stage = (Stage) homeBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Trang chủ");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void reloadUserNews() {
         loadUserNews();
     }

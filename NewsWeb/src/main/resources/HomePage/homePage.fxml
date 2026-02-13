@@ -20,7 +20,7 @@
 
             <TextField fx:id="searchField" prefWidth="227.0" promptText="Nhập nội dung tìm kiếm" styleClass="search-field" />
 
-            <Button styleClass="icon-button" text="👤" />
+            <Button fx:id="userBtn" styleClass="icon-button" text="👤" />
          </HBox>
 
          <HBox styleClass="menu-bar">
