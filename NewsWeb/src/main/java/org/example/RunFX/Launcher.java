@@ -11,7 +11,7 @@ public class Launcher extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         Parent root = FXMLLoader.load(
-                getClass().getResource("/Login/login.fxml")
+                getClass().getResource("/Register/register.fxml")
         );
         stage.setScene(new Scene(root));
         stage.show();
