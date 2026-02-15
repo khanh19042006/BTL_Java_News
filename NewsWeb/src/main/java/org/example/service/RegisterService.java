@@ -9,6 +9,6 @@ public interface RegisterService {
     public boolean checkPassword (String password);
     public String getUserIdByUsername(String username);
     public String createOtp(String userId);
-    public void sendOtp(String toEmail);
+    public void sendOtp(String userId, String toEmail);
     public boolean verityOtp(String userId, String otpInput);
 }

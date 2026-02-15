@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="720" prefWidth="420"
+            stylesheets="@css/register.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.VerifyController">
+
+    <children>
+        <VBox alignment="CENTER"
+              spacing="20"
+              AnchorPane.topAnchor="0"
+              AnchorPane.bottomAnchor="0"
+              AnchorPane.leftAnchor="0"
+              AnchorPane.rightAnchor="0">
+
+            <VBox alignment="CENTER"
+                  spacing="15"
+                  maxWidth="320"
+                  styleClass="login-card">
+
+                <Label text="Xác thực tài khoản"
+                       styleClass="app-title"/>
+
+                <Label text="Nhập mã OTP đã gửi về email"
+                       styleClass="sub-title"/>
+
+                <TextField fx:id="otpField"
+                           promptText="Nhập mã OTP"
+                           styleClass="input-field"/>
+
+                <Button text="Xác nhận"
+                        onAction="#handleVerify"
+                        styleClass="login-button"/>
+
+                <Button text="Gửi lại OTP"
+                        onAction="#handleResendOtp"
+                        styleClass="login-button"/>
+
+                <Label fx:id="messageLabel"
+                       visible="false"
+                       managed="false"
+                       styleClass="error-text"/>
+
+            </VBox>
+        </VBox>
+    </children>
+</AnchorPane>

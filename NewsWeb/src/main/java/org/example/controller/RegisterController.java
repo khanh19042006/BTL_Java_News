@@ -4,8 +4,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.dto.UserDTO;
 import org.example.service.RegisterService;
@@ -17,44 +18,49 @@ public class RegisterController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
-    @FXML private Label errorLabel;
-
-    // kiểm tra otp
-    @FXML private TextField otpField;
-    @FXML private HBox otpBox;
+    @FXML private Label messageLabel;
 
     private final RegisterService registerService = new RegisterServiceImpl();
 
-
-    private String currentUserId; // lưu userId sau khi đăng ký
     @FXML
     private void handleRegister() {
+
         String username = usernameField.getText().trim();
         String email = emailField.getText().trim();
-        String password = passwordField.getText();
-        String confirmPassword = confirmPasswordField.getText();
+        String password = passwordField.getText().trim();
+        String confirmPassword = confirmPasswordField.getText().trim();
 
-        if (username.isBlank() || email.isBlank() || password.isBlank()) {
-            showError("Vui lòng nhập đầy đủ thông tin");
+        // kểm tra đầy đủ thông tin
+        if (username.isBlank() || email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+            showMessage("Vui lòng nhập đầy đủ thông tin.", "red");
             return;
         }
+
+        // kiểm tra password trùng
         if (!password.equals(confirmPassword)) {
-            showError("Mật khẩu không khớp");
+            showMessage("Mật khẩu không khớp.", "red");
             return;
         }
+
+        // check username
         if (!registerService.checkUsername(username)) {
-            showError("Tên tài khoản đã tồn tại");
+            showMessage("Username đã tồn tại.", "red");
             return;
         }
+
+        // check email format
         if (!registerService.checkEmail(email)) {
-            showError("Email không hợp lệ");
+            showMessage("Email không hợp lệ.", "red");
             return;
         }
+
+        // check password mạnh
         if (!registerService.checkPassword(password)) {
-            showError("Mật khẩu phải >=8 ký tự gồm hoa, thường, số, ký tự đặc biệt");
+            showMessage("Mật khẩu chưa đủ mạnh.", "red");
             return;
         }
-        // tạo user
+
+        // tạo DTO
         UserDTO user = new UserDTO();
         user.setUsername(username);
         user.setEmail(email);
@@ -63,44 +69,23 @@ public class RegisterController {
         boolean success = registerService.register(user);
 
         if (!success) {
-            showError("Đăng ký thất bại");
+            showMessage("Đăng ký thất bại.", "red");
             return;
         }
 
-        // lấy userId để verify OTP
-        currentUserId = registerService.getUserIdByUsername(username);
+        // lấy userId lại từ DB
+        String userId = registerService.getUserIdByUsername(username);
 
-        // gửi OTP
-        registerService.sendOtp(email);
-        otpBox.setVisible(true);
-        otpBox.setManaged(true);
-        showError("OTP đã được gửi về email. Vui lòng xác nhận.");
-        errorLabel.setStyle("-fx-text-fill: orange;");
-    }
-
-    @FXML
-    // xác thực otp
-    private void handleVerifyOtp() {
-        if (currentUserId == null) {
-            showError("Vui lòng đăng ký trước.");
+        if (userId == null) {
+            showMessage("Tạo tài khoản thất bại. Vui lòng thử lại.", "red");
             return;
         }
-        String otpInput = otpField.getText();
-        boolean verified = registerService.verityOtp(currentUserId, otpInput);
-        if (verified) {
-            showError("Xác thực thành công! Bạn có thể đăng nhập.");
-            errorLabel.setStyle("-fx-text-fill: green;");
-        } else {
-            showError("OTP sai hoặc đã hết hạn.");
-        }
-    }
 
-    private void showError(String message) {
-        errorLabel.setText(message);
-        errorLabel.setVisible(true);
-        errorLabel.setManaged(true);
-    }
+        //  gửi OTP
+        registerService.sendOtp(userId, email);
 
+        goToVerify(userId, email);
+    }
 
     @FXML
     private void goToLogin() {
@@ -113,6 +98,35 @@ public class RegisterController {
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
+            showMessage("Lỗi chuyển trang.", "red");
         }
+    }
+
+    private void goToVerify(String userId, String email) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Register/verify.fxml")
+            );
+
+            Parent root = loader.load();
+
+            VerifyController controller = loader.getController();
+            controller.setData(userId, email);
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showMessage("Lỗi chuyển trang xác thực.", "red");
+        }
+    }
+
+    private void showMessage(String message, String color) {
+        messageLabel.setText(message);
+        messageLabel.setStyle("-fx-text-fill: " + color + ";");
+        messageLabel.setVisible(true);
+        messageLabel.setManaged(true);
     }
 }
