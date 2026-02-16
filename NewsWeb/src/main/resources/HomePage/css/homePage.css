@@ -59,11 +59,6 @@
     -fx-background-color: #F2F2F2;
 }
 
-.tab-button:selected {
-    -fx-border-color: #FF6600;
-    -fx-text-fill: #FF6600;
-}
-
 .news-list {
     -fx-background-color: transparent;
 }
@@ -75,4 +70,29 @@
 
 .list-cell:selected {
     -fx-background-color: transparent;
+}
+.pagination {
+    -fx-padding: 10 0 15 0;
+}
+
+.page-button {
+    -fx-background-color: white;
+    -fx-border-color: #DDDDDD;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 6 12;
+    -fx-cursor: hand;
+}
+
+.page-button:hover {
+    -fx-background-color: #F2F2F2;
+}
+
+.page-button:pressed {
+    -fx-background-color: #E6E6E6;
+}
+
+.page-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
 }

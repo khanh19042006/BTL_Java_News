@@ -57,6 +57,18 @@ public class HomeController implements Initializable {
     private final HomeService homeService = new HomeServiceimpl();
     private String userId = null;
 
+    //biến phân trang
+    private static int currentPage = 1;
+    private static int totalPage = 1;
+    @FXML
+    private Label pageLabel;
+
+    @FXML
+    private Button prevBtn;
+
+    @FXML
+    private Button nextBtn;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // filter luôn tồn tại
@@ -80,6 +92,23 @@ public class HomeController implements Initializable {
         });
 
 
+    }
+
+    //sử lý nút phân trang
+    @FXML
+    private void handleNextPage() {
+        if (currentPage < totalPage) {
+            currentPage++;
+            loadPage();
+        }
+    }
+
+    @FXML
+    private void handlePrevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            loadPage();
+        }
     }
 
     // hàm menu
@@ -204,20 +233,29 @@ public class HomeController implements Initializable {
     @FXML
     private void loadRecommendNews() {
         currentMode = HomeMode.RECOMMEND;
-        updateNewsList(homeService.getRecommendNews(userId));
+        currentPage = 1;
+        totalPage = 1; // chỉ 1 trang
+        loadPage();
     }
+
 
     @FXML
     private void loadNewNews() {
         currentMode = HomeMode.NEW;
-        updateNewsList(homeService.getNewNews());
+        currentPage = 1;
+        totalPage = homeService.countTotalPageNews();
+        loadPage();
     }
 
     @FXML
     private void loadHotNews() {
         currentMode = HomeMode.HOT;
-        updateNewsList(homeService.getHotNews());
+        currentPage = 1;
+        totalPage = homeService.countTotalPageNews();
+        loadPage();
     }
+
+
 
     public void reloadNews() {
         switch (currentMode) {
@@ -226,6 +264,20 @@ public class HomeController implements Initializable {
             default -> loadRecommendNews();
         }
     }
+
+    private void loadPage() {
+        List<NewsDTO> news;
+        switch (currentMode) {
+            case NEW -> news = homeService.getNewsNewByPage(currentPage);
+            case HOT -> news = homeService.getHotNewsByPage(currentPage);
+            default -> news = homeService.getRecommendNews(userId);
+        }
+        updateNewsList(news);
+        pageLabel.setText("Trang " + currentPage + " / " + totalPage);
+        prevBtn.setDisable(currentPage == 1);
+        nextBtn.setDisable(currentPage == totalPage);
+    }
+
     // đổ dữ liệu lên UI
     private void updateNewsList(List<NewsDTO> news) {
         masterNewsList.setAll(news == null ? List.of() : news);
