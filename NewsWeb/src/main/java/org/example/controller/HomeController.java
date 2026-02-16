@@ -66,7 +66,8 @@ public class HomeController implements Initializable {
         newsList.setPlaceholder(new Label("Không có bài viết nào!"));
         setupListView();
         setupSearch();
-        loadRecommendNews();
+        // load lại trang trước đó
+        reloadNews();
         // tạo hành động cho nút
         setupUserMenu();
 
@@ -91,7 +92,7 @@ public class HomeController implements Initializable {
         }
         userMenu.setAutoHide(true);
 
-        boolean isLoggedIn = userId != null; // SessionManager.isLoggedIn()
+        boolean isLoggedIn = userId != null;
 
         if (isLoggedIn) {
             MenuItem profileItem = new MenuItem("Trang cá nhân");
@@ -199,7 +200,7 @@ public class HomeController implements Initializable {
     public enum HomeMode {
         RECOMMEND, NEW, HOT
     }
-    private HomeMode currentMode = HomeMode.RECOMMEND;
+    private static HomeMode currentMode = HomeMode.RECOMMEND;
     @FXML
     private void loadRecommendNews() {
         currentMode = HomeMode.RECOMMEND;

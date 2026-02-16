@@ -47,7 +47,6 @@
                        visible="false"
                        managed="false"
                        styleClass="error-text"/>
-
             </VBox>
         </VBox>
     </children>
