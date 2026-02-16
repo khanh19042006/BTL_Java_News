@@ -66,7 +66,8 @@ public class HomeController implements Initializable {
         newsList.setPlaceholder(new Label("Không có bài viết nào!"));
         setupListView();
         setupSearch();
-        loadRecommendNews();
+        // load lại trang trước đó
+        reloadNews();
         // tạo hành động cho nút
         setupUserMenu();
 
@@ -91,7 +92,7 @@ public class HomeController implements Initializable {
         }
         userMenu.setAutoHide(true);
 
-        boolean isLoggedIn = userId != null; // SessionManager.isLoggedIn()
+        boolean isLoggedIn = userId != null;
 
         if (isLoggedIn) {
             MenuItem profileItem = new MenuItem("Trang cá nhân");
@@ -150,9 +151,24 @@ public class HomeController implements Initializable {
             e.printStackTrace();
         }
     }
+
     private void openRegister() {
-        System.out.println("Mở trang đăng ký");
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Register/register.fxml")
+            );
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) userBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Đăng ký");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
     private void logout() {
         userId = null;
         setupUserMenu(); // refresh menu sau khi logout
@@ -184,7 +200,7 @@ public class HomeController implements Initializable {
     public enum HomeMode {
         RECOMMEND, NEW, HOT
     }
-    private HomeMode currentMode = HomeMode.RECOMMEND;
+    private static HomeMode currentMode = HomeMode.RECOMMEND;
     @FXML
     private void loadRecommendNews() {
         currentMode = HomeMode.RECOMMEND;
@@ -293,7 +309,7 @@ public class HomeController implements Initializable {
             NewsDetailController controller = loader.getController();
             controller.setFromProfile(false);
             controller.setHomeController(this);
-            // ✅ truyền ID
+            // truyền ID
             controller.setNewsId(news.getId());
 
             Stage stage = (Stage) newsList.getScene().getWindow();

@@ -294,13 +294,11 @@ public class AuthDAO {
                 }
             }
         }
-
         // trả OTP để gửi email
         return otpCode;
     }
 
     public boolean verifyOtp(String userId, String otpInput) {
-
         String sql = "SELECT otp_code, exp FROM token "
                 + "WHERE user_id = ? ORDER BY iat DESC LIMIT 1";
 
@@ -322,10 +320,11 @@ public class AuthDAO {
                 long exp = rs.getLong("exp");
 
                 // kiểm tra OTP đúng và chưa hết hạn
-                if (otpInput.equals(otpCode) && now <= exp) {
+                if (otpInput.trim().equals(otpCode.trim()) && now <= exp) {
                     return true;
                 }
             }
+
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -355,7 +354,6 @@ public class AuthDAO {
                 }
             }
         }
-
         return false;
     }
 
@@ -381,7 +379,7 @@ public class AuthDAO {
 
     public boolean updateUserVerified(String userId) {
 
-        String sql = "UPDATE users SET is_verified = 1 WHERE id = ?";
+        String sql = "UPDATE users SET isVerity = 1 WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

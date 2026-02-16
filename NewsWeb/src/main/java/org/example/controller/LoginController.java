@@ -99,4 +99,23 @@ public class LoginController {
         }
     }
 
+    @FXML
+    private void goToRegister() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Register/register.fxml")
+            );
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Đăng ký");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }
