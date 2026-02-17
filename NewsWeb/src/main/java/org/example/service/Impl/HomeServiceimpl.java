@@ -7,6 +7,7 @@ import org.example.dto.CategoryDTO;
 import org.example.dto.NewsDTO;
 import org.example.service.HomeService;
 
+import java.sql.SQLOutput;
 import java.util.List;
 
 public class HomeServiceimpl implements HomeService {
@@ -27,7 +28,7 @@ public class HomeServiceimpl implements HomeService {
     }
 
     @Override
-    public List<NewsDTO> getNewsByFind(String keyword){
+    public List<NewsDTO> searchNews(String keyword){
             return newsDAO.searchNews(keyword, limit);
     }
 
@@ -67,6 +68,7 @@ public class HomeServiceimpl implements HomeService {
         if (totalNews % limit == 0) totalPage = totalNews / limit;
         else totalPage = (totalNews / limit) + 1;
 
+        System.out.println(totalPage);
         return totalPage;
     }
 
