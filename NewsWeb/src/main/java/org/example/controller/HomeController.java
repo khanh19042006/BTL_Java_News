@@ -212,12 +212,26 @@ public class HomeController implements Initializable {
 
     private void setupSearch() {
         searchField.textProperty().addListener((obs, oldText, newText) -> {
-            String keyword = newText == null ? "" : newText.trim().toLowerCase();
-            filteredNewsList.setPredicate(news -> {
-                if (keyword.isEmpty()) return true;
-                return containsIgnoreCase(news.getHeadline(), keyword)
-                        || containsIgnoreCase(news.getShort_description(), keyword);
-            });
+
+            String keyword = newText == null ? "" : newText.trim();
+
+            if (keyword.isEmpty()) {
+                // quay về trạng thái cũ
+                reloadNews();
+                return;
+            }
+
+            currentMode = HomeMode.SEARCH;
+            currentPage = 1;
+            totalPage = 1;
+
+            List<NewsDTO> result = homeService.searchNews(keyword);
+            updateNewsList(result);
+
+            // ẩn phân trang khi search
+            pageLabel.setVisible(false);
+            prevBtn.setVisible(false);
+            nextBtn.setVisible(false);
         });
     }
 
@@ -232,8 +246,9 @@ public class HomeController implements Initializable {
 
     // biến nhớ trạng thái home đang ở chế độ nào
     public enum HomeMode {
-        RECOMMEND, NEW, HOT
+        RECOMMEND, NEW, HOT, SEARCH
     }
+
     private static HomeMode currentMode = HomeMode.RECOMMEND;
     @FXML
     private void loadRecommendNews() {
@@ -276,6 +291,7 @@ public class HomeController implements Initializable {
         switch (currentMode) {
             case NEW -> news = homeService.getNewsNewByPage(currentPage);
             case HOT -> news = homeService.getHotNewsByPage(currentPage);
+            case SEARCH -> news = masterNewsList; // giữ nguyên kết quả search
             default -> news = homeService.getRecommendNews(userId);
         }
         updateNewsList(news);
