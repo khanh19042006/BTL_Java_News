@@ -28,7 +28,8 @@
 
             <Button fx:id="newBtn" onAction="#loadNewNews" styleClass="tab-button" text="MỚI" />
 
-            <Button styleClass="tab-button" text="VIDEO" />
+            <Button fx:id="videoBtn" onAction="#loadRecommendNews" styleClass="tab-button" text="VIDEO" />
+
             <Button styleClass="tab-button" text="CHỦ ĐỀ" />
          </HBox>
       </VBox>
