@@ -200,9 +200,14 @@ public class HomeController implements Initializable {
 
     private void logout() {
         userId = null;
-        setupUserMenu(); // refresh menu sau khi logout
+        // reset về trang đề xuất mặc định
+        currentMode = HomeMode.RECOMMEND;
+        currentPage = 1;
+        setupUserMenu();
+        loadPage();   // reload lại dữ liệu
         System.out.println("Đã đăng xuất");
     }
+
 
 
     private void setupSearch() {
@@ -267,15 +272,27 @@ public class HomeController implements Initializable {
 
     private void loadPage() {
         List<NewsDTO> news;
+
         switch (currentMode) {
             case NEW -> news = homeService.getNewsNewByPage(currentPage);
             case HOT -> news = homeService.getHotNewsByPage(currentPage);
             default -> news = homeService.getRecommendNews(userId);
         }
         updateNewsList(news);
-        pageLabel.setText("Trang " + currentPage + " / " + totalPage);
-        prevBtn.setDisable(currentPage == 1);
-        nextBtn.setDisable(currentPage == totalPage);
+        if (currentMode == HomeMode.RECOMMEND) {
+            // ẩn phân trang
+            pageLabel.setVisible(false);
+            prevBtn.setVisible(false);
+            nextBtn.setVisible(false);
+        } else {
+            // phân trang nếu không phải đề xuất
+            pageLabel.setVisible(true);
+            prevBtn.setVisible(true);
+            nextBtn.setVisible(true);
+            pageLabel.setText("Trang " + currentPage + " / " + totalPage);
+            prevBtn.setDisable(currentPage == 1);
+            nextBtn.setDisable(currentPage == totalPage);
+        }
     }
 
     // đổ dữ liệu lên UI
