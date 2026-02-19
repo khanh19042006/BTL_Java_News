@@ -2,9 +2,7 @@ package org.example.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -21,9 +19,6 @@ import javafx.stage.Stage;
 import org.example.controller.NewsDetailController;
 
 // sử dụng nemu
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
 import javafx.geometry.Side;
 
 import javafx.collections.FXCollections;
@@ -34,9 +29,21 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javafx.scene.control.TextField;
+
+//categỏy
+import org.example.dto.CategoryDTO;
+
 
 public class HomeController implements Initializable {
+
+    //nút chủ đề
+    @FXML
+    private VBox newsContainer;
+    @FXML
+    private VBox categoryContainer;
+    @FXML
+    private ScrollPane categoryScroll;
+
 
     // tạo menu
     @FXML
@@ -55,6 +62,7 @@ public class HomeController implements Initializable {
     private ListView<NewsDTO> newsList;
 
     private final HomeService homeService = new HomeServiceimpl();
+    private String currentCategoryCode = null;
     private String userId = null;
 
     //biến phân trang
@@ -86,11 +94,56 @@ public class HomeController implements Initializable {
             if (userMenu.isShowing()) {
                 userMenu.hide();
             } else {
-                userMenu.show(userBtn, Side.BOTTOM, -120, 5);
+                userMenu.show(userBtn, Side.BOTTOM, 0, 0);
             }
         });
+    }
 
+    @FXML
+    private void showCategoryScreen() {
 
+        // ẩn list news
+        newsContainer.setVisible(false);
+        newsContainer.setManaged(false);
+
+        // hiện ScrollPane chứa category
+        categoryScroll.setVisible(true);
+        categoryScroll.setManaged(true);
+
+        categoryContainer.getChildren().clear();
+
+        List<CategoryDTO> categories = homeService.getCategory();
+
+        for (CategoryDTO category : categories) {
+
+            Button btn = new Button(category.getName());
+            btn.setMaxWidth(Double.MAX_VALUE);
+
+            btn.setStyle("""
+            -fx-background-color: white;
+            -fx-border-color: #DDDDDD;
+            -fx-padding: 10;
+            -fx-font-weight: bold;
+            -fx-cursor: hand;
+        """);
+
+            btn.setOnAction(e -> {
+                currentMode = HomeMode.CATEGORY;
+                currentCategoryCode = category.getCode();
+                currentPage = 1;
+
+                loadPage();
+
+                // quay lại list news
+                categoryScroll.setVisible(false);
+                categoryScroll.setManaged(false);
+
+                newsContainer.setVisible(true);
+                newsContainer.setManaged(true);
+            });
+
+            categoryContainer.getChildren().add(btn);
+        }
     }
 
     //sử lý nút phân trang
@@ -244,7 +297,7 @@ public class HomeController implements Initializable {
 
     // biến nhớ trạng thái home đang ở chế độ nào
     public enum HomeMode {
-        RECOMMEND, NEW, HOT, SEARCH
+        RECOMMEND, NEW, HOT, SEARCH, CATEGORY
     }
 
     private static HomeMode currentMode = HomeMode.RECOMMEND;
@@ -279,6 +332,7 @@ public class HomeController implements Initializable {
         switch (currentMode) {
             case NEW -> loadNewNews();
             case HOT -> loadHotNews();
+            case CATEGORY -> loadPage();
             default -> loadRecommendNews();
         }
     }
@@ -289,11 +343,12 @@ public class HomeController implements Initializable {
         switch (currentMode) {
             case NEW -> news = homeService.getNewsNewByPage(currentPage);
             case HOT -> news = homeService.getHotNewsByPage(currentPage);
+            case CATEGORY -> news = homeService.getNewsByCategory(currentCategoryCode);
             case SEARCH -> news = masterNewsList; // giữ nguyên kết quả search
             default -> news = homeService.getRecommendNews(userId);
         }
         updateNewsList(news);
-        if (currentMode == HomeMode.RECOMMEND) {
+        if (currentMode == HomeMode.RECOMMEND || currentMode == HomeMode.SEARCH || currentMode == HomeMode.CATEGORY) {
             // ẩn phân trang
             pageLabel.setVisible(false);
             prevBtn.setVisible(false);
@@ -345,12 +400,11 @@ public class HomeController implements Initializable {
 
                     root.getChildren().addAll(imageView, textBox);
                     root.setStyle("""
-                -fx-padding: 12;
-                -fx-background-color: white;
-                -fx-background-radius: 10;
-                -fx-border-radius: 10;
-                -fx-border-color: #E0E0E0;
-            """);
+                    -fx-padding: 10;
+                    -fx-background-color: white;
+                    -fx-border-color: #EAEAEA;
+                    -fx-border-width: 0 0 1 0;
+                    """);
                     setGraphic(root);
                 }
 
