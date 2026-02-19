@@ -77,7 +77,6 @@ public class HomeController implements Initializable {
         newsList.setItems(filteredNewsList);
         newsList.setPlaceholder(new Label("Không có bài viết nào!"));
         setupListView();
-        setupSearch();
         // load lại trang trước đó
         reloadNews();
         // tạo hành động cho nút
@@ -210,29 +209,28 @@ public class HomeController implements Initializable {
 
 
 
-    private void setupSearch() {
-        searchField.textProperty().addListener((obs, oldText, newText) -> {
+    @FXML
+    private void handleSearch() {
 
-            String keyword = newText == null ? "" : newText.trim();
+        String keyword = searchField.getText();
 
-            if (keyword.isEmpty()) {
-                // quay về trạng thái cũ
-                reloadNews();
-                return;
-            }
-
-            currentMode = HomeMode.SEARCH;
+        if (keyword == null || keyword.trim().isEmpty()) {
+            currentMode = HomeMode.RECOMMEND;
             currentPage = 1;
-            totalPage = 1;
+            reloadNews();
+            return;
+        }
 
-            List<NewsDTO> result = homeService.searchNews(keyword);
-            updateNewsList(result);
+        currentMode = HomeMode.SEARCH;
+        currentPage = 1;
+        totalPage = 1;
 
-            // ẩn phân trang khi search
-            pageLabel.setVisible(false);
-            prevBtn.setVisible(false);
-            nextBtn.setVisible(false);
-        });
+        List<NewsDTO> result = homeService.searchNews(keyword.trim());
+        updateNewsList(result);
+
+        pageLabel.setVisible(false);
+        prevBtn.setVisible(false);
+        nextBtn.setVisible(false);
     }
 
     private boolean containsIgnoreCase(String text, String keyword) {
