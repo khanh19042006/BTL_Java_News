@@ -16,8 +16,7 @@ import org.example.service.LoginService;
 
 
 public class LoginController {
-
-    private final LoginServiceImpl loginService = new LoginServiceImpl();
+    private final LoginService loginService = new LoginServiceImpl();
 
     @FXML
     private TextField usernameField;
