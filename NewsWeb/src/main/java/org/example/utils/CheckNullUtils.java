@@ -3,6 +3,7 @@ package org.example.utils;
 import org.example.dto.UserDTO;
 
 public class CheckNullUtils {
+    private CheckNullUtils(){};
 
     private static boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();

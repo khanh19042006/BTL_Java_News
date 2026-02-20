@@ -20,9 +20,19 @@ import java.nio.file.*;
 
 import java.util.List;
 
+// profile menu
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.geometry.Side;
+
 // search
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+// bắt sự kiện chuyển sang trang detail
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class ProfileController {
 
@@ -35,10 +45,17 @@ public class ProfileController {
     @FXML private ListView<NewsDTO> userPostsList;
 
     // bien luu danh sach goc
-    private ObservableList<NewsDTO> masterNewsList;
-    private FilteredList<NewsDTO> filteredNewsList;
+    private ObservableList<NewsDTO> masterNewsList = FXCollections.observableArrayList();
+    private FilteredList<NewsDTO> filteredNewsList =
+            new FilteredList<>(masterNewsList, p -> true);
 
     @FXML private TextField searchField;
+
+    // nút
+    @FXML
+    private Button homeBtn;
+    private ContextMenu homeMenu;
+
 
 
     private final ProfileService profileService = new ProfileServiceImpl();
@@ -48,15 +65,90 @@ public class ProfileController {
     private static final String DEFAULT_AVATAR = "/Image/default-thumbnail.jpg";
 
     // hardcode admin
-    private final String currentUserId = dotenv.get("ADMIN_ID");
+//    private final String currentUserId = dotenv.get("ADMIN_ID");
+    private String currentUserId;
+    public String getCurrentUserId() {
+        return currentUserId;
+    }
+    public void setUserId(String userId) {
+        this.currentUserId = userId;
+
+        loadUserInfo();
+        loadUserNews();
+        loadAvatar();
+    }
 
     @FXML
     public void initialize() {
+        userPostsList.setItems(filteredNewsList);
+        userPostsList.setPlaceholder(new Label("📰 Chưa có bài viết"));
         setupListView();
-        loadUserInfo();
-        loadAvatar();
-        loadUserNews();
         setupSearch();
+        setupHomeMenu();
+    }
+
+    private void setupHomeMenu() {
+
+        homeMenu = new ContextMenu();
+
+        MenuItem homeItem = new MenuItem("Trang chủ");
+        MenuItem logoutItem = new MenuItem("Đăng xuất");
+
+        homeItem.setOnAction(e -> goHome());
+        logoutItem.setOnAction(e -> handleLogout());
+
+        homeMenu.getItems().addAll(homeItem, logoutItem);
+
+        homeBtn.setOnAction(e -> {
+            if (homeMenu.isShowing()) {
+                homeMenu.hide();
+            } else {
+                homeMenu.show(homeBtn, Side.BOTTOM, -80, 5);
+            }
+        });
+    }
+
+    private void goHome() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Homepage/homepage.fxml")
+            );
+
+            Parent root = loader.load();
+
+            HomeController homeController = loader.getController();
+            homeController.setUserId(currentUserId); // giữ đăng nhập
+
+            Stage stage = (Stage) homeBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Trang chủ");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleLogout() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Homepage/homepage.fxml")
+            );
+
+            Parent root = loader.load();
+            // Không set userId → coi như logout
+
+            Stage stage = (Stage) homeBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Trang chủ");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void reloadUserNews() {
+        loadUserNews();
     }
 
     private void loadUserInfo() {
@@ -78,31 +170,21 @@ public class ProfileController {
         List<NewsDTO> news =
                 profileService.getNewsByUserId(currentUserId);
 
-        masterNewsList = FXCollections.observableArrayList(
-                news == null ? List.of() : news
-        );
-
-        filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
-        userPostsList.setItems(filteredNewsList);
-
-        if (masterNewsList.isEmpty()) {
-            userPostsList.setPlaceholder(
-                    new Label("📰 Chưa có bài viết")
-            );
-        }
+        masterNewsList.setAll(news == null ? List.of() : news);
     }
 
-
     private void setupListView() {
-        userPostsList.setCellFactory(list -> new ListCell<>() {
+        userPostsList.setCellFactory(list -> new ListCell<NewsDTO>() {
 
             private final ImageView imageView = new ImageView();
             private final Label title = new Label();
             private final Label description = new Label();
             private final Label date = new Label();
+            private final Label views = new Label();
 
             private final VBox textBox = new VBox(6);
             private final HBox root = new HBox(12);
+            private final HBox metaBox = new HBox(10);
 
             {
                 imageView.setFitWidth(90);
@@ -116,18 +198,23 @@ public class ProfileController {
                 description.setStyle("-fx-font-size: 12px;");
 
                 date.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
+                views.setStyle("-fx-font-size: 11px; -fx-text-fill: #999;");
 
-                textBox.getChildren().addAll(title, description, date);
+                metaBox.getChildren().addAll(date, views);
+
+                textBox.getChildren().addAll(title, description, metaBox);
                 textBox.setPrefWidth(260);
 
                 root.getChildren().addAll(imageView, textBox);
                 root.setStyle("""
-                        -fx-padding: 10;
-                        -fx-background-color: white;
-                        -fx-background-radius: 8;
-                        -fx-border-radius: 8;
-                        -fx-border-color: #E0E0E0;
-                        """);
+                    -fx-padding: 10;
+                    -fx-background-color: white;
+                    -fx-background-radius: 8;
+                    -fx-border-radius: 8;
+                    -fx-border-color: #E0E0E0;
+                    """);
+
+                setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             }
 
             @Override
@@ -142,12 +229,42 @@ public class ProfileController {
                 title.setText(news.getHeadline());
                 description.setText(news.getShort_description());
                 date.setText("🕒 " + news.getDate());
-
+                views.setText("👁 " + news.getViews());
                 imageView.setImage(loadImage(news.getThumbnail()));
 
                 setGraphic(root);
             }
         });
+        userPostsList.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 1) {
+                NewsDTO selected = userPostsList.getSelectionModel().getSelectedItem();
+                if (selected != null) {
+                    openNewsDetail(selected);
+                }
+            }
+        });
+    }
+
+    private void openNewsDetail(NewsDTO news) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/NewsDetail/news-detail.fxml")
+            );
+
+            Parent detailRoot = loader.load();
+            NewsDetailController controller = loader.getController();
+
+            controller.setFromProfile(true);
+            controller.setNewsId(news.getId());
+            controller.setProfileController(this);
+
+            Stage stage = (Stage) userPostsList.getScene().getWindow();
+            stage.setScene(new Scene(detailRoot));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Image loadImage(String path) {
