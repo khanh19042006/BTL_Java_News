@@ -12,12 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefWidth="420"
-            prefHeight="720"
-            stylesheets="@css/profile.css"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.controller.ProfileController">
+<BorderPane prefWidth="420" prefHeight="720" stylesheets="@css/profile.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.ProfileController">
 
    <top>
       <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
@@ -37,40 +32,27 @@
             <HBox alignment="CENTER_LEFT" spacing="15">
 
                <StackPane prefWidth="80" prefHeight="80">
-                  <ImageView fx:id="avatarImage"
-                             fitWidth="80"
-                             fitHeight="80"
-                             preserveRatio="true"/>
-                  <Button fx:id="editAvatarBtn"
-                          text="🖊"
-                          onAction="#onEditAvatar"
-                          styleClass="edit-avatar-button"
-                          StackPane.alignment="BOTTOM_RIGHT"/>
+                  <ImageView fx:id="avatarImage" fitWidth="80" fitHeight="80" preserveRatio="true"/>
+                  <Button fx:id="editAvatarBtn" text="🖊" onAction="#onEditAvatar" styleClass="edit-avatar-button" StackPane.alignment="BOTTOM_RIGHT"/>
                </StackPane>
 
                <VBox spacing="6">
-                  <Label fx:id="usernameLabel"
-                         text="Username"
-                         styleClass="profile-name"/>
-                  <Label fx:id="emailLabel"
-                         text="email@gmail.com"
-                         styleClass="profile-email"/>
-                  <Label fx:id="roleLabel"
-                         text="USER"
-                         styleClass="role-badge"/>
+                  <Label fx:id="usernameLabel" text="Username" styleClass="profile-name"/>
+                  <Label fx:id="emailLabel" text="email@gmail.com" styleClass="profile-email"/>
+                  <Label fx:id="roleLabel" text="USER" styleClass="role-badge"/>
                </VBox>
             </HBox>
          </VBox>
 
          <Label text="Bài viết của bạn" styleClass="section-title"/>
 
-         <TextField fx:id="searchField"
-                    promptText="🔍 Tìm kiếm bài viết..."
-                    styleClass="search-field"/>
+         <HBox spacing="10" alignment="CENTER">
+            <TextField fx:id="searchField" promptText="🔍 Tìm kiếm bài viết..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
 
-         <ListView fx:id="userPostsList"
-                   styleClass="news-list"
-                   VBox.vgrow="ALWAYS"/>
+            <Button fx:id="createPostBtn" text="+" onAction="#onCreatePost" styleClass="add-button"/>
+         </HBox>
+
+         <ListView fx:id="userPostsList" styleClass="news-list" VBox.vgrow="ALWAYS"/>
       </VBox>
    </center>
 

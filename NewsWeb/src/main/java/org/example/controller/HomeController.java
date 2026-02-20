@@ -26,6 +26,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -344,7 +345,7 @@ public class HomeController implements Initializable {
             case NEW -> news = homeService.getNewsNewByPage(currentPage);
             case HOT -> news = homeService.getHotNewsByPage(currentPage);
             case CATEGORY -> news = homeService.getNewsByCategory(currentCategoryCode);
-            case SEARCH -> news = masterNewsList; // giữ nguyên kết quả search
+            case SEARCH -> news = new ArrayList<>(masterNewsList); // giữ nguyên kết quả search
             default -> news = homeService.getRecommendNews(userId);
         }
         updateNewsList(news);
