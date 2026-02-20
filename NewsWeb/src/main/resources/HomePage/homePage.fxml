@@ -8,6 +8,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
 
 <BorderPane prefHeight="720" prefWidth="420" stylesheets="@css/homePage.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.HomeController">
 
@@ -18,8 +20,8 @@
 
             <Region HBox.hgrow="ALWAYS" />
 
-            <TextField fx:id="searchField" prefWidth="227.0" promptText="Nhập nội dung tìm kiếm" styleClass="search-field" />
-
+            <TextField fx:id="searchField" prefWidth="182.0" promptText="Nhập nội dung tìm kiếm" styleClass="search-field" />
+            <Button fx:id="searchBtn" onAction="#handleSearch" styleClass="icon-button" text="🔍" />
             <Button fx:id="userBtn" styleClass="icon-button" text="👤" />
          </HBox>
 
@@ -28,23 +30,31 @@
 
             <Button fx:id="newBtn" onAction="#loadNewNews" styleClass="tab-button" text="MỚI" />
 
-            <Button styleClass="tab-button" text="VIDEO" />
-            <Button styleClass="tab-button" text="CHỦ ĐỀ" />
+            <Button fx:id="videoBtn" onAction="#loadRecommendNews" styleClass="tab-button" text="VIDEO" />
+
+            <Button fx:id="topicBtn" onAction="#showCategoryScreen" styleClass="tab-button" text="CHỦ ĐỀ" />
+
          </HBox>
       </VBox>
    </top>
 
    <center>
-      <VBox spacing="10">
-         <ListView fx:id="newsList"
-                   styleClass="news-list"
-                   VBox.vgrow="ALWAYS" />
+      <StackPane>
+         <VBox fx:id="newsContainer" spacing="10">
+            <ListView fx:id="newsList" styleClass="news-list" VBox.vgrow="ALWAYS" />
 
-<!--         <HBox alignment="CENTER" spacing="10">-->
-<!--            <Button text="<<" onAction="#handlePrevPage"/>-->
-<!--            <Label fx:id="pageLabel" text="Trang 1"/>-->
-<!--            <Button text=">>" onAction="#handleNextPage"/>-->
-<!--         </HBox>-->
-      </VBox>
+            <HBox alignment="CENTER" spacing="10" styleClass="pagination">
+               <Button fx:id="prevBtn" onAction="#handlePrevPage" styleClass="page-button" text="&lt;&lt;" />
+               <Label fx:id="pageLabel" styleClass="page-label" text="Trang 1 / 1" />
+               <Button fx:id="nextBtn" onAction="#handleNextPage" styleClass="page-button" text="&gt;&gt;" />
+            </HBox>
+         </VBox>
+
+         <ScrollPane fx:id="categoryScroll" visible="false" managed="false" fitToWidth="true">
+
+            <VBox fx:id="categoryContainer" spacing="10" alignment="TOP_CENTER" style="-fx-padding: 20;" />
+         </ScrollPane>
+
+      </StackPane>
    </center>
 </BorderPane>

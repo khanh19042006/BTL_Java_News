@@ -136,7 +136,7 @@ public class NewsDAO {
         WHERE
             MATCH(headline, short_description, content) AGAINST (?)
         ORDER BY score DESC
-        LIMIT (?)""";
+        LIMIT ?""";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
