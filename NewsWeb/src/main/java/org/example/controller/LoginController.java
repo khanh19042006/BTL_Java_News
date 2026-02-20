@@ -13,10 +13,18 @@ import org.example.service.Impl.LoginServiceImpl;
 import java.io.IOException;
 import javafx.scene.control.Label;
 import org.example.service.LoginService;
+import javafx.scene.control.CheckBox;
+import java.util.prefs.Preferences;
 
 
 public class LoginController {
     private final LoginService loginService = new LoginServiceImpl();
+
+    //nhớ ta khoản
+    @FXML
+    private CheckBox rememberCheckBox;
+    private final Preferences prefs = Preferences.userNodeForPackage(LoginController.class);
+    private static final String PREF_USERNAME = "remember_username";
 
     @FXML
     private TextField usernameField;
@@ -34,13 +42,30 @@ public class LoginController {
     private Button togglePasswordBtn;
 
     @FXML
+    public void initialize() {
+        String savedUsername = prefs.get(PREF_USERNAME, "");
+
+        if (!savedUsername.isEmpty()) {
+            usernameField.setText(savedUsername);
+            rememberCheckBox.setSelected(true);
+        }
+    }
+
+    @FXML
     private void handleLogin() {
         String username = usernameField.getText();
-        String password = passwordField.getText();
-
+        String password = passwordField.isVisible() ? passwordField.getText() : passwordTextField.getText();
         boolean isSuccess = loginService.checkLogin(username, password);
 
         if (isSuccess) {
+
+            // lưu tài khoản
+            if (rememberCheckBox.isSelected()) {
+                prefs.put(PREF_USERNAME, username);
+            } else {
+                prefs.remove(PREF_USERNAME);
+            }
+
             try {
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/Homepage/homepage.fxml")
@@ -48,7 +73,6 @@ public class LoginController {
 
                 Parent root = loader.load();
 
-                // Lấy controller
                 HomeController homeController = loader.getController();
                 homeController.setUserId(loginService.getUserIdByUsername(username));
 
@@ -57,17 +81,13 @@ public class LoginController {
                 stage.setTitle("Trang chủ");
                 stage.show();
 
-                System.out.println("Đăng nhập thành công");
-
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
         } else {
-//            errorLabel.setText("Tên đăng nhập hoặc mật khẩu sai");
             errorLabel.setVisible(true);
             errorLabel.setManaged(true);
-            System.out.println("Đăng nhập thất bại");
         }
     }
 
