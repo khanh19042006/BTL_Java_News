@@ -64,8 +64,11 @@ public class LoginServiceImpl implements LoginService {
         // Kiểm tra độ mạnh yếu của mật khẩu
         if (!PasswordUtils.isValidPassword(newPassword1)) return false;
 
+        // Hash password
+        String newPassword = PasswordUtils.hash(newPassword1);
+
         // Đổi mật khẩu trong db
-        if (!authDAO.changePassword(userId, newPassword1)) return false;
+        if (!authDAO.changePassword(userId, newPassword)) return false;
         return true;
     }
 
