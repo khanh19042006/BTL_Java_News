@@ -1,0 +1,15 @@
+- Tìm kiếm ở Homepage
+- Đổi tab "video" thành "gợi ý", bấm vào hiện ra phần Recommend
+
+- Tab "Chủ đề". bấm vào hiện ra menu các category. 
+Bấm vào category thì hiện ra list các bài báo theo category đó (Service có hàm lấy theo category)
+
+- Trong profile thêm phần đăng bài (Chỉ role journalist hoặc admin mới có thể đăng bài)
+
+- Quên mật khẩu
+
+- Ghi nhớ đăng nhập (Trong LoginService có hàm)
+
+(Phát triển thêm)
+- Trong profile có phần xin cấp role journalist
+- Chức năng bình luận (Đã có hàm)

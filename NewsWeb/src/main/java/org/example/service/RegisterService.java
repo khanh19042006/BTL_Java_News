@@ -7,6 +7,8 @@ public interface RegisterService {
     public boolean checkEmail(String email);
     public boolean checkUsername(String username);
     public boolean checkPassword (String password);
-    public boolean verityOtp(String userId, String otpInput);
     public String getUserIdByUsername(String username);
+    public String createOtp(String userId);
+    public void sendOtp(String userId, String toEmail);
+    public boolean verityOtp(String userId, String otpInput);
 }

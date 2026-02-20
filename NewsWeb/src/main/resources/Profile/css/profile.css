@@ -1,0 +1,115 @@
+.root {
+    -fx-background-color: #F5F5F5;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.header {
+    -fx-padding: 12 16;
+    -fx-spacing: 12;
+    -fx-alignment: center-left;
+    -fx-background-color: #FFFFFF;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #E0E0E0;
+}
+
+.app-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #FF6600;
+}
+
+.icon-button {
+    -fx-background-color: #FF6600;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 18;
+    -fx-cursor: hand;
+}
+
+.icon-button:hover {
+    -fx-background-color: #FF8533;
+}
+
+.profile-card {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 16;
+    -fx-background-radius: 10;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 10;
+}
+
+.profile-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.profile-email {
+    -fx-font-size: 13px;
+    -fx-text-fill: #777777;
+}
+
+.role-badge {
+    -fx-background-color: #FF6600;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 4 10;
+    -fx-background-radius: 12;
+}
+
+.section-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 6 0 0 4;
+}
+
+.news-list {
+    -fx-background-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 6 10;
+}
+
+.list-cell:selected {
+    -fx-background-color: transparent;
+}
+
+.search-field {
+    -fx-pref-height: 38;
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: #DDDDDD;
+    -fx-border-width: 1;
+    -fx-padding: 0 14;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #999999;
+}
+
+.search-field:hover {
+    -fx-border-color: #FF8533;
+}
+
+.search-field:focused {
+    -fx-border-color: #FF6600;
+    -fx-border-width: 1.5;
+}
+
+.edit-avatar-button {
+    -fx-background-color: #FF6600;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-background-radius: 50%;
+    -fx-min-width: 24;
+    -fx-min-height: 24;
+    -fx-cursor: hand;
+}
+
+.edit-avatar-button:hover {
+    -fx-background-color: #FF8533;
+}

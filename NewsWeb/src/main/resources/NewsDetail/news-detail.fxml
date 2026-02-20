@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane prefWidth="420"
+            prefHeight="720"
+            stylesheets="@css/news-detail.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.controller.NewsDetailController">
+
+    <top>
+        <HBox spacing="10"
+              alignment="CENTER_LEFT"
+              styleClass="header">
+            <Button text="⬅" fx:id="backBtn"
+                    styleClass="icon-button"/>
+
+            <Label text="CHI TIẾT BÀI BÁO"
+                   styleClass="app-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="editBtn"
+                    text="🖊"
+                    styleClass="icon-button"/>
+
+            <Button fx:id="saveBtn"
+                    text="✓"
+                    visible="false"
+                    managed="false"
+                    styleClass="icon-button"/>
+
+            <Button fx:id="cancelBtn"
+                    text="✖"
+                    visible="false"
+                    managed="false"
+                    styleClass="icon-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true"
+                    vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox spacing="16"
+                      alignment="TOP_CENTER"
+                      styleClass="page-content">
+                    <padding>
+                        <Insets top="16" right="16" bottom="16" left="16"/>
+                    </padding>
+
+                    <VBox spacing="12"
+                          styleClass="profile-card">
+
+                        <StackPane>
+                            <ImageView fx:id="thumbnailImage"
+                                       fitWidth="360"
+                                       preserveRatio="true"/>
+                            <Button fx:id="editThumbnailBtn"
+                                    text="🖊"
+                                    visible="false"
+                                    managed="false"
+                                    onAction="#onEditThumbnail"
+                                    StackPane.alignment="BOTTOM_RIGHT"/>
+                        </StackPane>
+                        <HBox fx:id="metaViewBox"
+                              spacing="8"
+                              alignment="CENTER_LEFT">
+                            <Label fx:id="dateLabel" />
+                            <Label text="•"/>
+                            <Label fx:id="categoryLabel" />
+                        </HBox>
+                        <HBox fx:id="metaEditBox" spacing="8" alignment="CENTER_LEFT" visible="false" managed="false">
+                            <ComboBox fx:id="categoryBox" promptText="Chọn thể loại"/>
+                        </HBox>
+                        <Label fx:id="titleLabel"
+                               text="Tiêu đề bài báo"
+                               wrapText="true"
+                               styleClass="detail-title"/>
+
+                        <Label fx:id="shortDescLabel"
+                               text="Tóm tắt bài báo"
+                               wrapText="true"
+                               styleClass="detail-summary"/>
+
+                        <Label fx:id="contentLabel"
+                               text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..."
+                               wrapText="true"
+                               styleClass="detail-content"/>
+
+
+                        <TextField fx:id="titleField"
+                                   visible="false"
+                                   managed="false"
+                                   promptText="Nhập tiêu đề bài báo"
+                                   styleClass="edit-title"/>
+
+                        <TextArea fx:id="shortDescArea"
+                                  visible="false"
+                                  managed="false"
+                                  wrapText="true"
+                                  promptText="Nhập tóm tắt bài báo"
+                                  styleClass="edit-summary"/>
+
+                        <TextArea fx:id="contentArea"
+                                  visible="false"
+                                  managed="false"
+                                  wrapText="true"
+                                  promptText="Nhập nội dung bài báo"
+                                  styleClass="edit-content"/>
+
+
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
