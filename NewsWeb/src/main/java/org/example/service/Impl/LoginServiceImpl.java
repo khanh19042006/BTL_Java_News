@@ -114,4 +114,23 @@ public class LoginServiceImpl implements LoginService {
     public String getUserIdByUsername(String username){
         return authDAO.getUserIdByUsername(username);
     }
+
+    @Override
+    public boolean checkUsernameAndEmail(String username, String email) {
+        if (username == null || email == null) {
+            return false;
+        }
+        // lấy userId theo username
+        String userId = authDAO.getUserIdByUsername(username);
+        if (userId == null) {
+            return false; // username không tồn tại
+        }
+        // lấy user theo userId
+        var user = authDAO.getUserbyUserId(userId);
+        if (user == null || user.getEmail() == null) {
+            return false;
+        }
+        // so sánh email
+        return user.getEmail().equalsIgnoreCase(email.trim());
+    }
 }
