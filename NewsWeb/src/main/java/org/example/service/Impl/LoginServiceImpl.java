@@ -64,8 +64,11 @@ public class LoginServiceImpl implements LoginService {
         // Kiểm tra độ mạnh yếu của mật khẩu
         if (!PasswordUtils.isValidPassword(newPassword1)) return false;
 
+        // Hash password
+        String newPassword = PasswordUtils.hash(newPassword1);
+
         // Đổi mật khẩu trong db
-        if (!authDAO.changePassword(userId, newPassword1)) return false;
+        if (!authDAO.changePassword(userId, newPassword)) return false;
         return true;
     }
 
@@ -113,5 +116,24 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public String getUserIdByUsername(String username){
         return authDAO.getUserIdByUsername(username);
+    }
+
+    @Override
+    public boolean checkUsernameAndEmail(String username, String email) {
+        if (username == null || email == null) {
+            return false;
+        }
+        // lấy userId theo username
+        String userId = authDAO.getUserIdByUsername(username);
+        if (userId == null) {
+            return false; // username không tồn tại
+        }
+        // lấy user theo userId
+        var user = authDAO.getUserbyUserId(userId);
+        if (user == null || user.getEmail() == null) {
+            return false;
+        }
+        // so sánh email
+        return user.getEmail().equalsIgnoreCase(email.trim());
     }
 }

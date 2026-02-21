@@ -135,6 +135,22 @@ public class LoginController {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void goToForgotPassword() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/ForgotPassword/forgot-password.fxml")
+            );
 
+            Parent root = loader.load();
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Quên mật khẩu");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 }
