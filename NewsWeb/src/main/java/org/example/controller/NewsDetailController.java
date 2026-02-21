@@ -1,10 +1,7 @@
 package org.example.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -16,7 +13,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import javafx.scene.layout.HBox;
-import javafx.scene.control.ComboBox;
 
 import org.example.dao.UserDAO;
 import org.example.dto.CategoryDTO;
@@ -28,13 +24,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import javafx.scene.control.ListCell;
 import org.example.dto.UserDTO;
 import org.example.service.HomeService;
 import org.example.service.Impl.HomeServiceimpl;
 
 
 public class NewsDetailController {
+    @FXML
+    private Label errorLabel;
 
     @FXML
     private Button backBtn;
@@ -390,9 +387,23 @@ public class NewsDetailController {
 
     // lưu thay đổi
     private void saveChanges() {
-
-        if (titleField.getText().isBlank()) return;
-        if (categoryBox.getValue() == null) return;
+        hideError();
+        if (titleField.getText().isBlank()) {
+            showError("⚠ Vui lòng nhập tiêu đề.");
+            return;
+        }
+        if (shortDescArea.getText().isBlank()) {
+            showError("⚠ Vui lòng nhập tóm tắt.");
+            return;
+        }
+        if (contentArea.getText().isBlank()) {
+            showError("⚠ Vui lòng nhập nội dung.");
+            return;
+        }
+        if (categoryBox.getValue() == null) {
+            showError("⚠ Vui lòng chọn thể loại.");
+            return;
+        }
 
         news.setHeadline(titleField.getText());
         news.setContent(contentArea.getText());
@@ -403,12 +414,24 @@ public class NewsDetailController {
             boolean success = newsDAO.upNews(news);
             if (success) {
                 createMode = false;
-                goBack();   // quay lại profile
-            } else { System.out.println("Đăng bài thất bại!");}
+                goBack(); // quay lại profile
+            } else {
+                showError("❌ Đăng bài thất bại.");
+            }
         } else {
             newsDAO.updateNews(news);
             setNews(news);
             switchToViewMode();
         }
+    }
+    // kiểm tra thông tin
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+    private void hideError() {
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
     }
 }
