@@ -173,6 +173,11 @@ public class ProfileController {
         masterNewsList.setAll(news == null ? List.of() : news);
     }
 
+    @FXML
+    private void onCreatePost() {
+        System.out.println("Create new post clicked");
+    }
+
     private void setupListView() {
         userPostsList.setCellFactory(list -> new ListCell<NewsDTO>() {
 
