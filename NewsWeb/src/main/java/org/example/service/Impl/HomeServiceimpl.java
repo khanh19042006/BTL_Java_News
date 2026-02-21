@@ -81,4 +81,10 @@ public class HomeServiceimpl implements HomeService {
     public boolean incrementViewCount(String newsId){
         return newsDAO.incrementViewCount(newsId);
     }
+
+    @Override
+    public List<NewsDTO> getNewsPageByCategory(String category,int page){
+        return newsDAO.getNewsByCategory(category ,page, limit);
+    }
+
 }

@@ -16,4 +16,6 @@ public interface HomeService {
     public int countTotalPageNews();                            // Xem có tổng cộng bao nhiêu trang
     public List<NewsDTO> getHotNewsByPage(int page);            // Lấy 10 bài viết hot nhất theo số trang
     public boolean incrementViewCount(String newsId);           // Tăng view thêm 1
+    public List<NewsDTO> getNewsPageByCategory
+            (String category,int page);                         // Phân trang theo category
 }
