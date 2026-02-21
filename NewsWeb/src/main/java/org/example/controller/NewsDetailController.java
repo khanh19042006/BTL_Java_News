@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import javafx.scene.layout.HBox;
 import javafx.scene.control.ComboBox;
 
+import org.example.dao.UserDAO;
 import org.example.dto.CategoryDTO;
 import org.example.dto.NewsDTO;
 import org.example.dao.NewsDAO;
@@ -28,6 +29,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import javafx.scene.control.ListCell;
+import org.example.dto.UserDTO;
 import org.example.service.HomeService;
 import org.example.service.Impl.HomeServiceimpl;
 
@@ -86,6 +88,9 @@ public class NewsDetailController {
 
     // biến lưu ảnh
     private static final String NEWS_IMAGE_DIR = "user-data/news/";
+
+    // biến tạo bài báo
+    private boolean createMode = false;
 
     private HomeController homeController;
     private ProfileController profileController;
@@ -159,6 +164,23 @@ public class NewsDetailController {
         viewed = true;
     }
 
+    public void setCreateMode(String userId) {
+        this.createMode = true;
+        this.fromProfile = true;
+
+        this.news = new NewsDTO();
+
+        String newId = java.util.UUID.randomUUID().toString();
+        this.news.setId(newId);
+        this.news.setAuthorId(userId);
+        this.news.setDate(java.time.LocalDate.now().toString());
+        this.news.setViews(0);
+        UserDAO userDAO = new UserDAO();
+        UserDTO user = userDAO.getUserById(userId);
+        this.news.setAuthors(user.getUsername());
+        this.newsId = newId;
+        setEditMode(true);
+    }
 
     public void setNews(NewsDTO news) {
         this.news = news;
@@ -368,33 +390,30 @@ public class NewsDetailController {
 
     // lưu thay đổi
     private void saveChanges() {
-        if (news == null) return;
 
         if (titleField.getText().isBlank()) return;
         if (categoryBox.getValue() == null) return;
 
-        // cập nhật dữ liệu vào DTO
         news.setHeadline(titleField.getText());
         news.setContent(contentArea.getText());
         news.setShort_description(shortDescArea.getText());
         news.setCategory(categoryBox.getValue().getCode());
 
-        // cập nhật DB
-        newsDAO.updateNews(news);
+        if (createMode) {
+            newsDAO.upNews(news);
+            createMode = false;
+        } else {
+            newsDAO.updateNews(news);
+        }
 
-        // cập nhật lại UI
-        titleLabel.setText(news.getHeadline());
-        contentLabel.setText(news.getContent());
-        shortDescLabel.setText(news.getShort_description());
+        setNews(news);       // cập nhật lại UI
+        if (createMode) {
+            newsDAO.upNews(news);
+            createMode = false;
 
-        // cập nhật ngày
-        dateLabel.setText(news.getDate());
-
-        // cập nhật tên thể loại
-        categoryLabel.setText(categoryBox.getValue().getName());
-
-
-        setEditMode(false);
+            goBack(); // quay lại profile
+            return;
+        }
     }
 
 }

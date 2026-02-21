@@ -175,7 +175,24 @@ public class ProfileController {
 
     @FXML
     private void onCreatePost() {
-        System.out.println("Create new post clicked");
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/NewsDetail/news-detail.fxml")
+            );
+
+            Parent root = loader.load();
+            NewsDetailController controller = loader.getController();
+
+            // truyền userId vào chế độ tạo mới
+            controller.setCreateMode(currentUserId);
+
+            Stage stage = (Stage) userPostsList.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Tạo bài viết");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setupListView() {

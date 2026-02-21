@@ -607,15 +607,15 @@ public class NewsDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, newsDTO.getId());
-            ps.setString(3, newsDTO.getHeadline());
-            ps.setString(4, newsDTO.getCategory());
-            ps.setString(5, newsDTO.getShort_description());
-            ps.setString(6, newsDTO.getAuthors());
-            ps.setString(7, newsDTO.getDate());   // nếu là DATE trong DB thì nên dùng setDate()
-            ps.setInt(8, newsDTO.getViews());
-            ps.setString(9, newsDTO.getContent());
-            ps.setString(10, newsDTO.getThumbnail());
-            ps.setString(11, newsDTO.getAuthorId());
+            ps.setString(2, newsDTO.getHeadline());
+            ps.setString(3, newsDTO.getCategory());
+            ps.setString(4, newsDTO.getShort_description());
+            ps.setString(5, newsDTO.getAuthors());
+            ps.setString(6, newsDTO.getDate());   // nếu là DATE trong DB thì nên dùng setDate()
+            ps.setInt(7, newsDTO.getViews());
+            ps.setString(8, newsDTO.getContent());
+            ps.setString(9, newsDTO.getThumbnail());
+            ps.setString(10, newsDTO.getAuthorId());
 
             int rowsAffected = ps.executeUpdate();
 
