@@ -400,20 +400,15 @@ public class NewsDetailController {
         news.setCategory(categoryBox.getValue().getCode());
 
         if (createMode) {
-            newsDAO.upNews(news);
-            createMode = false;
+            boolean success = newsDAO.upNews(news);
+            if (success) {
+                createMode = false;
+                goBack();   // quay lại profile
+            } else { System.out.println("Đăng bài thất bại!");}
         } else {
             newsDAO.updateNews(news);
-        }
-
-        setNews(news);       // cập nhật lại UI
-        if (createMode) {
-            newsDAO.upNews(news);
-            createMode = false;
-
-            goBack(); // quay lại profile
-            return;
+            setNews(news);
+            switchToViewMode();
         }
     }
-
 }

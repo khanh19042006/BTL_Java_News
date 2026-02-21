@@ -176,15 +176,12 @@ public class ProfileController {
     @FXML
     private void onCreatePost() {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/NewsDetail/news-detail.fxml")
-            );
-
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/NewsDetail/news-detail.fxml"));
             Parent root = loader.load();
             NewsDetailController controller = loader.getController();
 
-            // truyền userId vào chế độ tạo mới
             controller.setCreateMode(currentUserId);
+            controller.setProfileController(this);
 
             Stage stage = (Stage) userPostsList.getScene().getWindow();
             stage.setScene(new Scene(root));
