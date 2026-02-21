@@ -300,37 +300,34 @@ public class NewsDetailController {
         editThumbnailBtn.setManaged(editing);
     }
 
+    // lấy root từ home
+    private Parent homeRoot;
+
+    public void setHomeRoot(Parent homeRoot) {
+        this.homeRoot = homeRoot;
+    }
     // quay lại trang trước
     private void goBack() {
         try {
             Stage stage = (Stage) backBtn.getScene().getWindow();
 
-            FXMLLoader loader;
-            Parent root;
-
             if (fromProfile) {
-                loader = new FXMLLoader(
+                FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/Profile/profile.fxml")
                 );
-                root = loader.load();
+                Parent root = loader.load();
 
                 ProfileController controller = loader.getController();
-                // truyền lại userId
                 if (profileController != null) {
                     controller.setUserId(profileController.getCurrentUserId());
                 }
-            } else {
-                loader = new FXMLLoader(
-                        getClass().getResource("/HomePage/homePage.fxml")
-                );
-                root = loader.load();
 
-                HomeController controller = loader.getController();
-                controller.reloadNews();
+                stage.setScene(new Scene(root));
+            }  else {
+                if (homeRoot != null) {
+                    stage.getScene().setRoot(homeRoot);  // quay lại root cũ
+                }
             }
-
-            stage.setScene(new Scene(root));
-            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
