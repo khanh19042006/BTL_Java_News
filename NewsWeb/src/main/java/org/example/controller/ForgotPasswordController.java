@@ -34,13 +34,13 @@ public class ForgotPasswordController {
         String email = emailField.getText().trim();
 
         if (username.isEmpty() || email.isEmpty()) {
-            showMessage("Vui lòng nhập đầy đủ Username và Email!", true);
+            showMessage("Vui lòng nhập đầy đủ tên và email!", true);
             return;
         }
 
         // check username + email tại service
         if (!loginService.checkUsernameAndEmail(username, email)) {
-            showMessage("Username và Email không khớp hoặc không tồn tại!", true);
+            showMessage("Tên và email hông khớp hoặc không tồn tại!", true);
             return;
         }
 
