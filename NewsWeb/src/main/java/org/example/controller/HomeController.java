@@ -274,17 +274,20 @@ public class HomeController implements Initializable {
             reloadNews();
             return;
         }
-
         currentMode = HomeMode.SEARCH;
         currentPage = 1;
         totalPage = 1;
-
         List<NewsDTO> result = homeService.searchNews(keyword.trim());
         updateNewsList(result);
 
         pageLabel.setVisible(false);
+        pageLabel.setManaged(false);
+
         prevBtn.setVisible(false);
+        prevBtn.setManaged(false);
+
         nextBtn.setVisible(false);
+        nextBtn.setManaged(false);
     }
 
     private boolean containsIgnoreCase(String text, String keyword) {
@@ -350,15 +353,20 @@ public class HomeController implements Initializable {
         }
         updateNewsList(news);
         if (currentMode == HomeMode.RECOMMEND || currentMode == HomeMode.SEARCH || currentMode == HomeMode.CATEGORY) {
-            // ẩn phân trang
             pageLabel.setVisible(false);
+            pageLabel.setManaged(false);
             prevBtn.setVisible(false);
+            prevBtn.setManaged(false);
             nextBtn.setVisible(false);
+            nextBtn.setManaged(false);
+
         } else {
-            // phân trang nếu không phải đề xuất
             pageLabel.setVisible(true);
+            pageLabel.setManaged(true);
             prevBtn.setVisible(true);
+            prevBtn.setManaged(true);
             nextBtn.setVisible(true);
+            nextBtn.setManaged(true);
             pageLabel.setText("Trang " + currentPage + " / " + totalPage);
             prevBtn.setDisable(currentPage == 1);
             nextBtn.setDisable(currentPage == totalPage);
@@ -438,20 +446,23 @@ public class HomeController implements Initializable {
         });
     }
 
+    private Parent homeRoot;
     private void openNewsDetail(NewsDTO news) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/NewsDetail/news-detail.fxml")
             );
-            Parent root = loader.load();
+            Parent detailRoot = loader.load();
+
             NewsDetailController controller = loader.getController();
             controller.setFromProfile(false);
-            controller.setHomeController(this);
-            // truyền ID
+            // lưu root home hiện tại
+            controller.setHomeRoot(newsList.getScene().getRoot());
+            // truyền controller
             controller.setNewsId(news.getId());
 
             Stage stage = (Stage) newsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(detailRoot); // không tạo Scene mới
         } catch (Exception e) {
             e.printStackTrace();
         }
