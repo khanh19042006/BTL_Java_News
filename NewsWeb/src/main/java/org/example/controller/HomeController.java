@@ -132,7 +132,7 @@ public class HomeController implements Initializable {
                 currentMode = HomeMode.CATEGORY;
                 currentCategoryCode = category.getCode();
                 currentPage = 1;
-
+                totalPage = homeService.countTotalPageNews();
                 loadPage();
 
                 // quay lại list news
@@ -347,12 +347,12 @@ public class HomeController implements Initializable {
         switch (currentMode) {
             case NEW -> news = homeService.getNewsNewByPage(currentPage);
             case HOT -> news = homeService.getHotNewsByPage(currentPage);
-            case CATEGORY -> news = homeService.getNewsByCategory(currentCategoryCode);
+            case CATEGORY -> news = homeService.getNewsPageByCategory(currentCategoryCode, currentPage);
             case SEARCH -> news = new ArrayList<>(masterNewsList); // giữ nguyên kết quả search
             default -> news = homeService.getRecommendNews(userId);
         }
         updateNewsList(news);
-        if (currentMode == HomeMode.RECOMMEND || currentMode == HomeMode.SEARCH || currentMode == HomeMode.CATEGORY) {
+        if (currentMode == HomeMode.RECOMMEND || currentMode == HomeMode.SEARCH) {
             pageLabel.setVisible(false);
             pageLabel.setManaged(false);
             prevBtn.setVisible(false);
