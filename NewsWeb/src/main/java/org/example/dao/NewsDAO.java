@@ -680,4 +680,26 @@ public class NewsDAO {
 
         return false;
     }
+
+    public int countTotalNewsByCategory(String category) {
+
+        String sql = "SELECT COUNT(*) FROM news WHERE category = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, category);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 }

@@ -132,7 +132,7 @@ public class HomeController implements Initializable {
                 currentMode = HomeMode.CATEGORY;
                 currentCategoryCode = category.getCode();
                 currentPage = 1;
-                totalPage = homeService.countTotalPageNews();
+                totalPage = homeService.countTotalNewsByCategory(category.getCode());
                 loadPage();
 
                 // quay lại list news
