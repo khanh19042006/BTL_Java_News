@@ -1,123 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane prefWidth="420"
-            prefHeight="720"
-            stylesheets="@css/news-detail.css"
-            xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.controller.NewsDetailController">
+<BorderPane prefHeight="720" prefWidth="420" stylesheets="@css/news-detail.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.NewsDetailController">
 
     <top>
-        <HBox spacing="10"
-              alignment="CENTER_LEFT"
-              styleClass="header">
-            <Button text="⬅" fx:id="backBtn"
-                    styleClass="icon-button"/>
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
+            <Button fx:id="backBtn" styleClass="icon-button" text="⬅" />
 
-            <Label text="CHI TIẾT BÀI BÁO"
-                   styleClass="app-title"/>
+            <Label styleClass="app-title" text="CHI TIẾT BÀI BÁO" />
 
-            <Region HBox.hgrow="ALWAYS"/>
+            <Region HBox.hgrow="ALWAYS" />
 
-            <Button fx:id="editBtn"
-                    text="🖊"
-                    styleClass="icon-button"/>
+            <Button fx:id="editBtn" styleClass="icon-button" text="🖊" />
 
-            <Button fx:id="saveBtn"
-                    text="✓"
-                    visible="false"
-                    managed="false"
-                    styleClass="icon-button"/>
+            <Button fx:id="saveBtn" managed="false" styleClass="icon-button" text="✓" visible="false" />
 
-            <Button fx:id="cancelBtn"
-                    text="✖"
-                    visible="false"
-                    managed="false"
-                    styleClass="icon-button"/>
+            <Button fx:id="cancelBtn" managed="false" styleClass="icon-button" text="✖" visible="false" />
         </HBox>
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true"
-                    vbarPolicy="AS_NEEDED">
+        <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED">
             <content>
-                <VBox spacing="16"
-                      alignment="TOP_CENTER"
-                      styleClass="page-content">
+                <VBox alignment="TOP_CENTER" spacing="16" styleClass="page-content">
                     <padding>
-                        <Insets top="16" right="16" bottom="16" left="16"/>
+                        <Insets bottom="16" left="16" right="16" top="16" />
                     </padding>
 
-                    <VBox spacing="12"
-                          styleClass="profile-card">
+                    <VBox spacing="12" styleClass="profile-card">
 
                         <StackPane>
-                            <ImageView fx:id="thumbnailImage"
-                                       fitWidth="360"
-                                       preserveRatio="true"/>
-                            <Button fx:id="editThumbnailBtn"
-                                    text="🖊"
-                                    visible="false"
-                                    managed="false"
-                                    onAction="#onEditThumbnail"
-                                    StackPane.alignment="BOTTOM_RIGHT"/>
+                            <ImageView fx:id="thumbnailImage" fitWidth="360" preserveRatio="true" />
+                            <Button fx:id="editThumbnailBtn" managed="false" onAction="#onEditThumbnail" text="🖊" visible="false" StackPane.alignment="BOTTOM_RIGHT" />
                         </StackPane>
-                        <HBox fx:id="metaViewBox"
-                              spacing="8"
-                              alignment="CENTER_LEFT">
+                        <HBox fx:id="metaViewBox" alignment="CENTER_LEFT" spacing="8">
                             <Label fx:id="dateLabel" />
-                            <Label text="•"/>
+                            <Label text="•" />
                             <Label fx:id="categoryLabel" />
                         </HBox>
-                        <HBox fx:id="metaEditBox" spacing="8" alignment="CENTER_LEFT" visible="false" managed="false">
-                            <ComboBox fx:id="categoryBox" promptText="Chọn thể loại"/>
+                        <HBox fx:id="metaEditBox" alignment="CENTER_LEFT" managed="false" spacing="8" visible="false">
+                            <ComboBox fx:id="categoryBox" promptText="Chọn thể loại" />
                         </HBox>
-                        <Label fx:id="titleLabel"
-                               text="Tiêu đề bài báo"
-                               wrapText="true"
-                               styleClass="detail-title"/>
+                        <Label fx:id="titleLabel" styleClass="detail-title" text="Tiêu đề bài báo" wrapText="true" />
 
-                        <Label fx:id="shortDescLabel"
-                               text="Tóm tắt bài báo"
-                               wrapText="true"
-                               styleClass="detail-summary"/>
+                        <Label fx:id="shortDescLabel" styleClass="detail-summary" text="Tóm tắt bài báo" wrapText="true" />
 
-                        <Label fx:id="contentLabel"
-                               text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..."
-                               wrapText="true"
-                               styleClass="detail-content"/>
+                        <Label fx:id="contentLabel" styleClass="detail-content" text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..." wrapText="true" />
 
 
-                        <TextField fx:id="titleField"
-                                   visible="false"
-                                   managed="false"
-                                   promptText="Nhập tiêu đề bài báo"
-                                   styleClass="edit-title"/>
+                        <TextField fx:id="titleField" managed="false" promptText="Nhập tiêu đề bài báo" styleClass="edit-title" visible="false" />
 
-                        <TextArea fx:id="shortDescArea"
-                                  visible="false"
-                                  managed="false"
-                                  wrapText="true"
-                                  promptText="Nhập tóm tắt bài báo"
-                                  styleClass="edit-summary"/>
+                        <TextArea fx:id="shortDescArea" managed="false" promptText="Nhập tóm tắt bài báo" styleClass="edit-summary" visible="false" wrapText="true" />
 
-                        <TextArea fx:id="contentArea"
-                                  visible="false"
-                                  managed="false"
-                                  wrapText="true"
-                                  promptText="Nhập nội dung bài báo"
-                                  styleClass="edit-content"/>
+                        <TextArea fx:id="contentArea" managed="false" promptText="Nhập nội dung bài báo" styleClass="edit-content" visible="false" wrapText="true" />
 
-                        <Label fx:id="errorLabel"
-                               textFill="#E53935"
-                               wrapText="true"
-                               visible="false"
-                               managed="false"/>
+                        <Label fx:id="errorLabel" managed="false" textFill="#E53935" visible="false" wrapText="true" />
+
+                        <Separator />
+                        <VBox spacing="10" styleClass="comment-section">
+
+                            <Label styleClass="section-title" text="Bình luận" />
+
+                            <VBox fx:id="commentContainer" spacing="8" />
+
+                            <HBox spacing="8">
+                                <TextArea fx:id="commentInput" prefHeight="54.0" prefRowCount="2" prefWidth="318.0" promptText="Nhập bình luận..." wrapText="true" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="sendCommentBtn" text="Gửi" />
+                            </HBox>
+
+                        </VBox>
 
                     </VBox>
                 </VBox>

@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 
 import org.example.dao.UserDAO;
 import org.example.dto.CategoryDTO;
+import org.example.dto.CommentDTO;
 import org.example.dto.NewsDTO;
 import org.example.dao.NewsDAO;
 
@@ -25,7 +27,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import org.example.dto.UserDTO;
+import org.example.service.CommendService;
 import org.example.service.HomeService;
+import org.example.service.Impl.CommentServiceImpl;
 import org.example.service.Impl.HomeServiceimpl;
 
 
@@ -83,6 +87,20 @@ public class NewsDetailController {
     @FXML private ImageView thumbnailImage;
     @FXML private Button editThumbnailBtn;
 
+    // phần comment
+    @FXML
+    private VBox commentContainer;
+    @FXML
+    private TextArea commentInput;
+    @FXML
+    private Button sendCommentBtn;
+    private final CommendService commentService = new CommentServiceImpl();
+    //lưu comment cha
+    private String replyingToCommentId = null;
+    private String currentUserId;
+    public void setUserId(String userId) {
+        this.currentUserId = userId;
+    }
     // biến lưu ảnh
     private static final String NEWS_IMAGE_DIR = "user-data/news/";
 
@@ -112,6 +130,8 @@ public class NewsDetailController {
         saveBtn.setOnAction(e -> saveChanges());
         backBtn.setOnAction(e -> goBack());
         setEditMode(false);
+        // sk nút gửi
+        sendCommentBtn.setOnAction(e -> handleSendComment());
     }
 
 
@@ -224,8 +244,94 @@ public class NewsDetailController {
 
         // lưu id để dùng khi đổi ảnh
         this.newsId = news.getId();
+
+        loadComments();
     }
 
+    private void loadComments() {
+        if (news == null) return;
+        commentContainer.getChildren().clear();
+
+        var parents = commentService.getParentComments(news.getId());
+        for (CommentDTO parent : parents) {
+            addCommentWithReplies(parent, 0);
+        }
+    }
+
+    private void addCommentWithReplies(CommentDTO comment, int level) {
+
+        VBox box = createSimpleComment(comment);
+        box.setTranslateX(level * 30);
+        commentContainer.getChildren().add(box);
+
+        var replies = commentService.getReplies(comment.getId());
+        for (CommentDTO reply : replies) {
+            addCommentWithReplies(reply, level + 1);
+        }
+    }
+
+    private VBox createSimpleComment(CommentDTO comment) {
+        VBox box = new VBox(4);
+
+        UserDAO userDAO = new UserDAO();
+        UserDTO user = userDAO.getUserById(comment.getAuthorId());
+        String username = (user != null) ? user.getUsername() : "Unknown";
+
+        Label authorLabel = new Label(username);
+        Label contentLabel = new Label(comment.getContent());
+        Label timeLabel = new Label(comment.getTimeUp());
+
+        contentLabel.setWrapText(true);
+
+        // nút Xóa
+        Button deleteBtn = new Button("Xóa");
+        deleteBtn.setVisible(false);
+        if (currentUserId != null) {
+            if (commentService.isOwner(comment.getId(), currentUserId)
+                    || isAdmin(currentUserId)) {
+                deleteBtn.setVisible(true);
+            }
+        }
+        Button replyBtn = new Button("Trả lời");
+        replyBtn.setOnAction(e -> {
+            replyingToCommentId = comment.getId();
+            commentInput.setPromptText("Trả lời " + username + "...");
+            commentInput.requestFocus();
+        });
+        deleteBtn.setOnAction(e -> {
+            boolean success = commentService.deleteComment(
+                    comment.getId(), currentUserId
+            );
+            if (success) {
+                loadComments();
+            }
+        });
+        box.getChildren().addAll(authorLabel, contentLabel, timeLabel, replyBtn, deleteBtn);
+        return box;
+    }
+
+    private boolean isAdmin(String userId) {
+        if (userId == null) return false;
+        UserDAO userDAO = new UserDAO();
+        UserDTO user = userDAO.getUserById(userId);
+        return user != null &&
+                user.getRole().equalsIgnoreCase("admin");
+    }
+    private void handleSendComment() {
+        if (news == null) return;
+
+        if (currentUserId == null) {
+            showError("⚠ Bạn cần đăng nhập để bình luận.");
+            return;
+        }
+        String content = commentInput.getText().trim();
+        if (content.isEmpty()) return;
+        commentService.createComment(
+                content, currentUserId, news.getId(), replyingToCommentId
+        );
+        commentInput.clear();
+        loadComments();
+    }
 
     // chuyển sang chế độ chỉnh sửa
     private void switchToEditMode() {

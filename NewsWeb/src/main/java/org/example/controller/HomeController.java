@@ -459,6 +459,7 @@ public class HomeController implements Initializable {
             // lưu root home hiện tại
             controller.setHomeRoot(newsList.getScene().getRoot());
             // truyền controller
+            controller.setUserId(userId);
             controller.setNewsId(news.getId());
 
             Stage stage = (Stage) newsList.getScene().getWindow();
