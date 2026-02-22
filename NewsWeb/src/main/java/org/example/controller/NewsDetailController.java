@@ -1,10 +1,7 @@
 package org.example.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
@@ -16,9 +13,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import javafx.scene.layout.HBox;
-import javafx.scene.control.ComboBox;
 
-import org.example.dao.CategoryDAO;
+import org.example.dao.UserDAO;
 import org.example.dto.CategoryDTO;
 import org.example.dto.NewsDTO;
 import org.example.dao.NewsDAO;
@@ -28,12 +24,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import javafx.scene.control.ListCell;
-
-import java.time.LocalDate;
+import org.example.dto.UserDTO;
+import org.example.service.HomeService;
+import org.example.service.Impl.HomeServiceimpl;
 
 
 public class NewsDetailController {
+    @FXML
+    private Label errorLabel;
 
     @FXML
     private Button backBtn;
@@ -76,7 +74,7 @@ public class NewsDetailController {
 
 
     // thể loại được lấy từ db
-    private final CategoryDAO categoryDAO = new CategoryDAO();
+    private final HomeService homeService = new HomeServiceimpl();
 
     @FXML
     private HBox metaEditBox;
@@ -87,6 +85,9 @@ public class NewsDetailController {
 
     // biến lưu ảnh
     private static final String NEWS_IMAGE_DIR = "user-data/news/";
+
+    // biến tạo bài báo
+    private boolean createMode = false;
 
     private HomeController homeController;
     private ProfileController profileController;
@@ -116,7 +117,7 @@ public class NewsDetailController {
 
     private void loadCategories() {
         //load dữ liệu từ db
-        categoryBox.getItems().setAll(categoryDAO.getCategory());
+        categoryBox.getItems().setAll(homeService.getCategory());
 
         categoryBox.setCellFactory(cb -> new ListCell<>() {
             @Override
@@ -160,6 +161,23 @@ public class NewsDetailController {
         viewed = true;
     }
 
+    public void setCreateMode(String userId) {
+        this.createMode = true;
+        this.fromProfile = true;
+
+        this.news = new NewsDTO();
+
+        String newId = java.util.UUID.randomUUID().toString();
+        this.news.setId(newId);
+        this.news.setAuthorId(userId);
+        this.news.setDate(java.time.LocalDate.now().toString());
+        this.news.setViews(0);
+        UserDAO userDAO = new UserDAO();
+        UserDTO user = userDAO.getUserById(userId);
+        this.news.setAuthors(user.getUsername());
+        this.newsId = newId;
+        setEditMode(true);
+    }
 
     public void setNews(NewsDTO news) {
         this.news = news;
@@ -282,34 +300,34 @@ public class NewsDetailController {
         editThumbnailBtn.setManaged(editing);
     }
 
+    // lấy root từ home
+    private Parent homeRoot;
+
+    public void setHomeRoot(Parent homeRoot) {
+        this.homeRoot = homeRoot;
+    }
     // quay lại trang trước
     private void goBack() {
         try {
             Stage stage = (Stage) backBtn.getScene().getWindow();
 
-            FXMLLoader loader;
-            Parent root;
-
             if (fromProfile) {
-                loader = new FXMLLoader(
+                FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/Profile/profile.fxml")
                 );
-                root = loader.load();
+                Parent root = loader.load();
 
                 ProfileController controller = loader.getController();
-                controller.reloadUserNews();
-            } else {
-                loader = new FXMLLoader(
-                        getClass().getResource("/HomePage/homePage.fxml")
-                );
-                root = loader.load();
+                if (profileController != null) {
+                    controller.setUserId(profileController.getCurrentUserId());
+                }
 
-                HomeController controller = loader.getController();
-                controller.reloadNews();
+                stage.setScene(new Scene(root));
+            }  else {
+                if (homeRoot != null) {
+                    stage.getScene().setRoot(homeRoot);  // quay lại root cũ
+                }
             }
-
-            stage.setScene(new Scene(root));
-            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -366,61 +384,51 @@ public class NewsDetailController {
 
     // lưu thay đổi
     private void saveChanges() {
-        if (news == null) return;
+        hideError();
+        if (titleField.getText().isBlank()) {
+            showError("⚠ Vui lòng nhập tiêu đề.");
+            return;
+        }
+        if (shortDescArea.getText().isBlank()) {
+            showError("⚠ Vui lòng nhập tóm tắt.");
+            return;
+        }
+        if (contentArea.getText().isBlank()) {
+            showError("⚠ Vui lòng nhập nội dung.");
+            return;
+        }
+        if (categoryBox.getValue() == null) {
+            showError("⚠ Vui lòng chọn thể loại.");
+            return;
+        }
 
-        if (titleField.getText().isBlank()) return;
-        if (categoryBox.getValue() == null) return;
-
-        // cập nhật dữ liệu vào DTO
         news.setHeadline(titleField.getText());
         news.setContent(contentArea.getText());
         news.setShort_description(shortDescArea.getText());
         news.setCategory(categoryBox.getValue().getCode());
 
-        // cập nhật DB
-        newsDAO.updateNews(news);
-
-        // cập nhật lại UI
-        titleLabel.setText(news.getHeadline());
-        contentLabel.setText(news.getContent());
-        shortDescLabel.setText(news.getShort_description());
-
-        // cập nhật ngày
-        dateLabel.setText(news.getDate());
-
-        // cập nhật tên thể loại
-        categoryLabel.setText(categoryBox.getValue().getName());
-
-
-        setEditMode(false);
+        if (createMode) {
+            boolean success = newsDAO.upNews(news);
+            if (success) {
+                createMode = false;
+                goBack(); // quay lại profile
+            } else {
+                showError("❌ Đăng bài thất bại.");
+            }
+        } else {
+            newsDAO.updateNews(news);
+            setNews(news);
+            switchToViewMode();
+        }
     }
-
-    // Hiển thị html
-//    private String wrap(String content) {
-//        return """
-//        <html>
-//        <head>
-//        <style>
-//            body {
-//                font-family: Arial;
-//                padding: 10px;
-//            }
-//            img {
-//                max-width: 100%;
-//                height: auto;
-//            }
-//            iframe {
-//                width: 100%;
-//                height: 400px;
-//            }
-//        </style>
-//        </head>
-//        <body>
-//        """ + (content == null ? "" : content) + """
-//        </body>
-//        </html>
-//        """;
-//    }
-
-
+    // kiểm tra thông tin
+    private void showError(String message) {
+        errorLabel.setText(message);
+        errorLabel.setVisible(true);
+        errorLabel.setManaged(true);
+    }
+    private void hideError() {
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
+    }
 }

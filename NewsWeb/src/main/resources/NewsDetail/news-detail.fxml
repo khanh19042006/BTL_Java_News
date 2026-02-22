@@ -113,6 +113,11 @@
                                   promptText="Nhập nội dung bài báo"
                                   styleClass="edit-content"/>
 
+                        <Label fx:id="errorLabel"
+                               textFill="#E53935"
+                               wrapText="true"
+                               visible="false"
+                               managed="false"/>
 
                     </VBox>
                 </VBox>

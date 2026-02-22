@@ -12,8 +12,8 @@ public class MainApp {
         CheckImport checkImport = new CheckImport();
         checkImport.checkImport();
 
-        AddContent.importFromJson("src/main/resources/content.json");
-        CreateContentNewsJSON.exportToJson("src/main/resources/content.json");
+//        AddContent.importFromJson("src/main/resources/content.json");
+//        CreateContentNewsJSON.exportToJson("src/main/resources/content.json");
 
         // gọi JavaFX
         Launcher.main(args);

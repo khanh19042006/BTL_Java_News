@@ -141,3 +141,7 @@ CREATE TABLE remember_token (
     created_at BIGINT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+-- 21/02/2026
+-- Cho phép null ở thuộc tính link trong table news
+ALTER TABLE news MODIFY link VARCHAR(255) NULL;

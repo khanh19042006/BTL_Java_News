@@ -2,9 +2,7 @@ package org.example.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -20,18 +18,38 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.controller.NewsDetailController;
 
+// sử dụng nemu
+import javafx.geometry.Side;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javafx.scene.control.TextField;
+
+//categỏy
+import org.example.dto.CategoryDTO;
+
 
 public class HomeController implements Initializable {
+
+    //nút chủ đề
+    @FXML
+    private VBox newsContainer;
+    @FXML
+    private VBox categoryContainer;
+    @FXML
+    private ScrollPane categoryScroll;
+
+
+    // tạo menu
+    @FXML
+    private Button userBtn;
+    private ContextMenu userMenu;
 
     @FXML
     private TextField searchField;
@@ -45,7 +63,20 @@ public class HomeController implements Initializable {
     private ListView<NewsDTO> newsList;
 
     private final HomeService homeService = new HomeServiceimpl();
+    private String currentCategoryCode = null;
     private String userId = null;
+
+    //biến phân trang
+    private static int currentPage = 1;
+    private static int totalPage = 1;
+    @FXML
+    private Label pageLabel;
+
+    @FXML
+    private Button prevBtn;
+
+    @FXML
+    private Button nextBtn;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -55,21 +86,208 @@ public class HomeController implements Initializable {
         newsList.setItems(filteredNewsList);
         newsList.setPlaceholder(new Label("Không có bài viết nào!"));
         setupListView();
-        setupSearch();
-        loadRecommendNews();
-    }
-    // lưu scene gốc của home
+        // load lại trang trước đó
+        reloadNews();
+        // tạo hành động cho nút
+        setupUserMenu();
 
-
-    private void setupSearch() {
-        searchField.textProperty().addListener((obs, oldText, newText) -> {
-            String keyword = newText == null ? "" : newText.trim().toLowerCase();
-            filteredNewsList.setPredicate(news -> {
-                if (keyword.isEmpty()) return true;
-                return containsIgnoreCase(news.getHeadline(), keyword)
-                        || containsIgnoreCase(news.getShort_description(), keyword);
-            });
+        userBtn.setOnAction(e -> {
+            if (userMenu.isShowing()) {
+                userMenu.hide();
+            } else {
+                userMenu.show(userBtn, Side.BOTTOM, 0, 0);
+            }
         });
+    }
+
+    @FXML
+    private void showCategoryScreen() {
+
+        // ẩn list news
+        newsContainer.setVisible(false);
+        newsContainer.setManaged(false);
+
+        // hiện ScrollPane chứa category
+        categoryScroll.setVisible(true);
+        categoryScroll.setManaged(true);
+
+        categoryContainer.getChildren().clear();
+
+        List<CategoryDTO> categories = homeService.getCategory();
+
+        for (CategoryDTO category : categories) {
+
+            Button btn = new Button(category.getName());
+            btn.setMaxWidth(Double.MAX_VALUE);
+
+            btn.setStyle("""
+            -fx-background-color: white;
+            -fx-border-color: #DDDDDD;
+            -fx-padding: 10;
+            -fx-font-weight: bold;
+            -fx-cursor: hand;
+        """);
+
+            btn.setOnAction(e -> {
+                currentMode = HomeMode.CATEGORY;
+                currentCategoryCode = category.getCode();
+                currentPage = 1;
+                totalPage = homeService.countTotalPageNews();
+                loadPage();
+
+                // quay lại list news
+                categoryScroll.setVisible(false);
+                categoryScroll.setManaged(false);
+
+                newsContainer.setVisible(true);
+                newsContainer.setManaged(true);
+            });
+
+            categoryContainer.getChildren().add(btn);
+        }
+    }
+
+    //sử lý nút phân trang
+    @FXML
+    private void handleNextPage() {
+        if (currentPage < totalPage) {
+            currentPage++;
+            loadPage();
+        }
+    }
+
+    @FXML
+    private void handlePrevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            loadPage();
+        }
+    }
+
+    // hàm menu
+    private void setupUserMenu() {
+
+        if (userMenu == null) {
+            userMenu = new ContextMenu();
+        } else {
+            userMenu.getItems().clear();
+        }
+        userMenu.setAutoHide(true);
+
+        boolean isLoggedIn = userId != null;
+
+        if (isLoggedIn) {
+            MenuItem profileItem = new MenuItem("Trang cá nhân");
+            MenuItem logoutItem = new MenuItem("Đăng xuất");
+
+            profileItem.setOnAction(e -> openProfile());
+            logoutItem.setOnAction(e -> logout());
+
+            userMenu.getItems().addAll(profileItem, logoutItem);
+        } else {
+            MenuItem profileItem = new MenuItem("Trang cá nhân");
+            profileItem.setDisable(true);
+
+            MenuItem loginItem = new MenuItem("Đăng nhập");
+            MenuItem registerItem = new MenuItem("Đăng ký");
+
+            loginItem.setOnAction(e -> openLogin());
+            registerItem.setOnAction(e -> openRegister());
+
+            userMenu.getItems().addAll(profileItem, loginItem, registerItem);
+        }
+    }
+    // các hành động
+    private void openProfile() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Profile/profile.fxml")
+            );
+            Parent root = loader.load();
+
+            ProfileController controller = loader.getController();
+            controller.setUserId(userId); // truyền userId
+
+            Stage stage = (Stage) userBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void openLogin() {
+        try {
+            // lớp đọc file fxml
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Login/login.fxml")
+            );
+
+            Parent root = loader.load();
+
+            // lấy cửa sổ hiện tại
+            Stage stage = (Stage) userBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Đăng nhập");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openRegister() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Register/register.fxml")
+            );
+
+            Parent root = loader.load();
+
+            Stage stage = (Stage) userBtn.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Đăng ký");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void logout() {
+        userId = null;
+        // reset về trang đề xuất mặc định
+        currentMode = HomeMode.RECOMMEND;
+        currentPage = 1;
+        setupUserMenu();
+        loadPage();   // reload lại dữ liệu
+        System.out.println("Đã đăng xuất");
+    }
+
+
+
+    @FXML
+    private void handleSearch() {
+
+        String keyword = searchField.getText();
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            currentMode = HomeMode.RECOMMEND;
+            currentPage = 1;
+            reloadNews();
+            return;
+        }
+        currentMode = HomeMode.SEARCH;
+        currentPage = 1;
+        totalPage = 1;
+        List<NewsDTO> result = homeService.searchNews(keyword.trim());
+        updateNewsList(result);
+
+        pageLabel.setVisible(false);
+        pageLabel.setManaged(false);
+
+        prevBtn.setVisible(false);
+        prevBtn.setManaged(false);
+
+        nextBtn.setVisible(false);
+        nextBtn.setManaged(false);
     }
 
     private boolean containsIgnoreCase(String text, String keyword) {
@@ -78,38 +296,83 @@ public class HomeController implements Initializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+        setupUserMenu();
     }
 
     // biến nhớ trạng thái home đang ở chế độ nào
     public enum HomeMode {
-        RECOMMEND, NEW, HOT
+        RECOMMEND, NEW, HOT, SEARCH, CATEGORY
     }
-    private HomeMode currentMode = HomeMode.RECOMMEND;
+
+    private static HomeMode currentMode = HomeMode.RECOMMEND;
     @FXML
     private void loadRecommendNews() {
         currentMode = HomeMode.RECOMMEND;
-        updateNewsList(homeService.getRecommendNews(userId));
+        currentPage = 1;
+        totalPage = 1; // chỉ 1 trang
+        loadPage();
     }
+
 
     @FXML
     private void loadNewNews() {
         currentMode = HomeMode.NEW;
-        updateNewsList(homeService.getNewNews());
+        currentPage = 1;
+        totalPage = homeService.countTotalPageNews();
+        loadPage();
     }
 
     @FXML
     private void loadHotNews() {
         currentMode = HomeMode.HOT;
-        updateNewsList(homeService.getHotNews());
+        currentPage = 1;
+        totalPage = homeService.countTotalPageNews();
+        loadPage();
     }
+
+
 
     public void reloadNews() {
         switch (currentMode) {
             case NEW -> loadNewNews();
             case HOT -> loadHotNews();
+            case CATEGORY -> loadPage();
             default -> loadRecommendNews();
         }
     }
+
+    private void loadPage() {
+        List<NewsDTO> news;
+
+        switch (currentMode) {
+            case NEW -> news = homeService.getNewsNewByPage(currentPage);
+            case HOT -> news = homeService.getHotNewsByPage(currentPage);
+            case CATEGORY -> news = homeService.getNewsPageByCategory(currentCategoryCode, currentPage);
+            case SEARCH -> news = new ArrayList<>(masterNewsList); // giữ nguyên kết quả search
+            default -> news = homeService.getRecommendNews(userId);
+        }
+        updateNewsList(news);
+        if (currentMode == HomeMode.RECOMMEND || currentMode == HomeMode.SEARCH) {
+            pageLabel.setVisible(false);
+            pageLabel.setManaged(false);
+            prevBtn.setVisible(false);
+            prevBtn.setManaged(false);
+            nextBtn.setVisible(false);
+            nextBtn.setManaged(false);
+
+        } else {
+            pageLabel.setVisible(true);
+            pageLabel.setManaged(true);
+            prevBtn.setVisible(true);
+            prevBtn.setManaged(true);
+            nextBtn.setVisible(true);
+            nextBtn.setManaged(true);
+            pageLabel.setText("Trang " + currentPage + " / " + totalPage);
+            prevBtn.setDisable(currentPage == 1);
+            nextBtn.setDisable(currentPage == totalPage);
+        }
+    }
+
     // đổ dữ liệu lên UI
     private void updateNewsList(List<NewsDTO> news) {
         masterNewsList.setAll(news == null ? List.of() : news);
@@ -146,12 +409,11 @@ public class HomeController implements Initializable {
 
                     root.getChildren().addAll(imageView, textBox);
                     root.setStyle("""
-                -fx-padding: 12;
-                -fx-background-color: white;
-                -fx-background-radius: 10;
-                -fx-border-radius: 10;
-                -fx-border-color: #E0E0E0;
-            """);
+                    -fx-padding: 10;
+                    -fx-background-color: white;
+                    -fx-border-color: #EAEAEA;
+                    -fx-border-width: 0 0 1 0;
+                    """);
                     setGraphic(root);
                 }
 
@@ -184,20 +446,23 @@ public class HomeController implements Initializable {
         });
     }
 
+    private Parent homeRoot;
     private void openNewsDetail(NewsDTO news) {
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/NewsDetail/news-detail.fxml")
             );
-            Parent root = loader.load();
+            Parent detailRoot = loader.load();
+
             NewsDetailController controller = loader.getController();
             controller.setFromProfile(false);
-            controller.setHomeController(this);
-            // ✅ truyền ID
+            // lưu root home hiện tại
+            controller.setHomeRoot(newsList.getScene().getRoot());
+            // truyền controller
             controller.setNewsId(news.getId());
 
             Stage stage = (Stage) newsList.getScene().getWindow();
-            stage.setScene(new Scene(root));
+            stage.getScene().setRoot(detailRoot); // không tạo Scene mới
         } catch (Exception e) {
             e.printStackTrace();
         }
