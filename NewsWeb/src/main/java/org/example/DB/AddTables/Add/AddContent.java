@@ -1,4 +1,4 @@
-package org.example.DB;
+package org.example.DB.AddTables.Add;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -55,8 +55,8 @@ public class AddContent {
                 rs.close();
             }
 
-            System.out.println("Updated: " + updatedCount);
-            System.out.println("Skipped (giống nhau): " + skippedCount);
+            System.out.println("Updated Content: " + updatedCount);
+            System.out.println("Skipped Content: " + skippedCount);
 
         } catch (Exception e) {
             e.printStackTrace();

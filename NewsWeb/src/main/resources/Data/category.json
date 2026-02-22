@@ -1,0 +1,212 @@
+[
+  {
+    "id": "034f59ae-27de-46ca-9775-1a0605e717ef",
+    "code": "the worldpost",
+    "name": "THE WORLDPOST"
+  },
+  {
+    "id": "0641776c-f0e7-44f9-afd0-3da39e46af40",
+    "code": "comedy",
+    "name": "COMEDY"
+  },
+  {
+    "id": "07ab17a8-3247-487c-af87-5b7c0bb42cde",
+    "code": "black voices",
+    "name": "BLACK VOICES"
+  },
+  {
+    "id": "16daf681-9af9-406a-bde3-bf05d047e6e4",
+    "code": "taste",
+    "name": "TASTE"
+  },
+  {
+    "id": "1715f4b6-5276-4242-b5a4-2b0e7dc1445c",
+    "code": "latino voices",
+    "name": "LATINO VOICES"
+  },
+  {
+    "id": "176e4908-7415-4019-b3d5-db73a5059095",
+    "code": "media",
+    "name": "MEDIA"
+  },
+  {
+    "id": "1ae8df0f-fccc-4c58-b6ec-936c44577864",
+    "code": "women",
+    "name": "WOMEN"
+  },
+  {
+    "id": "1c11572c-5372-4bda-b175-6a37a22e6a7a",
+    "code": "divorce",
+    "name": "DIVORCE"
+  },
+  {
+    "id": "1e9540a0-0400-4887-8d61-a9885c553be7",
+    "code": "sports",
+    "name": "SPORTS"
+  },
+  {
+    "id": "232d6cfe-e8a3-4ccd-a3fd-83076190df90",
+    "code": "home \u0026 living",
+    "name": "HOME \u0026 LIVING"
+  },
+  {
+    "id": "24d68921-d760-416e-a324-daba9115acc4",
+    "code": "entertainment",
+    "name": "ENTERTAINMENT"
+  },
+  {
+    "id": "25ed9464-93bb-48c9-b93c-e64fcc7fbc50",
+    "code": "green",
+    "name": "GREEN"
+  },
+  {
+    "id": "28821c53-77db-4d96-8ff9-0983120029b5",
+    "code": "parenting",
+    "name": "PARENTING"
+  },
+  {
+    "id": "31d07182-9cc4-4f58-b12a-2c7ea0b5c2df",
+    "code": "arts \u0026 culture",
+    "name": "ARTS \u0026 CULTURE"
+  },
+  {
+    "id": "3f7ea7e4-95fe-4973-b3c4-0f948f87c3cf",
+    "code": "u.s. news",
+    "name": "U.S. NEWS"
+  },
+  {
+    "id": "4319b172-543c-4bba-bdbc-1e615c8469d9",
+    "code": "crime",
+    "name": "CRIME"
+  },
+  {
+    "id": "47b591b0-9513-468b-8465-e9bd81895d2a",
+    "code": "culture \u0026 arts",
+    "name": "CULTURE \u0026 ARTS"
+  },
+  {
+    "id": "5aa9da81-d18a-4fa9-bad8-ee3e192da089",
+    "code": "worldpost",
+    "name": "WORLDPOST"
+  },
+  {
+    "id": "66987963-02e0-487c-a800-eefe3a990364",
+    "code": "environment",
+    "name": "ENVIRONMENT"
+  },
+  {
+    "id": "66a422f8-ad8b-413e-9a9c-1d80436c9bef",
+    "code": "world news",
+    "name": "WORLD NEWS"
+  },
+  {
+    "id": "6f35980a-bbee-434f-b751-46bbee3696d0",
+    "code": "politics",
+    "name": "POLITICS"
+  },
+  {
+    "id": "85472c66-d412-440c-b54a-bd1c9fbd603d",
+    "code": "parents",
+    "name": "PARENTS"
+  },
+  {
+    "id": "87bcddca-f5ef-4693-b292-4cc72e679a50",
+    "code": "college",
+    "name": "COLLEGE"
+  },
+  {
+    "id": "8b34d9cd-0ab7-4a96-a0ce-d703172a1809",
+    "code": "impact",
+    "name": "IMPACT"
+  },
+  {
+    "id": "a576a0fd-ca1c-4064-b7ae-68fb2cba5ef3",
+    "code": "style",
+    "name": "STYLE"
+  },
+  {
+    "id": "aa878107-ea43-4bcd-8e32-3154128e6936",
+    "code": "weird news",
+    "name": "WEIRD NEWS"
+  },
+  {
+    "id": "ab532460-c946-4429-8275-a15cf42c165d",
+    "code": "queer voices",
+    "name": "QUEER VOICES"
+  },
+  {
+    "id": "b21eb0e6-2912-41bc-8682-e340a28ef4c0",
+    "code": "arts",
+    "name": "ARTS"
+  },
+  {
+    "id": "b8c114e0-4157-4b8a-b276-7a88a1831de2",
+    "code": "food \u0026 drink",
+    "name": "FOOD \u0026 DRINK"
+  },
+  {
+    "id": "c10fc0ad-39f1-4237-88b2-9b372b574ccd",
+    "code": "weddings",
+    "name": "WEDDINGS"
+  },
+  {
+    "id": "cac2d219-b4cb-43c0-9ff0-65a19f89ea27",
+    "code": "fifty",
+    "name": "FIFTY"
+  },
+  {
+    "id": "d08a6a64-619c-4f75-b3c3-9691258bfb6f",
+    "code": "healthy living",
+    "name": "HEALTHY LIVING"
+  },
+  {
+    "id": "d3a1bd51-df9a-4361-8d6f-3599d9a54666",
+    "code": "style \u0026 beauty",
+    "name": "STYLE \u0026 BEAUTY"
+  },
+  {
+    "id": "d4a56f68-d999-460a-84d3-a4ac909f4dc9",
+    "code": "business",
+    "name": "BUSINESS"
+  },
+  {
+    "id": "d5dc6563-4722-45b6-b0d3-040ba60146b1",
+    "code": "religion",
+    "name": "RELIGION"
+  },
+  {
+    "id": "d6c7cf5d-5101-48b9-92a8-5e877749cfaf",
+    "code": "travel",
+    "name": "TRAVEL"
+  },
+  {
+    "id": "da3fa829-9b39-4250-9127-f0567bb92779",
+    "code": "money",
+    "name": "MONEY"
+  },
+  {
+    "id": "dc72f083-3bda-4ec3-b18e-fc98e5299183",
+    "code": "science",
+    "name": "SCIENCE"
+  },
+  {
+    "id": "dd9a6a79-0513-4275-95d7-5ed853111f4f",
+    "code": "good news",
+    "name": "GOOD NEWS"
+  },
+  {
+    "id": "f1570045-4aa6-436a-a2c3-9b10cc7e8256",
+    "code": "wellness",
+    "name": "WELLNESS"
+  },
+  {
+    "id": "f6743d49-755f-49f3-80ac-0c8085ff6301",
+    "code": "tech",
+    "name": "TECH"
+  },
+  {
+    "id": "f69012d5-9775-4c35-8bfd-c80086c9f72a",
+    "code": "education",
+    "name": "EDUCATION"
+  }
+]

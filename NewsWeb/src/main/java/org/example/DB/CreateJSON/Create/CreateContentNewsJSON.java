@@ -1,4 +1,4 @@
-package org.example.DB;
+package org.example.DB.CreateJSON.Create;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

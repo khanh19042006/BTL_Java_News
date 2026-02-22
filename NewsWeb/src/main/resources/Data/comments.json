@@ -1,0 +1,56 @@
+[
+  {
+    "id": "20b57c65-e48b-4020-aa00-f0185f1a3fe9",
+    "content": "Vậy à",
+    "author_id": "4722fc15-6504-4f06-80b9-ed9123882911",
+    "news_id": "11806026-3e9f-47d4-b89d-07633efe23e3",
+    "time_up": "2026-02-22 13:42:33",
+    "parent_id": "5aa6a23d-ebca-4566-b2d0-545fb0d03ac5"
+  },
+  {
+    "id": "30be93b7-6104-414d-8ac1-8ae17c3dbb52",
+    "content": "Tôi thấy mình nói đúng",
+    "author_id": "4722fc15-6504-4f06-80b9-ed9123882911",
+    "news_id": "11806026-3e9f-47d4-b89d-07633efe23e3",
+    "time_up": "2026-02-22 13:42:16",
+    "parent_id": "a5069eb2-4fc4-49c0-8e5e-278f02dc7934"
+  },
+  {
+    "id": "41dc6149-b660-404c-95cf-3a4e14035f51",
+    "content": "Bài viết rất hay",
+    "author_id": "4722fc15-6504-4f06-80b9-ed9123882911",
+    "news_id": "11806026-3e9f-47d4-b89d-07633efe23e3",
+    "time_up": "2026-02-22 13:41:03"
+  },
+  {
+    "id": "5aa6a23d-ebca-4566-b2d0-545fb0d03ac5",
+    "content": "Tôi không quan tâm",
+    "author_id": "4722fc15-6504-4f06-80b9-ed9123882911",
+    "news_id": "11806026-3e9f-47d4-b89d-07633efe23e3",
+    "time_up": "2026-02-22 13:42:26",
+    "parent_id": "30be93b7-6104-414d-8ac1-8ae17c3dbb52"
+  },
+  {
+    "id": "9a08b677-b854-4afb-b8c6-24bb107fb031",
+    "content": "Tôi thấy không đồng tình về bài viết này",
+    "author_id": "4722fc15-6504-4f06-80b9-ed9123882911",
+    "news_id": "11806026-3e9f-47d4-b89d-07633efe23e3",
+    "time_up": "2026-02-22 13:41:33",
+    "parent_id": "f4841833-01c4-46f2-887c-acab6e433b2e"
+  },
+  {
+    "id": "a5069eb2-4fc4-49c0-8e5e-278f02dc7934",
+    "content": "Tôi không đồng ý về ý kiến của bạn",
+    "author_id": "4722fc15-6504-4f06-80b9-ed9123882911",
+    "news_id": "11806026-3e9f-47d4-b89d-07633efe23e3",
+    "time_up": "2026-02-22 13:42:05",
+    "parent_id": "9a08b677-b854-4afb-b8c6-24bb107fb031"
+  },
+  {
+    "id": "f4841833-01c4-46f2-887c-acab6e433b2e",
+    "content": "Bài viết cũng bình thường",
+    "author_id": "4722fc15-6504-4f06-80b9-ed9123882911",
+    "news_id": "11806026-3e9f-47d4-b89d-07633efe23e3",
+    "time_up": "2026-02-22 13:41:16"
+  }
+]
