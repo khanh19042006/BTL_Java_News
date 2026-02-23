@@ -1,38 +1,20 @@
 [
   {
-    "id": "4722fc15-6504-4f06-80b9-ed9123882911",
-    "username": "1212k12",
-    "email": "dinhkhanh19042006@gmail.com",
-    "password": "$2a$10$Y/DLsltDYrIB20Kg3AgnWuodGMF6wcvTn/Q2jEgUoes0y.tTOge3u",
-    "created_at": "2026-02-15",
+    "id": "91e688b6-f31c-4360-b9d7-bfa3edb4934a",
+    "username": "hoangem",
+    "email": "nguyendinhhoang.241206@gmail.com",
+    "password": "$2a$10$DhCt0o6jFuUZ9RRBcw5Sp.EYUHNJ2.r6.yOn8FqzuSkjbmDZra5s2",
+    "created_at": "2026-02-20",
     "role": "user",
     "isVerity": true
   },
   {
-    "id": "7842772b-1405-47c7-afc6-dd90ab8def95",
-    "username": "bcd",
-    "email": "dinhkhanh19042006@gmail.com",
-    "password": "$2a$10$gZ6yHhK3Y5aXBwNxVYMng.qkXHfpnSUhNX25UPa7/GB6S397q.vsG",
-    "created_at": "2026-02-13",
-    "role": "user",
-    "isVerity": false
-  },
-  {
-    "id": "c505cc32-1ea9-47a2-b936-327aaf483dbc",
+    "id": "c505cc32-1ea9-47a2-b936-327aaf483db",
     "username": "admin",
     "email": "admin@gmail.com",
-    "password": "$2a$10$9rlCBKBqc5TdCYJR6nFwyOncb1LN/ZmTL1JhBjc1YMxyXeIzlUn0.",
-    "created_at": "2026-02-01",
+    "password": "$2a$10$KAO5aIv/0ofF7UESaUZ79O09Yg1YZSv4yVswWX0aQuL6Q3WmMNmD6",
+    "created_at": "2026-02-15",
     "role": "admin",
     "isVerity": true
-  },
-  {
-    "id": "fe51bcc9-9148-46da-984b-8830b3072aed",
-    "username": "abc",
-    "email": "d@gmail.com",
-    "password": "$2a$10$HL4QOa2S.G2zraVJy.dwvu/zOXRZT.uObQ1/5rBHuzZxg2oHCvI3W",
-    "created_at": "2026-02-13",
-    "role": "user",
-    "isVerity": false
   }
 ]
