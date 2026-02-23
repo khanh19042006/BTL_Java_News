@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.service.Impl.LoginServiceImpl;
 
@@ -39,6 +40,18 @@ public class LoginController {
     @FXML
     private Button togglePasswordBtn;
 
+
+    @FXML
+    private VBox loginForm;
+
+    @FXML
+    private VBox autoLoginBox;
+
+    @FXML
+    private Label welcomeLabel;
+
+    private String rememberedUsername;
+
     @FXML
     public void initialize() {
         errorLabel.setVisible(false);
@@ -46,7 +59,14 @@ public class LoginController {
 
         String username = loginService.checkAutoLogin();
         if (username != null) {
-            // logic
+            rememberedUsername = username;
+
+            loginForm.setVisible(false);
+            loginForm.setManaged(false);
+
+            autoLoginBox.setVisible(true);
+            autoLoginBox.setManaged(true);
+            welcomeLabel.setText("Xin chào " + username);
         }
     }
 
@@ -69,8 +89,8 @@ public class LoginController {
             // lưu tài khoản
             if (rememberCheckBox.isSelected()) {
                 loginService.rememberAuth(username);
-                goToHome(username);
             }
+            goToHome(username);
         } else {
             errorLabel.setVisible(true);
             errorLabel.setManaged(true);
@@ -161,5 +181,25 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void handleContinue() {
+        goToHome(rememberedUsername);
+    }
+
+    @FXML
+    private void handleLoginOther() {
+        autoLoginBox.setVisible(false);
+        autoLoginBox.setManaged(false);
+
+        loginForm.setVisible(true);
+        loginForm.setManaged(true);
+
+        usernameField.clear();
+        passwordField.clear();
+        passwordTextField.clear();
+
+        rememberCheckBox.setSelected(false);
     }
 }

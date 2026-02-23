@@ -109,7 +109,6 @@ public class LoginServiceImpl implements LoginService {
         String userId = authDAO.getUserIdByRememberToken(tokenId);
         String username = authDAO.getUsernameByUserId(userId);
 
-
         return username;
     }
 
