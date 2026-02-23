@@ -23,8 +23,6 @@ public class LoginController {
     //nhớ ta khoản
     @FXML
     private CheckBox rememberCheckBox;
-    private final Preferences prefs = Preferences.userNodeForPackage(LoginController.class);
-    private static final String PREF_USERNAME = "remember_username";
 
     @FXML
     private TextField usernameField;
@@ -43,48 +41,36 @@ public class LoginController {
 
     @FXML
     public void initialize() {
-        String savedUsername = prefs.get(PREF_USERNAME, "");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
 
-        if (!savedUsername.isEmpty()) {
-            usernameField.setText(savedUsername);
-            rememberCheckBox.setSelected(true);
+        String username = usernameField.getText();
+        if (loginService.checkAutoLogin(username)) {
+            goToHome(username);
         }
     }
 
     @FXML
     private void handleLogin() {
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
+
         String username = usernameField.getText();
         String password = passwordField.isVisible() ? passwordField.getText() : passwordTextField.getText();
+        if (username.isEmpty() || password.isEmpty()) {
+            errorLabel.setText("Vui lòng nhập đầy đủ thông tin!");
+            errorLabel.setVisible(true);
+            errorLabel.setManaged(true);
+            return;
+        }
         boolean isSuccess = loginService.checkLogin(username, password);
 
         if (isSuccess) {
-
             // lưu tài khoản
             if (rememberCheckBox.isSelected()) {
-                prefs.put(PREF_USERNAME, username);
-            } else {
-                prefs.remove(PREF_USERNAME);
+                loginService.rememberAuth(username);
+                goToHome(username);
             }
-
-            try {
-                FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/Homepage/homepage.fxml")
-                );
-
-                Parent root = loader.load();
-
-                HomeController homeController = loader.getController();
-                homeController.setUserId(loginService.getUserIdByUsername(username));
-
-                Stage stage = (Stage) usernameField.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setTitle("Trang chủ");
-                stage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         } else {
             errorLabel.setVisible(true);
             errorLabel.setManaged(true);
@@ -153,4 +139,27 @@ public class LoginController {
         }
     }
 
+
+    private void goToHome(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Homepage/homepage.fxml")
+            );
+
+            Parent root = loader.load();
+
+            HomeController homeController = loader.getController();
+            homeController.setUserId(
+                    loginService.getUserIdByUsername(username)
+            );
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Trang chủ");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
