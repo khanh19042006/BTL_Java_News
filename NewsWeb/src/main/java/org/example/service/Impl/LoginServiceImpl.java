@@ -99,18 +99,18 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public boolean checkAutoLogin(String username){
-        String userId = authDAO.getUserIdByUsername(username);
+    public String checkAutoLogin(){
         String tokenId = RememberToken.getTokenFromLocal();
-        String userIdLocal = authDAO.getUserIdByRememberToken(tokenId);
 
-        if (tokenId == null) return false;
+        if (tokenId == null) return null;
         // Đã quá hạn tự động đăng nhập
-        if (!checkTokenTime(tokenId)) return false;
+        if (!checkTokenTime(tokenId)) return null;
 
-        // Kiểm tra tokenId local và tokenId trong db trùng nhauu
-        if (userIdLocal.equalsIgnoreCase(userId)) return true;
-        return false;
+        String userId = authDAO.getUserIdByRememberToken(tokenId);
+        String username = authDAO.getUsernameByUserId(userId);
+
+
+        return username;
     }
 
     @Override

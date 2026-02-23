@@ -44,9 +44,9 @@ public class LoginController {
         errorLabel.setVisible(false);
         errorLabel.setManaged(false);
 
-        String username = usernameField.getText();
-        if (loginService.checkAutoLogin(username)) {
-            goToHome(username);
+        String username = loginService.checkAutoLogin();
+        if (username != null) {
+            // logic
         }
     }
 
