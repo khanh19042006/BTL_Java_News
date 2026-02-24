@@ -36,8 +36,6 @@ import org.example.dto.CategoryDTO;
 
 
 public class HomeController implements Initializable {
-
-    //nút chủ đề
     @FXML
     private VBox newsContainer;
     @FXML
@@ -45,18 +43,13 @@ public class HomeController implements Initializable {
     @FXML
     private ScrollPane categoryScroll;
 
-
-    // tạo menu
     @FXML
     private Button userBtn;
     private ContextMenu userMenu;
 
     @FXML
     private TextField searchField;
-    // danh sách gốc
     private ObservableList<NewsDTO> masterNewsList;
-
-    // danh sách đã lọc
     private FilteredList<NewsDTO> filteredNewsList;
 
     @FXML
@@ -66,9 +59,8 @@ public class HomeController implements Initializable {
     private String currentCategoryCode = null;
     private String userId = null;
 
-    //biến phân trang
-    private static int currentPage = 1;
-    private static int totalPage = 1;
+    private int currentPage = 1;
+    private int totalPage = 1;
     @FXML
     private Label pageLabel;
 
@@ -80,15 +72,12 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // filter luôn tồn tại
         masterNewsList = FXCollections.observableArrayList();
         filteredNewsList = new FilteredList<>(masterNewsList, p -> true);
         newsList.setItems(filteredNewsList);
         newsList.setPlaceholder(new Label("Không có bài viết nào!"));
         setupListView();
-        // load lại trang trước đó
         reloadNews();
-        // tạo hành động cho nút
         setupUserMenu();
 
         userBtn.setOnAction(e -> {
@@ -102,12 +91,9 @@ public class HomeController implements Initializable {
 
     @FXML
     private void showCategoryScreen() {
+//        newsContainer.setVisible(false);
+//        newsContainer.setManaged(false);
 
-        // ẩn list news
-        newsContainer.setVisible(false);
-        newsContainer.setManaged(false);
-
-        // hiện ScrollPane chứa category
         categoryScroll.setVisible(true);
         categoryScroll.setManaged(true);
 
@@ -135,7 +121,6 @@ public class HomeController implements Initializable {
                 totalPage = homeService.countTotalNewsByCategory(category.getCode());
                 loadPage();
 
-                // quay lại list news
                 categoryScroll.setVisible(false);
                 categoryScroll.setManaged(false);
 
@@ -147,7 +132,6 @@ public class HomeController implements Initializable {
         }
     }
 
-    //sử lý nút phân trang
     @FXML
     private void handleNextPage() {
         if (currentPage < totalPage) {
@@ -164,9 +148,7 @@ public class HomeController implements Initializable {
         }
     }
 
-    // hàm menu
     private void setupUserMenu() {
-
         if (userMenu == null) {
             userMenu = new ContextMenu();
         } else {
@@ -197,7 +179,7 @@ public class HomeController implements Initializable {
             userMenu.getItems().addAll(profileItem, loginItem, registerItem);
         }
     }
-    // các hành động
+
     private void openProfile() {
         try {
             FXMLLoader loader = new FXMLLoader(
@@ -206,7 +188,7 @@ public class HomeController implements Initializable {
             Parent root = loader.load();
 
             ProfileController controller = loader.getController();
-            controller.setUserId(userId); // truyền userId
+            controller.setUserId(userId);
 
             Stage stage = (Stage) userBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -215,16 +197,15 @@ public class HomeController implements Initializable {
             e.printStackTrace();
         }
     }
+
     private void openLogin() {
         try {
-            // lớp đọc file fxml
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/Login/login.fxml")
             );
 
             Parent root = loader.load();
 
-            // lấy cửa sổ hiện tại
             Stage stage = (Stage) userBtn.getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Đăng nhập");
@@ -253,11 +234,10 @@ public class HomeController implements Initializable {
 
     private void logout() {
         userId = null;
-        // reset về trang đề xuất mặc định
         currentMode = HomeMode.RECOMMEND;
         currentPage = 1;
         setupUserMenu();
-        loadPage();   // reload lại dữ liệu
+        loadPage();
         System.out.println("Đã đăng xuất");
     }
 
@@ -265,7 +245,6 @@ public class HomeController implements Initializable {
 
     @FXML
     private void handleSearch() {
-
         String keyword = searchField.getText();
 
         if (keyword == null || keyword.trim().isEmpty()) {
@@ -299,17 +278,16 @@ public class HomeController implements Initializable {
         setupUserMenu();
     }
 
-    // biến nhớ trạng thái home đang ở chế độ nào
     public enum HomeMode {
         RECOMMEND, NEW, HOT, SEARCH, CATEGORY
     }
 
-    private static HomeMode currentMode = HomeMode.RECOMMEND;
+    private HomeMode currentMode = HomeMode.RECOMMEND;
     @FXML
     private void loadRecommendNews() {
         currentMode = HomeMode.RECOMMEND;
         currentPage = 1;
-        totalPage = 1; // chỉ 1 trang
+        totalPage = 1;
         loadPage();
     }
 
@@ -330,8 +308,6 @@ public class HomeController implements Initializable {
         loadPage();
     }
 
-
-
     public void reloadNews() {
         switch (currentMode) {
             case NEW -> loadNewNews();
@@ -342,13 +318,15 @@ public class HomeController implements Initializable {
     }
 
     private void loadPage() {
+        categoryScroll.setVisible(false);
+        categoryScroll.setManaged(false);
         List<NewsDTO> news;
 
         switch (currentMode) {
             case NEW -> news = homeService.getNewsNewByPage(currentPage);
             case HOT -> news = homeService.getHotNewsByPage(currentPage);
             case CATEGORY -> news = homeService.getNewsPageByCategory(currentCategoryCode, currentPage);
-            case SEARCH -> news = new ArrayList<>(masterNewsList); // giữ nguyên kết quả search
+            case SEARCH -> news = new ArrayList<>(masterNewsList);
             default -> news = homeService.getRecommendNews(userId);
         }
         updateNewsList(news);
@@ -373,7 +351,6 @@ public class HomeController implements Initializable {
         }
     }
 
-    // đổ dữ liệu lên UI
     private void updateNewsList(List<NewsDTO> news) {
         masterNewsList.setAll(news == null ? List.of() : news);
     }
@@ -456,14 +433,14 @@ public class HomeController implements Initializable {
 
             NewsDetailController controller = loader.getController();
             controller.setFromProfile(false);
-            // lưu root home hiện tại
+
             controller.setHomeRoot(newsList.getScene().getRoot());
-            // truyền controller
+
             controller.setUserId(userId);
             controller.setNewsId(news.getId());
 
             Stage stage = (Stage) newsList.getScene().getWindow();
-            stage.getScene().setRoot(detailRoot); // không tạo Scene mới
+            stage.getScene().setRoot(detailRoot);
         } catch (Exception e) {
             e.printStackTrace();
         }
