@@ -21,7 +21,6 @@ import java.util.prefs.Preferences;
 public class LoginController {
     private final LoginService loginService = new LoginServiceImpl();
 
-    //nhớ ta khoản
     @FXML
     private CheckBox rememberCheckBox;
 
