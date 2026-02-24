@@ -1,10 +1,13 @@
 package org.example.dao;
 
 import org.example.dto.UserDTO;
+import org.example.entity.RoleUpgradeRequest;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO {
 
@@ -59,6 +62,27 @@ public class UserDAO {
         }
 
         return user;
+    }
+
+    public String getRoleByUserId(String userId) {
+        String sql = "SELECT role FROM users WHERE id = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("role");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null; // không tìm thấy user
     }
 
 }
