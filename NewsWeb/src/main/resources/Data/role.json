@@ -1,16 +1,16 @@
 [
   {
-    "id": "2d4f1e7c-f5d9-11f0-b018-60cf8480bce2",
+    "id": "eada7f34-0a74-11f1-bae1-a82bdd5f50f9",
     "code": "admin",
     "name": "Administrator"
   },
   {
-    "id": "2d4f31d0-f5d9-11f0-b018-60cf8480bce2",
+    "id": "eadadc69-0a74-11f1-bae1-a82bdd5f50f9",
     "code": "user",
     "name": "User"
   },
   {
-    "id": "2d4f328d-f5d9-11f0-b018-60cf8480bce2",
+    "id": "eadae03b-0a74-11f1-bae1-a82bdd5f50f9",
     "code": "journalist",
     "name": "Journalist"
   }

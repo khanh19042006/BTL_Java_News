@@ -85,7 +85,6 @@ public class LoginController {
         boolean isSuccess = loginService.checkLogin(username, password);
 
         if (isSuccess) {
-            // lưu tài khoản
             if (rememberCheckBox.isSelected()) {
                 loginService.rememberAuth(username);
             }
@@ -96,12 +95,10 @@ public class LoginController {
         }
     }
 
-    // Hiện mật khẩu khi bấm vào con mắt
     @FXML
     private void togglePasswordVisibility() {
 
         if (passwordField.isVisible()) {
-            // Hiện mật khẩu
             passwordTextField.setText(passwordField.getText());
             passwordTextField.setVisible(true);
             passwordTextField.setManaged(true);
@@ -111,7 +108,6 @@ public class LoginController {
 
             togglePasswordBtn.setText("🙈");
         } else {
-            // Ẩn mật khẩu
             passwordField.setText(passwordTextField.getText());
             passwordField.setVisible(true);
             passwordField.setManaged(true);

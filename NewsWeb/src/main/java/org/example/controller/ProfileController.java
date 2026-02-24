@@ -11,6 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.example.dto.NewsDTO;
 import org.example.dto.UserDTO;
+import org.example.entity.RoleUpgradeRequest;
+import org.example.service.Impl.UpgradeRoleImpl;
 import org.example.service.ProfileService;
 import org.example.service.Impl.ProfileServiceImpl;
 
@@ -44,19 +46,18 @@ public class ProfileController {
     @FXML private Label roleLabel;
     @FXML private ListView<NewsDTO> userPostsList;
 
-    // bien luu danh sach goc
     private ObservableList<NewsDTO> masterNewsList = FXCollections.observableArrayList();
     private FilteredList<NewsDTO> filteredNewsList =
             new FilteredList<>(masterNewsList, p -> true);
 
     @FXML private TextField searchField;
 
-    // nút
     @FXML
     private Button homeBtn;
     private ContextMenu homeMenu;
 
-
+    @FXML private Button roleActionBtn;
+    @FXML private Button createPostBtn;
 
     private final ProfileService profileService = new ProfileServiceImpl();
 
@@ -64,6 +65,7 @@ public class ProfileController {
     private static final String AVATAR_DIR = "user-data/avatars/";
     private static final String DEFAULT_AVATAR = "/Image/default-thumbnail.jpg";
 
+    private final UpgradeRoleImpl upgradeRoleService = new UpgradeRoleImpl();
     // hardcode admin
 //    private final String currentUserId = dotenv.get("ADMIN_ID");
     private String currentUserId;
@@ -158,12 +160,92 @@ public class ProfileController {
             usernameLabel.setText("Unknown");
             emailLabel.setText("");
             roleLabel.setText("");
+            roleActionBtn.setVisible(false);
+            createPostBtn.setVisible(false);
             return;
         }
 
         usernameLabel.setText(user.getUsername());
         emailLabel.setText(user.getEmail());
         roleLabel.setText(user.getRole());
+
+        String role = user.getRole().toUpperCase();
+
+        if (role.equals("USER")) {
+            roleActionBtn.setText("Xin cấp quyền");
+            roleActionBtn.setVisible(true);
+        } else if (role.equals("ADMIN")) {
+            roleActionBtn.setText("Danh sách yêu cầu");
+            roleActionBtn.setVisible(true);
+        } else  {
+            roleActionBtn.setVisible(false);
+        }
+
+        if (role.equals("ADMIN") || role.equals("JOURNALIST")) {
+            createPostBtn.setVisible(true);
+        } else {
+            createPostBtn.setVisible(false);
+        }
+    }
+
+    @FXML
+    private void onRoleAction() {
+        String role = roleLabel.getText().toUpperCase();
+        if (role.equals("USER")) {
+            boolean success = upgradeRoleService.addUser(currentUserId);
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Xin cấp quyền");
+            alert.setHeaderText(null);
+
+            if (success) {
+                alert.setContentText("Yêu cầu cấp quyền đã được gửi thành công!");
+            } else {
+                alert.setContentText("Bạn đã gửi yêu cầu trước đó trong vòng 30 ngày hoặc không đủ điều kiện!");
+            }
+            alert.showAndWait();
+
+        } else if (role.equals("ADMIN")) {
+            showPermissionRequests();
+        }
+    }
+
+    private void showPermissionRequests() {
+        List<RoleUpgradeRequest> requests = upgradeRoleService.getListUser();
+
+        if (requests.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Danh sách yêu cầu");
+            alert.setHeaderText(null);
+            alert.setContentText("Hiện chưa có user nào xin quyền.");
+            alert.showAndWait();
+            return;
+        }
+
+        VBox vbox = new VBox(10);
+
+        for (RoleUpgradeRequest req : requests) {
+            HBox hbox = new HBox(10);
+            UserDTO user = profileService.getUserById(req.getUserId());
+            Label username = new Label(user.getUsername());
+            Button approveBtn = new Button("Cấp quyền");
+            approveBtn.setStyle("-fx-font-size: 12px; -fx-cursor: hand;");
+
+            approveBtn.setOnAction(e -> {
+                upgradeRoleService.acpUser(req.getUserId());
+                vbox.getChildren().remove(hbox);
+            });
+
+            hbox.getChildren().addAll(username, approveBtn);
+            vbox.getChildren().add(hbox);
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Danh sách yêu cầu");
+        alert.setHeaderText("User xin quyền:");
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.setContent(vbox);
+        alert.showAndWait();
     }
 
     private void loadUserNews() {
