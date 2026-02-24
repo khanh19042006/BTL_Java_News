@@ -489,6 +489,28 @@ public class AuthDAO {
         return null;
     }
 
+    public String getUsernameByUserId(String userId) {
+
+        String sql = "SELECT username FROM users WHERE id = ? LIMIT 1";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, userId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("username");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null; // không tìm thấy
+    }
+
     public boolean deleteRememberToken(String tokenId) {
 
         String sql = "DELETE FROM remember_token WHERE id = ?";

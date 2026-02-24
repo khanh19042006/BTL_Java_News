@@ -273,6 +273,7 @@ public class ProfileController {
             Parent detailRoot = loader.load();
             NewsDetailController controller = loader.getController();
 
+            controller.setUserId(currentUserId);
             controller.setFromProfile(true);
             controller.setNewsId(news.getId());
             controller.setProfileController(this);

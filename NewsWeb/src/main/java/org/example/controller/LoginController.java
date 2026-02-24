@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.service.Impl.LoginServiceImpl;
 
@@ -23,8 +24,6 @@ public class LoginController {
     //nhớ ta khoản
     @FXML
     private CheckBox rememberCheckBox;
-    private final Preferences prefs = Preferences.userNodeForPackage(LoginController.class);
-    private static final String PREF_USERNAME = "remember_username";
 
     @FXML
     private TextField usernameField;
@@ -41,50 +40,57 @@ public class LoginController {
     @FXML
     private Button togglePasswordBtn;
 
+
+    @FXML
+    private VBox loginForm;
+
+    @FXML
+    private VBox autoLoginBox;
+
+    @FXML
+    private Label welcomeLabel;
+
+    private String rememberedUsername;
+
     @FXML
     public void initialize() {
-        String savedUsername = prefs.get(PREF_USERNAME, "");
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
 
-        if (!savedUsername.isEmpty()) {
-            usernameField.setText(savedUsername);
-            rememberCheckBox.setSelected(true);
+        String username = loginService.checkAutoLogin();
+        if (username != null) {
+            rememberedUsername = username;
+
+            loginForm.setVisible(false);
+            loginForm.setManaged(false);
+
+            autoLoginBox.setVisible(true);
+            autoLoginBox.setManaged(true);
+            welcomeLabel.setText("Xin chào " + username);
         }
     }
 
     @FXML
     private void handleLogin() {
+        errorLabel.setVisible(false);
+        errorLabel.setManaged(false);
+
         String username = usernameField.getText();
         String password = passwordField.isVisible() ? passwordField.getText() : passwordTextField.getText();
+        if (username.isEmpty() || password.isEmpty()) {
+            errorLabel.setText("Vui lòng nhập đầy đủ thông tin!");
+            errorLabel.setVisible(true);
+            errorLabel.setManaged(true);
+            return;
+        }
         boolean isSuccess = loginService.checkLogin(username, password);
 
         if (isSuccess) {
-
             // lưu tài khoản
             if (rememberCheckBox.isSelected()) {
-                prefs.put(PREF_USERNAME, username);
-            } else {
-                prefs.remove(PREF_USERNAME);
+                loginService.rememberAuth(username);
             }
-
-            try {
-                FXMLLoader loader = new FXMLLoader(
-                        getClass().getResource("/Homepage/homepage.fxml")
-                );
-
-                Parent root = loader.load();
-
-                HomeController homeController = loader.getController();
-                homeController.setUserId(loginService.getUserIdByUsername(username));
-
-                Stage stage = (Stage) usernameField.getScene().getWindow();
-                stage.setScene(new Scene(root));
-                stage.setTitle("Trang chủ");
-                stage.show();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            goToHome(username);
         } else {
             errorLabel.setVisible(true);
             errorLabel.setManaged(true);
@@ -153,4 +159,47 @@ public class LoginController {
         }
     }
 
+
+    private void goToHome(String username) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/Homepage/homepage.fxml")
+            );
+
+            Parent root = loader.load();
+
+            HomeController homeController = loader.getController();
+            homeController.setUserId(
+                    loginService.getUserIdByUsername(username)
+            );
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Trang chủ");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleContinue() {
+        goToHome(rememberedUsername);
+    }
+
+    @FXML
+    private void handleLoginOther() {
+        autoLoginBox.setVisible(false);
+        autoLoginBox.setManaged(false);
+
+        loginForm.setVisible(true);
+        loginForm.setManaged(true);
+
+        usernameField.clear();
+        passwordField.clear();
+        passwordTextField.clear();
+
+        rememberCheckBox.setSelected(false);
+    }
 }
