@@ -145,3 +145,17 @@ CREATE TABLE remember_token (
 -- 21/02/2026
 -- Cho phép null ở thuộc tính link trong table news
 ALTER TABLE news MODIFY link VARCHAR(255) NULL;
+
+
+-- 24/02/2026
+-- Thêm thuộc tính isRequestedRoleUpgrade cho bảng users
+ALTER TABLE `users`
+ADD COLUMN `request_at` VARCHAR(50) DEFAULT NULL;
+
+-- Tạo thêm bảng chứa danh sách những người xin cấp role
+CREATE TABLE `role_upgrade_requests` (
+  `id` VARCHAR(50) NOT NULL,
+  `user_id` VARCHAR(50) NOT NULL,
+  `created_at` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) 
