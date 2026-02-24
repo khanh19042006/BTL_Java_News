@@ -16,7 +16,7 @@ public class CommentDAO {
     public boolean createComment(String content, String authorId, String newsId, String parentId) {
 
         String sql = """
-                INSERT INTO comment
+                INSERT INTO comments
                 (id, content, author_id, news_id, time_up, parent_id)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """;
@@ -57,7 +57,7 @@ public class CommentDAO {
 
         String sql = """
             SELECT id, content, author_id, news_id, time_up, parent_id
-            FROM comment
+            FROM comments
             WHERE news_id = ?
               AND parent_id IS NULL
             ORDER BY time_up DESC
@@ -88,7 +88,8 @@ public class CommentDAO {
         List<CommentDTO> list = new ArrayList<>();
 
         String sql = """
-                SELECT * FROM comment
+                SELECT id, content, author_id, news_id, time_up, parent_id
+                FROM comments
                 WHERE parent_id = ?
                 ORDER BY time_up ASC
                 """;
@@ -116,7 +117,7 @@ public class CommentDAO {
 
         String sql = """
             SELECT COUNT(*) 
-            FROM comment
+            FROM comments
             WHERE parent_id = ?
             """;
 
@@ -141,7 +142,7 @@ public class CommentDAO {
     // Xóa comment (chỉ admin mới dùng)
     public boolean deleteCommentByAdmin(String commentId) {
 
-        String sql = "DELETE FROM comment WHERE id = ?";
+        String sql = "DELETE FROM comments WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -161,7 +162,7 @@ public class CommentDAO {
     public boolean deleteCommentByUser(String commentId, String userId) {
 
         String sql = """
-            DELETE FROM comment
+            DELETE FROM comments
             WHERE id = ?
               AND author_id = ?
             """;
@@ -189,7 +190,7 @@ public class CommentDAO {
 
         String sql = """
             SELECT COUNT(*) 
-            FROM comment
+            FROM comments
             WHERE id = ?
             AND author_id = ?
             """;
@@ -222,7 +223,8 @@ public class CommentDAO {
         commentDTO.setContent(rs.getString("content"));
         commentDTO.setAuthorId(rs.getString("author_id"));
         commentDTO.setNewsId(rs.getString("news_id"));
-        commentDTO.setTimeUp(rs.getString("parent_id"));
+        commentDTO.setTimeUp(rs.getString("time_up"));
+        commentDTO.setParentId(rs.getString("parent_id"));
 
         return commentDTO;
     }

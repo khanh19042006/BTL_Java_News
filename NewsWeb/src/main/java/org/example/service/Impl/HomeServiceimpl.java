@@ -87,4 +87,10 @@ public class HomeServiceimpl implements HomeService {
         return newsDAO.getNewsByCategory(category ,page, limit);
     }
 
+    @Override
+    public int countTotalNewsByCategory(String category){
+        int totalNews = newsDAO.countTotalNewsByCategory(category);
+
+        return (totalNews + limit - 1) / limit;
+    }
 }

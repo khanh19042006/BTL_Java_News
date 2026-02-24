@@ -18,4 +18,5 @@ public interface HomeService {
     public boolean incrementViewCount(String newsId);           // Tăng view thêm 1
     public List<NewsDTO> getNewsPageByCategory
             (String category,int page);                         // Phân trang theo category
+    public int countTotalNewsByCategory(String category);       // Đếm tổng số trang theo category
 }

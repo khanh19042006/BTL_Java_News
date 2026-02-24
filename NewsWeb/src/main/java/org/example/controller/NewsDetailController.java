@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 
 import org.example.dao.UserDAO;
 import org.example.dto.CategoryDTO;
+import org.example.dto.CommentDTO;
 import org.example.dto.NewsDTO;
 import org.example.dao.NewsDAO;
 
@@ -25,7 +27,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import org.example.dto.UserDTO;
+import org.example.service.CommendService;
 import org.example.service.HomeService;
+import org.example.service.Impl.CommentServiceImpl;
 import org.example.service.Impl.HomeServiceimpl;
 
 
@@ -72,21 +76,29 @@ public class NewsDetailController {
     @FXML
     private TextArea shortDescArea;
 
-
-    // thể loại được lấy từ db
     private final HomeService homeService = new HomeServiceimpl();
 
     @FXML
     private HBox metaEditBox;
 
-    // chỉnh sửa ảnh
     @FXML private ImageView thumbnailImage;
     @FXML private Button editThumbnailBtn;
 
-    // biến lưu ảnh
+    @FXML
+    private VBox commentContainer;
+    @FXML
+    private TextArea commentInput;
+    @FXML
+    private Button sendCommentBtn;
+    private final CommendService commentService = new CommentServiceImpl();
+    private String replyingToCommentId = null;
+    private String currentUserId;
+    public void setUserId(String userId) {
+        this.currentUserId = userId;
+    }
+
     private static final String NEWS_IMAGE_DIR = "user-data/news/";
 
-    // biến tạo bài báo
     private boolean createMode = false;
 
     private HomeController homeController;
@@ -112,11 +124,11 @@ public class NewsDetailController {
         saveBtn.setOnAction(e -> saveChanges());
         backBtn.setOnAction(e -> goBack());
         setEditMode(false);
+        sendCommentBtn.setOnAction(e -> handleSendComment());
     }
 
 
     private void loadCategories() {
-        //load dữ liệu từ db
         categoryBox.getItems().setAll(homeService.getCategory());
 
         categoryBox.setCellFactory(cb -> new ListCell<>() {
@@ -136,24 +148,20 @@ public class NewsDetailController {
         });
     }
 
-    // trang chủ / trang cá nhân sẽ gọi hàm này
+
     public void setFromProfile(boolean fromProfile) {
         this.fromProfile = fromProfile;
 
-        // nếu không vào từ trang cá nhân thì ẩn nút chỉnh sửa
         if (!fromProfile) {
             editBtn.setVisible(false);
             editBtn.setManaged(false);
         }
     }
 
-    // bài báo hiện tại đang được hiển thị / chỉnh sửa
     private NewsDTO news;
 
-    // dao thao tác với bảng news
     private final NewsDAO newsDAO = new NewsDAO();
 
-    // tăng view chỉ khi mở
     private boolean viewed = false;
     public void onOpenNews() {
         if (viewed) return;
@@ -224,8 +232,158 @@ public class NewsDetailController {
 
         // lưu id để dùng khi đổi ảnh
         this.newsId = news.getId();
+
+        loadComments();
     }
 
+    private void loadComments() {
+        if (news == null) return;
+        commentContainer.getChildren().clear();
+
+        var parents = commentService.getParentComments(news.getId());
+        for (CommentDTO parent : parents) {
+            VBox parentBox = createCommentWithToggle(parent, 0);
+            commentContainer.getChildren().add(parentBox);
+        }
+    }
+
+    private VBox createCommentWithToggle(CommentDTO comment, int level) {
+
+        VBox wrapper = new VBox(5);
+
+        VBox commentBox = createSimpleComment(comment);
+        commentBox.setTranslateX(level * 30);
+
+        VBox replyContainer = new VBox(5);
+        replyContainer.setVisible(false);
+        replyContainer.setManaged(false);
+
+        var replies = commentService.getReplies(comment.getId());
+
+        if (!replies.isEmpty()) {
+
+            Button toggleBtn = new Button("Xem " + replies.size() + " trả lời");
+
+            toggleBtn.setOnAction(e -> {
+
+                boolean isVisible = replyContainer.isVisible();
+
+                replyContainer.setVisible(!isVisible);
+                replyContainer.setManaged(!isVisible);
+
+                if (!isVisible && replyContainer.getChildren().isEmpty()) {
+                    for (CommentDTO reply : replies) {
+                        VBox replyBox = createCommentWithToggle(reply, level + 1);
+                        replyContainer.getChildren().add(replyBox);
+                    }
+                }
+
+                toggleBtn.setText(
+                        isVisible ? "Xem " + replies.size() + " trả lời" : "Ẩn trả lời"
+                );
+            });
+
+            wrapper.getChildren().addAll(commentBox, toggleBtn, replyContainer);
+
+        } else {
+            wrapper.getChildren().add(commentBox);
+        }
+        return wrapper;
+    }
+
+    private void addRepliesRecursive(VBox container, CommentDTO parent, int level) {
+
+        var replies = commentService.getReplies(parent.getId());
+
+        for (CommentDTO reply : replies) {
+
+            VBox replyBox = createSimpleComment(reply);
+            replyBox.setTranslateX(level * 30);
+
+            container.getChildren().add(replyBox);
+
+            // gọi reply con
+            addRepliesRecursive(container, reply, level + 1);
+        }
+    }
+
+    private VBox createSimpleComment(CommentDTO comment) {
+        VBox box = new VBox(4);
+
+        UserDAO userDAO = new UserDAO();
+        UserDTO user = userDAO.getUserById(comment.getAuthorId());
+        String username = (user != null) ? user.getUsername() : "Unknown";
+
+        Label authorLabel = new Label(username);
+        authorLabel.setStyle("-fx-font-weight: bold;");
+        Label contentLabel = new Label(comment.getContent());
+        Label timeLabel = new Label(comment.getTimeUp());
+
+        contentLabel.setWrapText(true);
+
+        // nút xóa
+        Button deleteBtn = new Button("Xóa");
+        Button replyBtn = new Button("Trả lời");
+        // nếu chưa đăng nhập → ẩn cả 2 nút
+        if (currentUserId == null) {
+            deleteBtn.setVisible(false);
+            deleteBtn.setManaged(false);
+
+            replyBtn.setVisible(false);
+            replyBtn.setManaged(false);
+        } else {
+
+            // nút trả lời luôn hiện nếu đã đăng nhập
+            replyBtn.setVisible(true);
+
+            // nút xóa chỉ hiện nếu là chủ comment hoặc admin
+            if (commentService.isOwner(comment.getId(), currentUserId)
+                    || isAdmin(currentUserId)) {
+                deleteBtn.setVisible(true);
+            } else {
+                deleteBtn.setVisible(false);
+                deleteBtn.setManaged(false);
+            }
+        }
+        replyBtn.setOnAction(e -> {
+            replyingToCommentId = comment.getId();
+            commentInput.setPromptText("Trả lời " + username + "...");
+            commentInput.requestFocus();
+        });
+        deleteBtn.setOnAction(e -> {
+            boolean success = commentService.deleteComment(
+                    comment.getId(), currentUserId
+            );
+            if (success) {
+                loadComments();
+            }
+        });
+        box.getChildren().addAll(authorLabel, contentLabel, timeLabel, replyBtn, deleteBtn);
+        return box;
+    }
+
+    private boolean isAdmin(String userId) {
+        if (userId == null) return false;
+        UserDAO userDAO = new UserDAO();
+        UserDTO user = userDAO.getUserById(userId);
+        return user != null &&
+                user.getRole().equalsIgnoreCase("admin");
+    }
+    private void handleSendComment() {
+        if (news == null) return;
+
+        if (currentUserId == null) {
+            showError("⚠ Bạn cần đăng nhập để bình luận.");
+            return;
+        }
+        String content = commentInput.getText().trim();
+        if (content.isEmpty()) return;
+        commentService.createComment(
+                content, currentUserId, news.getId(), replyingToCommentId
+        );
+        commentInput.clear();
+        loadComments();
+    }
 
     // chuyển sang chế độ chỉnh sửa
     private void switchToEditMode() {
@@ -300,37 +458,34 @@ public class NewsDetailController {
         editThumbnailBtn.setManaged(editing);
     }
 
+    // lấy root từ home
+    private Parent homeRoot;
+
+    public void setHomeRoot(Parent homeRoot) {
+        this.homeRoot = homeRoot;
+    }
     // quay lại trang trước
     private void goBack() {
         try {
             Stage stage = (Stage) backBtn.getScene().getWindow();
 
-            FXMLLoader loader;
-            Parent root;
-
             if (fromProfile) {
-                loader = new FXMLLoader(
+                FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/Profile/profile.fxml")
                 );
-                root = loader.load();
+                Parent root = loader.load();
 
                 ProfileController controller = loader.getController();
-                // truyền lại userId
                 if (profileController != null) {
                     controller.setUserId(profileController.getCurrentUserId());
                 }
-            } else {
-                loader = new FXMLLoader(
-                        getClass().getResource("/HomePage/homePage.fxml")
-                );
-                root = loader.load();
 
-                HomeController controller = loader.getController();
-                controller.reloadNews();
+                stage.setScene(new Scene(root));
+            }  else {
+                if (homeRoot != null) {
+                    stage.getScene().setRoot(homeRoot);  // quay lại root cũ
+                }
             }
-
-            stage.setScene(new Scene(root));
-            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
