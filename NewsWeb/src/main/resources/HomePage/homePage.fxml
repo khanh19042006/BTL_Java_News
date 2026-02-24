@@ -30,7 +30,7 @@
 
             <Button fx:id="newBtn" onAction="#loadNewNews" styleClass="tab-button" text="MỚI" />
 
-            <Button fx:id="videoBtn" onAction="#loadRecommendNews" styleClass="tab-button" text="VIDEO" />
+            <Button fx:id="videoBtn" onAction="#loadRecommendNews" styleClass="tab-button" text="GỢI Ý" />
 
             <Button fx:id="topicBtn" onAction="#showCategoryScreen" styleClass="tab-button" text="CHỦ ĐỀ" />
 
