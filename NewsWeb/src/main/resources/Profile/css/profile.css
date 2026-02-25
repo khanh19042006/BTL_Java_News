@@ -113,3 +113,17 @@
 .edit-avatar-button:hover {
     -fx-background-color: #FF8533;
 }
+
+.role-action-button {
+    -fx-background-color: #FF6600;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 2 8;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+}
+
+.role-action-button:hover {
+    -fx-background-color: #FF8533;
+}
