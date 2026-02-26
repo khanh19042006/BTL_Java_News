@@ -1,0 +1,17 @@
+[
+  {
+    "id": "eada7f34-0a74-11f1-bae1-a82bdd5f50f9",
+    "code": "admin",
+    "name": "Administrator"
+  },
+  {
+    "id": "eadadc69-0a74-11f1-bae1-a82bdd5f50f9",
+    "code": "user",
+    "name": "User"
+  },
+  {
+    "id": "eadae03b-0a74-11f1-bae1-a82bdd5f50f9",
+    "code": "journalist",
+    "name": "Journalist"
+  }
+]

@@ -1,114 +1,88 @@
 package org.example.dao;
 
-import org.example.entity.User;
+import org.example.dto.UserDTO;
+import org.example.entity.RoleUpgradeRequest;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDAO {
 
-    public boolean checkUser(String username, String password) {
-
-        String sql = """
-            SELECT 1
-            FROM users
-            WHERE username = ?
-              AND password = ?
-            LIMIT 1
-        """;
-
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            conn = DBConnection.getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, username);
-            ps.setString(2, password);
-
-            rs = ps.executeQuery();
-
-            // Nếu có ít nhất 1 record → login thành công
-            return rs.next();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-
-        } finally {
-            // Đóng tài nguyên theo thứ tự ngược lại
-            try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    public boolean isAdmin(String userId) {
+        return hasRole(userId, "ADMIN");
     }
 
-    public boolean checkUsername(String username){
-        String sql = """
-            SELECT 1
-            FROM users
-            WHERE username = ?
-            LIMIT 1
-        """;
-
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            conn = DBConnection.getConnection();
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, username);
-
-            rs = ps.executeQuery();
-
-            return rs.next();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-
-        } finally {
-            // Đóng tài nguyên theo thứ tự ngược lại
-            try {
-                if (rs != null) rs.close();
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+    public boolean isJournalist(String userId) {
+        return hasRole(userId, "JOURNALIST");
     }
 
-    public void createUser(User user) {
+    private boolean hasRole(String userId, String roleCode) {
+        String sql = "SELECT 1 FROM users WHERE id = ? AND role = ?";
 
-        String sql = """
-        INSERT INTO users (id, username, email, password, created_at, role)
-        VALUES (?, ?, ?, ?, ?, ?)
-        """;
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, userId);
+            ps.setString(2, roleCode);
+
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public UserDTO getUserById(String id) {
+        UserDTO user = null;
+        String sql = "SELECT username, email, password, created_at, role FROM users WHERE id = ?";
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getUsername());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getPassword());
-            ps.setString(5, user.getCreated_at());
-            ps.setString(6, user.getRole());
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
 
-            ps.executeUpdate();
+            if (rs.next()) {
+                user = new UserDTO();
+                user.setId(id);
+                user.setUsername(rs.getString("username"));
+                user.setEmail(rs.getString("email"));
+                user.setPassword(rs.getString("password"));
+                user.setCreated_at(rs.getString("created_at"));
+                user.setRole(rs.getString("role"));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return user;
+    }
+
+    public String getRoleByUserId(String userId) {
+        String sql = "SELECT role FROM users WHERE id = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("role");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null; // không tìm thấy user
     }
 
 }
-

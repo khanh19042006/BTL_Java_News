@@ -1,9 +1,3 @@
-CREATE TABLE checkTable (
-    id VARCHAR(255) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    check_flag BOOLEAN NOT NULL
-);
-
 CREATE TABLE news (
     id VARCHAR(255) PRIMARY KEY,
     link VARCHAR(512) NOT NULL,
@@ -37,3 +31,131 @@ CREATE TABLE users (
 
 ALTER TABLE users
 ADD COLUMN role VARCHAR(50) NOT NULL DEFAULT 'USER';
+
+--Thêm trường content, thumbnail vào news
+ALTER TABLE news
+ADD COLUMN content TEXT,
+ADD COLUMN thumbnail VARCHAR(255);
+
+--Thêm FULLTEXT cho headline, short_description,  content (chạy khá lâu, khoảng 5-10p)
+--Nếu có báo lỗi thì báo lại
+ALTER TABLE news
+ADD FULLTEXT(headline, short_description, content);
+
+--Thêm table category
+CREATE TABLE category (
+    id CHAR(36) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL
+);
+
+
+--Thêm table role (admin, user, journalist)
+CREATE TABLE role (
+    id VARCHAR(36) PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    name VARCHAR(100) NOT NULL
+);
+
+INSERT IGNORE INTO role (id, code, name) VALUES
+(UUID(), 'admin', 'Administrator'),
+(UUID(), 'user', 'User'),
+(UUID(), 'journalist', 'Journalist');
+
+--Format lại các thuộc tính của news cho phù hợp
+SET SQL_SAFE_UPDATES = 0;
+UPDATE news n
+JOIN category c
+  ON LOWER(TRIM(n.category)) = LOWER(TRIM(c.name))
+SET n.category = c.code;
+SET SQL_SAFE_UPDATES = 1;
+
+--Tạo table Token
+CREATE TABLE token (
+    id VARCHAR(36) NOT NULL,
+    user_id VARCHAR(36) NOT NULL,
+    otp_code VARCHAR(6) NOT NULL,
+    iat BIGINT NOT NULL,
+    exp BIGINT NOT NULL,
+    PRIMARY KEY (id)
+)
+
+--Xây dựng lại table user
+drop table users;
+CREATE TABLE user (
+    id VARCHAR(50) NOT NULL,
+    username VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at VARCHAR(50) DEFAULT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'USER',
+    isVerity TINYINT(1) DEFAULT '0',
+    PRIMARY KEY (id),
+    UNIQUE KEY username (username)
+);
+
+-- 26/01/2026
+-- Thêm author id vào news để làm phần lịch sử đăng bài
+ALTER TABLE news DROP INDEX headline;
+ALTER TABLE news
+ADD COLUMN author_id CHAR(36);
+
+ALTER TABLE news
+ADD FULLTEXT ft_news_search (headline, short_description, content);
+
+-- 2/1/2026
+-- Thêm table history để lưu trữ lịch sử đọc báo
+CREATE TABLE history (
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(50) NOT NULL,
+    news_id VARCHAR(50) NOT NULL,
+    read_at VARCHAR(50) NOT NULL,
+
+    INDEX idx_user_time (user_id, read_at)
+);
+
+-- 08/02/2026
+-- Tạo bảng comment
+CREATE TABLE comment (
+    id VARCHAR(50) PRIMARY KEY,
+    content TEXT NOT NULL,
+    author_id VARCHAR(50) NOT NULL,
+    news_id VARCHAR(50) NOT NULL,
+    time_up VARCHAR(30) NOT NULL,
+    parent_id VARCHAR(50)
+);
+
+-- 09/02/2026
+-- Xóa index fulltext ở content
+ALTER TABLE news DROP INDEX ft_news_search;
+ALTER TABLE news
+ADD FULLTEXT ft_news_headline (headline);
+
+-- Tăng độ lưu trữ cho content
+ALTER TABLE news MODIFY content MEDIUMTEXT;
+
+-- 10/02/2026
+CREATE TABLE remember_token (
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36) NOT NULL,
+    created_at BIGINT,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 21/02/2026
+-- Cho phép null ở thuộc tính link trong table news
+ALTER TABLE news MODIFY link VARCHAR(255) NULL;
+
+
+-- 24/02/2026
+-- Thêm thuộc tính isRequestedRoleUpgrade cho bảng users
+ALTER TABLE `users`
+ADD COLUMN `request_at` VARCHAR(50) DEFAULT NULL;
+
+-- Tạo thêm bảng chứa danh sách những người xin cấp role
+CREATE TABLE `role_upgrade_requests` (
+  `id` VARCHAR(50) NOT NULL,
+  `user_id` VARCHAR(50) NOT NULL,
+  `created_at` VARCHAR(50) NOT NULL,
+  PRIMARY KEY (`id`)
+) 

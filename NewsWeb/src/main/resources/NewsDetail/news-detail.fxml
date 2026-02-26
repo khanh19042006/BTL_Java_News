@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="720" prefWidth="420" stylesheets="@css/news-detail.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.NewsDetailController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="header">
+            <Button fx:id="backBtn" styleClass="icon-button" text="⬅" />
+
+            <Label styleClass="app-title" text="CHI TIẾT BÀI BÁO" />
+
+            <Region HBox.hgrow="ALWAYS" />
+
+            <Button fx:id="editBtn" styleClass="icon-button" text="🖊" />
+
+            <Button fx:id="saveBtn" managed="false" styleClass="icon-button" text="✓" visible="false" />
+
+            <Button fx:id="cancelBtn" managed="false" styleClass="icon-button" text="✖" visible="false" />
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox alignment="TOP_CENTER" spacing="16" styleClass="page-content">
+                    <padding>
+                        <Insets bottom="16" left="16" right="16" top="16" />
+                    </padding>
+
+                    <VBox spacing="12" styleClass="profile-card">
+
+                        <StackPane>
+                            <ImageView fx:id="thumbnailImage" fitWidth="360" preserveRatio="true" />
+                            <Button fx:id="editThumbnailBtn" managed="false" onAction="#onEditThumbnail" text="🖊" visible="false" StackPane.alignment="BOTTOM_RIGHT" />
+                        </StackPane>
+                        <HBox fx:id="metaViewBox" alignment="CENTER_LEFT" spacing="8">
+                            <Label fx:id="dateLabel" />
+                            <Label text="•" />
+                            <Label fx:id="categoryLabel" />
+                        </HBox>
+                        <HBox fx:id="metaEditBox" alignment="CENTER_LEFT" managed="false" spacing="8" visible="false">
+                            <ComboBox fx:id="categoryBox" promptText="Chọn thể loại" />
+                        </HBox>
+                        <Label fx:id="titleLabel" styleClass="detail-title" text="Tiêu đề bài báo" wrapText="true" />
+
+                        <Label fx:id="shortDescLabel" styleClass="detail-summary" text="Tóm tắt bài báo" wrapText="true" />
+
+                        <Label fx:id="contentLabel" styleClass="detail-content" text="Nội dung chi tiết bài báo sẽ hiển thị ở đây..." wrapText="true" />
+
+
+                        <TextField fx:id="titleField" managed="false" promptText="Nhập tiêu đề bài báo" styleClass="edit-title" visible="false" />
+
+                        <TextArea fx:id="shortDescArea" managed="false" promptText="Nhập tóm tắt bài báo" styleClass="edit-summary" visible="false" wrapText="true" />
+
+                        <TextArea fx:id="contentArea" managed="false" promptText="Nhập nội dung bài báo" styleClass="edit-content" visible="false" wrapText="true" />
+
+                        <Label fx:id="errorLabel" managed="false" textFill="#E53935" visible="false" wrapText="true" />
+
+                        <Separator />
+                        <VBox spacing="10" styleClass="comment-section">
+
+                            <Label styleClass="section-title" text="Bình luận" />
+
+                            <VBox fx:id="commentContainer" spacing="8" />
+
+                            <HBox spacing="8">
+                                <TextArea fx:id="commentInput" prefHeight="54.0" prefRowCount="2" prefWidth="318.0" promptText="Nhập bình luận..." wrapText="true" HBox.hgrow="ALWAYS" />
+                                <Button fx:id="sendCommentBtn" text="Gửi" />
+                            </HBox>
+
+                        </VBox>
+
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>

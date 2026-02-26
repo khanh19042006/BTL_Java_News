@@ -2,81 +2,59 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
 
-
-<BorderPane
-        maxHeight="-Infinity"
-        maxWidth="-Infinity"
-        minHeight="-Infinity"
-        minWidth="-Infinity"
-        prefHeight="720.0"
-        prefWidth="420.0"
-        stylesheets="@css/homePage.css"
-        xmlns="http://javafx.com/javafx/17"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="org.example.controller.HomeController"
->
+<BorderPane prefHeight="720" prefWidth="420" stylesheets="@css/homePage.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.HomeController">
 
    <top>
-      <VBox prefHeight="120.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-         <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="600.0" spacing="12.0">
-               <padding>
-                  <Insets bottom="8.0" left="16.0" right="16.0" top="8.0" />
-               </padding>
-               <children>
-                  <Label prefHeight="28.0" prefWidth="134.0" text="BÁO MỚI">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </Label>
-                  <Region HBox.hgrow="ALWAYS" />
-                  <TextField fx:id="search_infor" prefHeight="43.0" prefWidth="173.0" promptText="Nhập nội dung tìm kiếm">
-                     <font>
-                        <Font size="10.0" />
-                     </font></TextField>
-                  <Button fx:id="search_button" mnemonicParsing="false" prefHeight="22.0" prefWidth="46.0" text="🔍">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Button>
-                  <Button fx:id="infor" mnemonicParsing="false" prefHeight="22.0" prefWidth="45.0" text="👤">
-                     <font>
-                        <Font size="10.0" />
-                     </font></Button>
-               </children>
-            </HBox>
+      <VBox>
+         <HBox styleClass="header">
+            <Label styleClass="app-title" text="BÁO MỚI" />
 
-            <HBox fx:id="main" alignment="CENTER" prefHeight="60.0" prefWidth="600.0" spacing="0.0">
-               <children>
-                  <Button mnemonicParsing="false" prefWidth="105.0" text="NÓNG" />
-                  <Button mnemonicParsing="false" prefWidth="105.0" text="MỚI" />
-                  <Button mnemonicParsing="false" prefWidth="105.0" text="VIDEO" />
-                  <Button fx:id="menu" mnemonicParsing="false" prefWidth="105.0" text="CHỦ ĐỀ" />
-               </children>
-            </HBox>
-         </children>
+            <Region HBox.hgrow="ALWAYS" />
+
+            <TextField fx:id="searchField" prefWidth="182.0" promptText="Nhập nội dung tìm kiếm" styleClass="search-field" />
+            <Button fx:id="searchBtn" onAction="#handleSearch" styleClass="icon-button" text="🔍" />
+            <Button fx:id="userBtn" styleClass="icon-button" text="👤" />
+         </HBox>
+
+         <HBox styleClass="menu-bar">
+            <Button fx:id="hotBtn" onAction="#loadHotNews" styleClass="tab-button" text="NÓNG" />
+
+            <Button fx:id="newBtn" onAction="#loadNewNews" styleClass="tab-button" text="MỚI" />
+
+            <Button fx:id="videoBtn" onAction="#loadRecommendNews" styleClass="tab-button" text="GỢI Ý" />
+
+            <Button fx:id="topicBtn" onAction="#showCategoryScreen" styleClass="tab-button" text="CHỦ ĐỀ" />
+
+         </HBox>
       </VBox>
    </top>
 
    <center>
-      <!-- Phần nội dung chính (sau này bạn thêm WebView, ListView,...) -->
-<!--      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">-->
-<!--         <children>-->
-<!--            <GridPane alignment="TOP_CENTER" visible="false" StackPane.alignment="TOP_CENTER">-->
-<!--               &lt;!&ndash; giữ nguyên nếu bạn dùng sau &ndash;&gt;-->
-<!--            </GridPane>-->
-<!--         </children>-->
-<!--      </StackPane>-->
-      <ListView fx:id="newsList" BorderPane.alignment="CENTER"/>
+      <StackPane>
+         <VBox fx:id="newsContainer" spacing="10">
+            <ListView fx:id="newsList" styleClass="news-list" VBox.vgrow="ALWAYS" />
+
+            <HBox alignment="CENTER" spacing="10" styleClass="pagination">
+               <Button fx:id="prevBtn" onAction="#handlePrevPage" styleClass="page-button" text="&lt;&lt;" />
+               <Label fx:id="pageLabel" styleClass="page-label" text="Trang 1 / 1" />
+               <Button fx:id="nextBtn" onAction="#handleNextPage" styleClass="page-button" text="&gt;&gt;" />
+            </HBox>
+         </VBox>
+
+         <ScrollPane fx:id="categoryScroll" visible="false" managed="false" fitToWidth="true">
+
+            <VBox fx:id="categoryContainer" spacing="10" alignment="TOP_CENTER" style="-fx-padding: 20;" />
+         </ScrollPane>
+
+      </StackPane>
    </center>
 </BorderPane>

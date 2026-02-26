@@ -1,0 +1,20 @@
+[
+  {
+    "id": "91e688b6-f31c-4360-b9d7-bfa3edb4934a",
+    "username": "hoangem",
+    "email": "nguyendinhhoang.241206@gmail.com",
+    "password": "$2a$10$DhCt0o6jFuUZ9RRBcw5Sp.EYUHNJ2.r6.yOn8FqzuSkjbmDZra5s2",
+    "created_at": "2026-02-20",
+    "role": "user",
+    "isVerity": true
+  },
+  {
+    "id": "c505cc32-1ea9-47a2-b936-327aaf483db",
+    "username": "admin",
+    "email": "admin@gmail.com",
+    "password": "$2a$10$KAO5aIv/0ofF7UESaUZ79O09Yg1YZSv4yVswWX0aQuL6Q3WmMNmD6",
+    "created_at": "2026-02-15",
+    "role": "admin",
+    "isVerity": true
+  }
+]

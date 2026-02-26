@@ -1,10 +1,22 @@
 package org.example.service;
 
-import org.example.entity.News;
+import org.example.dto.CategoryDTO;
+import org.example.dto.NewsDTO;
 
 import java.util.List;
 
 public interface HomeService {
-    public List<News> getNewNews(); //Lấy 10 bài báo mới nhất
-    public List<News> getHotNews(); //Lấy 10 bài báo có lượt view cao nhất
+    public List<NewsDTO> getNewNews();                          // Lấy 10 bài báo mới nhất
+    public List<NewsDTO> getHotNews();                          // Lấy 10 bài báo có lượt view cao nhất
+    public List<NewsDTO> searchNews(String headline);        // Lấy 10 bài viết theo thanh tìm kiếm
+    public List<NewsDTO> getNewsByCategory(String category);    // Lấy 10 bài viết theo chủ đề
+    public List<NewsDTO> getRecommendNews(String userId);       // Lấy 10 bài viết đề cử
+    public List<CategoryDTO> getCategory();                     // Lấy toàn bộ danh sách Category
+    public List<NewsDTO> getNewsNewByPage(int page);            // Lấy 10 bài viết mới nhất theo số trang
+    public int countTotalPageNews();                            // Xem có tổng cộng bao nhiêu trang
+    public List<NewsDTO> getHotNewsByPage(int page);            // Lấy 10 bài viết hot nhất theo số trang
+    public boolean incrementViewCount(String newsId);           // Tăng view thêm 1
+    public List<NewsDTO> getNewsPageByCategory
+            (String category,int page);                         // Phân trang theo category
+    public int countTotalNewsByCategory(String category);       // Đếm tổng số trang theo category
 }
